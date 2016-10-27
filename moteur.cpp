@@ -2,5 +2,5 @@
 
 Moteur::Moteur()
 {
-
+	mMoteurGraphique.linkMainEngine( this );
 }

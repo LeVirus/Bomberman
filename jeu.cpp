@@ -1,6 +1,11 @@
 #include "jeu.hpp"
 
-Jeu::Jeu()
+void Jeu::chargerNiveau( unsigned int numNiv )
+{
+
+}
+
+void Jeu::lancerJeu()
 {
 
 }

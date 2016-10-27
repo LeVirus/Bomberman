@@ -1,6 +1,9 @@
 #include "moteurgraphique.hpp"
+#include "moteur.hpp"
+#include <cassert>
 
-MoteurGraphique::MoteurGraphique()
+void MoteurGraphique::linkMainEngine( Moteur* ptrMoteur )
 {
-
+	assert( ptrMoteur && "ptrMoteur == null\n" );
+	mPtrMoteurPrincipal = ptrMoteur;
 }

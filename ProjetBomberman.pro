@@ -8,16 +8,22 @@ QMAKE_CXXFLAGS_DEBUG += -Wall -Wextra -Wpedantic -Og
 
 INCLUDEPATH += IncludeLib/
 
-LIBS += -lsfml-graphics -lsfml-window -lsfml-system -L Lib/ -lECS#-lsfml-network  -lsfml-audio
+LIBS += -lsfml-graphics -lsfml-window -lsfml-system -L"../ProjetBomberman/Lib" -lECS#-lsfml-network  -lsfml-audio
 
 SOURCES += main.cpp \
     jeu.cpp \
     moteur.cpp \
     moteurgraphique.cpp \
-    gestionnaireecs.cpp
+    gestionnaireecs.cpp \
+    niveau.cpp \
+    tilemap.cpp \
+    tableau2d.cpp
 
 HEADERS += \
     jeu.hpp \
     moteur.hpp \
     moteurgraphique.hpp \
-    gestionnaireecs.hpp
+    gestionnaireecs.hpp \
+    niveau.hpp \
+    tilemap.hpp \
+    tableau2d.hpp

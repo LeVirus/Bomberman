@@ -2,15 +2,14 @@
 #define GESTIONNAIREECS_H
 
 #include "engine.hpp"
-#include "ECSconstantes.hpp"
-#include "componentmanager.hpp"
-#include "positioncomponent.hpp"
-#include "displaycomponent.hpp"
+
 
 class GestionnaireECS
 {
 private:
-	Engine engineECS;
+	Engine mEngineECS;
+	ComponentManager* mCompMan = nullptr;
+	SystemManager* mSysMan = nullptr;
 public:
 	GestionnaireECS();
 };
