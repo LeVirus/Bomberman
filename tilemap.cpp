@@ -129,6 +129,8 @@ void TileMap::setPositionPair( std::ifstream &flux )
 	unsigned int uiNbrTuile;
 	flux >> uiNbrTuile;
 	mvectPositionTuile.resize( uiNbrTuile );
+	std::cout << "AFFICHAGE TILEMAP\n";
+
 	for( unsigned int i = 0; i < mvectPositionTuile.size() ; ++i )
 	{
 		flux >> mvectPositionTuile[ i ].first;
