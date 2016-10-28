@@ -1,4 +1,4 @@
-../ProjetBomberman/Ressources/Texture/output/level_mini_tiles.png
+../Ressources/Texture/textTileMap.png
 10
 10
 16
@@ -17,5 +17,5 @@
 0 2 1 2 1 2 1 2 2 0
 0 2 2 2 2 2 2 2 2 0
 0 2 1 2 1 2 1 2 2 0
-0 2 2 2 2 2 2 2 2 0
 0 0 0 0 0 0 0 0 0 0
+

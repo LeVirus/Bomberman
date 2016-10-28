@@ -37,6 +37,7 @@ bool TileMap::loadLevel( const std::string &path )
 	}
 
 	flux >> str;
+	assert(loadTexture( str ) && "erreur texture non chargé");
 	if( ! loadTexture( str ) )
 	{
 		flux.close();
@@ -71,6 +72,11 @@ void TileMap::configTileMap( unsigned int uiLongueurTile, unsigned int uiLargeur
 const sf::VertexArray &TileMap::getVertexArrayTileMap()const
 {
 	return mVertArrayTileMap;
+}
+
+const sf::Texture &TileMap::getTextureTileMap() const
+{
+	return mTexture;
 }
 
 

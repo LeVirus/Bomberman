@@ -31,29 +31,30 @@ bool Tableau2D::bAttribuerTab( const std::vector< unsigned char > &vect,
 	if( uiLongueurTab * uiLargeurTab != vect.size() )
 		return false;
 	resize( uiLongueurTab, uiLargeurTab );
-	std::copy ( &vect[ 0 ], &vect[ vect.size() ], &mVectChar[ 0 ] );
+	std::copy ( vect.begin(), vect.end(), mVectChar.begin() );
 	return true;
 }
 
 bool Tableau2D::bAttribuerTab( std::ifstream &flux, unsigned int uiLongueurTab, unsigned int uiLargeurTab )
 {
 	bool final = true;
-	unsigned char uiMemTile, cmpt = 0;
+	unsigned int uiMemTile, cmpt = 0;
 	if( ! flux )return false;
 	muiLongueurTab = uiLongueurTab;
 	muiLargeurTab = uiLargeurTab;
 
 	mVectChar.resize( muiLongueurTab * muiLargeurTab );
 	//resize du tableau
-	while( flux >> uiMemTile )
+	for( unsigned int i = 0; i < mVectChar.size();++i )
 	{
+		flux >> uiMemTile;
 		if( uiMemTile > 254 )
 		{//verif si la valeur rentre dans un char
 			final = false;
 			break;
 		}
 
-		mVectChar[ cmpt ] = uiMemTile - 48;
+		mVectChar[ cmpt ] = static_cast< unsigned char >( uiMemTile ) ;
 		++cmpt;
 	}
 	std::cout << "fermer flux" << std::endl;

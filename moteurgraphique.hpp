@@ -18,8 +18,10 @@ private:
 	Moteur* mPtrMoteurPrincipal = nullptr;
 public:
 	MoteurGraphique() = default;
+	void initialiserFenetre();
 	void linkMainEngine( Moteur* ptrMoteur );
 	bool loadTileMap( const std::string &strPathConfFile );
+	void raffraichirEcran();
 };
 
 #endif // MOTEURGRAPHIQUE_H

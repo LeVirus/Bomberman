@@ -7,5 +7,5 @@ bool Jeu::chargerNiveau( unsigned int numNiv )
 
 void Jeu::lancerJeu()
 {
-
+	mMoteurPrincipal.lancerBoucle();
 }
