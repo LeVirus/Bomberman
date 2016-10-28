@@ -19,5 +19,5 @@ void Niveau::linkJeu( Jeu * jeu )
 void Niveau::initListeNiveau()
 {
 	mvectPathFileTileMap.resize( MUI_TOTAL_NIVEAU );
-	mvectPathFileTileMap[ 0 ] = "../Ressources/Niveau/Niveau1TM";
+	mvectPathFileTileMap[ 0 ] = "../ProjetBomberman/Ressources/Niveau/Niveau1TM";
 }
