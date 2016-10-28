@@ -6,7 +6,7 @@
 
 void MoteurGraphique::initialiserFenetre()
 {
-	mFenetre.create(sf::VideoMode( 800, 600 ), "Bomber", sf::Style::Default );
+	mFenetre.create(sf::VideoMode( 800, 600 ), "Bomber", sf::Style::Fullscreen );
 
 	mCamera.reset( sf::FloatRect( 0, 0, 800 , 600 ) );
 	mFenetre.setView( mCamera );
@@ -27,10 +27,10 @@ bool MoteurGraphique::loadTileMap( const std::string &strPathConfFile )
 
 void MoteurGraphique::raffraichirEcran()
 {
-	const sf::VertexArray vectTile = mTileMap.getVertexArrayTileMap();
-	const sf::Texture text = mTileMap.getTextureTileMap();
 	mFenetre.clear( sf::Color::Black );
-	mFenetre.draw( vectTile , &text);
+	mTileMap.setScale( 3.0f, 3.0f );
+	mTileMap.setPosition( 0.0f, 0.0f );
+	mFenetre.draw( mTileMap );
 //	mFenetre.draw( vectTile, mTileMap.getTextureTileMap() );
 	mFenetre.display();
 

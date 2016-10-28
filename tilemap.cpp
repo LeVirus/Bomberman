@@ -144,6 +144,20 @@ void TileMap::setPositionPair( std::ifstream &flux )
 	}
 }
 
+void TileMap::draw(sf::RenderTarget &target, sf::RenderStates states) const
+{
+	// on applique la transformation de l'entité -- on la combine avec celle qui a été passée par l'appelant
+	states.transform *= getTransform(); // getTransform() est définie par sf::Transformable
+
+	// on applique la texture
+	states.texture = &mTexture;
+
+	// on peut aussi surcharger states.shader ou states.blendMode si nécessaire
+
+	// on dessine le tableau de vertex
+	target.draw(mVertArrayTileMap, states);
+}
+
 
 /**
  * @brief Fonction qui dessine en fonction du tableau reçu de Niveau

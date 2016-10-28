@@ -5,7 +5,7 @@
 #include "tableau2d.hpp"
 #include <fstream>
 
-class TileMap
+class TileMap: public sf::Drawable, public sf::Transformable
 {
 private:
 	sf::Texture mTexture;
@@ -17,6 +17,8 @@ private:
 
 	void initialiserVertexArray();
 	void setPositionPair( std::ifstream &flux );
+
+	virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const;
 
 public:
 	TileMap() = default;
