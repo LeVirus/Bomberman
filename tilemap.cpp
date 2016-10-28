@@ -1,16 +1,58 @@
 #include "tilemap.hpp"
 #include <fstream>
+#include <iostream>
+#include <cassert>
 
-bool TileMap::loadTexture( std::string path )
+bool TileMap::loadTexture( const std::string &path )
 {
 	return mTexture.loadFromFile( path );
 }
 
-bool TileMap::loadLevel( std::string path )
+/**
+ * @brief TileMap::loadLevel Chargement du niveau à partir du fichier texte de la classe Niveau.
+ * structure du fichier::
+ *
+ * chemin vers la texture du TileMap
+ * muiLongueurNiveau
+ * muiLargeurNiveau
+ * muiLongueurTile
+ * muiLargeurTile
+ * (Suite de nombre représentant le type de tuile pour chaque case)
+ *
+ * fin fichier::
+ * @param path Chemin vers le fichier de configuration.
+ * @return
+ */
+bool TileMap::loadLevel( const std::string &path )
 {
-	if( muiLongueurTile == 0 || muiLargeurTile == 0 )return false;
+	std::string str;
 	std::ifstream flux( path, std::ios::in );
-	return mTab.bAttribuerTab( flux, muiLongueurTile , muiLargeurTile );
+	assert( flux && "flux erreur" );
+	if( !flux )
+	{
+		flux.close();
+		return false;
+	}
+
+	flux >> str;
+	if( ! loadTexture( str ) )
+	{
+		flux.close();
+		return false;
+	}
+	flux >> muiLongueurNiveau;
+	flux >> muiLargeurNiveau;
+	flux >> muiLongueurTile;
+	flux >> muiLargeurTile;
+
+	initialiserVertexArray();
+
+	//si tout se passe correctement le flux est fermé dans la fonction bAttribuerTab.
+	if( ! mTab.bAttribuerTab( flux, muiLongueurTile , muiLargeurTile ) )return false;
+
+	bDessinerVertArrayNiveau();
+	return true;
+
 }
 
 void TileMap::configTileMap( unsigned int uiLongueurTile, unsigned int uiLargeurTile,
@@ -22,9 +64,9 @@ void TileMap::configTileMap( unsigned int uiLongueurTile, unsigned int uiLargeur
 	muiLargeurNiveau = uiLargeurNiveau;
 }
 
-const sf::Sprite &TileMap::getSpriteTileMap()const
+const sf::VertexArray &TileMap::getVertexArrayTileMap()const
 {
-	return mSpriteTileMap;
+	return mVertArrayTileMap;
 }
 
 
@@ -56,7 +98,20 @@ void TileMap::initialiserVertexArray()
 	}
 }
 
-void TileMap::setPositionPair(const std::vector<std::pair<unsigned int, unsigned int> > &vectPosTile )
+void TileMap::displayTileMap() const
+{
+	std::cout << "AFFICHAGE TILEMAP\n";
+	std::cout << "muiLongueurNiveau::"<< muiLongueurNiveau <<
+				 "\nmuiLargeurNiveau::"<< muiLargeurNiveau <<
+				 "\nmuiLongueurTile::"<< muiLongueurTile <<
+				 "\nmuiLargeurTile::"<< muiLargeurTile << "\n";
+	mTab.afficherTab();
+	std::cout << "FIN AFFICHAGE TILEMAP\n";
+
+
+}
+
+void TileMap::setPositionPair( const std::vector<std::pair<unsigned int, unsigned int> > &vectPosTile )
 {
 	mvectPositionTuile = vectPosTile;
 }

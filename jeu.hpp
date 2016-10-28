@@ -2,15 +2,17 @@
 #define JEU_H
 
 #include "moteur.hpp"
+#include "niveau.hpp"
 
 
 class Jeu
 {
 private:
 	Moteur mMoteurPrincipal;
+	Niveau mNiveau;
 public:
 	Jeu() = default;
-	void chargerNiveau( unsigned int numNiv );
+	bool chargerNiveau( unsigned int numNiv );
 	void lancerJeu();
 };
 

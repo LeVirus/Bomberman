@@ -3,23 +3,23 @@
 
 class Moteur;
 
-#include <vector>
 #include <SFML/Graphics.hpp>
 #include "tilemap.hpp"
 
 class MoteurGraphique
 {
 private:
+	std::vector< std::unique_ptr< sf::Sprite > > mVectSprite;
 	sf::RenderWindow mFenetre;
 	sf::Texture textureA, textureNiveau;
-	std::vector< std::unique_ptr< sf::Sprite > > mVectSprite;
 	sf::View mCamera;
 	sf::VertexArray mVertArrayTileMap;
-	TileMap tileMap;
+	TileMap mTileMap;
 	Moteur* mPtrMoteurPrincipal = nullptr;
 public:
 	MoteurGraphique() = default;
 	void linkMainEngine( Moteur* ptrMoteur );
+	bool loadTileMap( const std::string &strPathConfFile );
 };
 
 #endif // MOTEURGRAPHIQUE_H

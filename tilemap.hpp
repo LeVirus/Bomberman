@@ -7,7 +7,6 @@
 class TileMap
 {
 private:
-	sf::Sprite mSpriteTileMap;
 	sf::Texture mTexture;
 	sf::VertexArray mVertArrayTileMap;
 	std::vector< std::pair< unsigned int, unsigned int > > mvectPositionTuile;
@@ -16,13 +15,14 @@ private:
 	muiLongueurNiveau = 0, muiLargeurNiveau = 0;
 public:
 	TileMap() = default;
-	bool loadTexture( std::string path );
-	bool loadLevel( std::string path );
+	bool loadTexture( const std::string &path );
+	bool loadLevel( const std::string &path );
 	void setPositionPair( const std::vector< std::pair< unsigned int, unsigned int > > &vectPosTile );
 	void configTileMap( unsigned int uiLongueurTile, unsigned int uiLargeurTile,
 						unsigned int uiLongueurNiveau, unsigned int uiLargeurNiveau);
-	const sf::Sprite &getSpriteTileMap()const;
+	const sf::VertexArray &getVertexArrayTileMap()const;
 	void initialiserVertexArray();
+	void displayTileMap()const;
 
 	bool bDessinerVertArrayNiveau();
 };

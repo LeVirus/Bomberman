@@ -3,7 +3,7 @@
 
 #include "gestionnaireecs.hpp"
 #include "moteurgraphique.hpp"
-
+#include <string>
 
 class Moteur
 {
@@ -13,6 +13,7 @@ private:
 public:
 	Moteur();
 	void lancerBoucle();
+	bool loadTileMap( const std::string & pathTile );
 };
 
 #endif // MOTEUR_H

@@ -1,8 +1,8 @@
 #include "jeu.hpp"
 
-void Jeu::chargerNiveau( unsigned int numNiv )
+bool Jeu::chargerNiveau( unsigned int numNiv )
 {
-
+	return mMoteurPrincipal.loadTileMap( mNiveau.getConfLevelTileMap( numNiv ) );
 }
 
 void Jeu::lancerJeu()

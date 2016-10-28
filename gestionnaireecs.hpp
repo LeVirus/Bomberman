@@ -2,16 +2,18 @@
 #define GESTIONNAIREECS_H
 
 #include "engine.hpp"
+#include <bitset>
 
 
 class GestionnaireECS
 {
 private:
-	Engine mEngineECS;
-	ComponentManager* mCompMan = nullptr;
-	SystemManager* mSysMan = nullptr;
+	ecs::Engine mEngineECS;
+	ecs::ComponentManager* mCompMan = nullptr;
+	ecs::SystemManager* mSysMan = nullptr;
 public:
 	GestionnaireECS();
+	void addEntity( const std::bitset<ecs::NUMBR_COMPONENT> &bitsetComp );
 };
 
 #endif // GESTIONNAIREECS_H
