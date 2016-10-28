@@ -1,5 +1,4 @@
 #include "tilemap.hpp"
-#include <fstream>
 #include <iostream>
 #include <cassert>
 
@@ -17,7 +16,10 @@ bool TileMap::loadTexture( const std::string &path )
  * muiLargeurNiveau
  * muiLongueurTile
  * muiLargeurTile
- * (Suite de nombre représentant le type de tuile pour chaque case)
+ * nombre de tuile différentes
+ * tableau de positions des tuiles dans la texture
+ *
+ * tableau tilemap(Suite de nombre représentant le type de tuile pour chaque case)
  *
  * fin fichier::
  * @param path Chemin vers le fichier de configuration.
@@ -45,10 +47,12 @@ bool TileMap::loadLevel( const std::string &path )
 	flux >> muiLongueurTile;
 	flux >> muiLargeurTile;
 
+
+	setPositionPair( flux );
 	initialiserVertexArray();
 
 	//si tout se passe correctement le flux est fermé dans la fonction bAttribuerTab.
-	if( ! mTab.bAttribuerTab( flux, muiLongueurTile , muiLargeurTile ) )return false;
+	if( ! mTab.bAttribuerTab( flux, muiLongueurNiveau , muiLargeurNiveau ) )return false;
 
 	bDessinerVertArrayNiveau();
 	return true;
@@ -105,22 +109,38 @@ void TileMap::displayTileMap() const
 				 "\nmuiLargeurNiveau::"<< muiLargeurNiveau <<
 				 "\nmuiLongueurTile::"<< muiLongueurTile <<
 				 "\nmuiLargeurTile::"<< muiLargeurTile << "\n";
+	for( auto i : mvectPositionTuile )
+	{
+		std::cout << "tuile x::" << i.first <<"tuile y::" << i.second <<"\n" ;
+	}
 	mTab.afficherTab();
 	std::cout << "FIN AFFICHAGE TILEMAP\n";
 
 
 }
 
-void TileMap::setPositionPair( const std::vector<std::pair<unsigned int, unsigned int> > &vectPosTile )
+/*void TileMap::setPositionPair( const std::vector< std::pair< unsigned int, unsigned int > > &vectPosTile )
 {
 	mvectPositionTuile = vectPosTile;
+}*/
+
+void TileMap::setPositionPair( std::ifstream &flux )
+{
+	unsigned int uiNbrTuile;
+	flux >> uiNbrTuile;
+	mvectPositionTuile.resize( uiNbrTuile );
+	for( unsigned int i = 0; i < mvectPositionTuile.size() ; ++i )
+	{
+		flux >> mvectPositionTuile[ i ].first;
+		flux >> mvectPositionTuile[ i ].second;
+	}
 }
 
 
 /**
  * @brief Fonction qui dessine en fonction du tableau reçu de Niveau
  * La partie du niveau à afficher.
- * @param tabNivEcran Le tableau 2d de la partie du Niveau àœ
+ * @param tabNivEcran Le tableau 2d de la partie du Niveau à
  * afficher.
  * @return si les valeurs de tabNivEcran sont valide
  * false sinon.
