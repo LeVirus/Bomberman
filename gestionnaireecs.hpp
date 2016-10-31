@@ -13,7 +13,7 @@ private:
 	ecs::SystemManager* mSysMan = nullptr;
 public:
 	GestionnaireECS();
-	void addEntity( const std::bitset<ecs::NUMBR_COMPONENT> &bitsetComp );
+	unsigned int addEntity( const std::bitset<ecs::NUMBR_COMPONENT> &bitsetComp );
 };
 
 #endif // GESTIONNAIREECS_H

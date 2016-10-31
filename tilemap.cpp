@@ -25,7 +25,7 @@ bool TileMap::loadTexture( const std::string &path )
  * @param path Chemin vers le fichier de configuration.
  * @return
  */
-bool TileMap::loadLevel( const std::string &path )
+bool TileMap::loadLevel(const std::string &path , unsigned int uiNumEntity )
 {
 	std::string str;
 	std::ifstream flux( path, std::ios::in );
@@ -55,6 +55,7 @@ bool TileMap::loadLevel( const std::string &path )
 	//si tout se passe correctement le flux est fermé dans la fonction bAttribuerTab.
 	if( ! mTab.bAttribuerTab( flux, muiLongueurNiveau , muiLargeurNiveau ) )return false;
 
+	muiNumEntity = uiNumEntity;
 	bDessinerVertArrayNiveau();
 	return true;
 

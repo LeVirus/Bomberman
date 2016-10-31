@@ -19,9 +19,9 @@ void MoteurGraphique::linkMainEngine( Moteur* ptrMoteur )
 	mPtrMoteurPrincipal = ptrMoteur;
 }
 
-bool MoteurGraphique::loadTileMap( const std::string &strPathConfFile )
+bool MoteurGraphique::loadTileMap(const std::string &strPathConfFile , unsigned int uiNumEntity )
 {
-	mTileMap.loadLevel( strPathConfFile );
+	mTileMap.loadLevel( strPathConfFile, uiNumEntity );
 	mTileMap.displayTileMap();
 }
 

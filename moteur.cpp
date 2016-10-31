@@ -1,5 +1,6 @@
 #include "moteur.hpp"
 #include <SFML/Graphics.hpp>
+#include <bitset>
 
 Moteur::Moteur()
 {
@@ -18,6 +19,11 @@ void Moteur::lancerBoucle()
 
 bool Moteur::loadTileMap( const std::string &pathTile )
 {
-	mMoteurGraphique.loadTileMap( pathTile );
+	unsigned int memEntity;
+	std::bitset< ecs::NUMBR_COMPONENT > bitsetComp;
+	bitsetComp[ ecs::DISPLAY_COMPONENT ] = true;
+	bitsetComp[ ecs::POSITION_COMPONENT ] = true;
+	memEntity = mGestECS.addEntity( bitsetComp );
+	mMoteurGraphique.loadTileMap( pathTile, memEntity );
 }
 

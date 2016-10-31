@@ -20,7 +20,7 @@ public:
 	MoteurGraphique() = default;
 	void initialiserFenetre();
 	void linkMainEngine( Moteur* ptrMoteur );
-	bool loadTileMap( const std::string &strPathConfFile );
+	bool loadTileMap( const std::string &strPathConfFile, unsigned int uiNumEntity );
 	void raffraichirEcran();
 };
 

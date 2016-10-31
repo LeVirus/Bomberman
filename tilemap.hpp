@@ -13,7 +13,7 @@ private:
 	std::vector< std::pair< unsigned int, unsigned int > > mvectPositionTuile;
 	Tableau2D mTab;
 	unsigned int muiLongueurTile = 0, muiLargeurTile = 0,
-	muiLongueurNiveau = 0, muiLargeurNiveau = 0;
+	muiLongueurNiveau = 0, muiLargeurNiveau = 0, muiNumEntity = 9000;
 
 	void initialiserVertexArray();
 	void setPositionPair( std::ifstream &flux );
@@ -23,7 +23,7 @@ private:
 public:
 	TileMap() = default;
 	bool loadTexture( const std::string &path );
-	bool loadLevel( const std::string &path );
+	bool loadLevel( const std::string &path, unsigned int uiNumEntity );
 	//void setPositionPair( const std::vector< std::pair< unsigned int, unsigned int > > &vectPosTile );
 
 	void configTileMap( unsigned int uiLongueurTile, unsigned int uiLargeurTile,
