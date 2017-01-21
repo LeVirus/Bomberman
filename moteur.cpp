@@ -12,10 +12,17 @@ void Moteur::lancerBoucle()
 	mMoteurGraphique.initialiserFenetre();
 	do
 	{
-		if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )break;
+		mGestECS.getECSSystemManager()->bExecAllSystem();
 		mMoteurGraphique.raffraichirEcran();
+		if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )break;
 	}while( true );
 }
+
+GestionnaireECS &Moteur::getGestionnaireECS()
+{
+	return mGestECS;
+}
+
 
 bool Moteur::loadTileMap( const std::string &pathTile )
 {

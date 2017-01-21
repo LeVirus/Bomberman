@@ -6,6 +6,16 @@ GestionnaireECS::GestionnaireECS()
 	mSysMan = &mEngineECS.getSystemManager();
 }
 
+void GestionnaireECS::initECS()
+{
+	mSysMan->bAddSystem( ecs::DISPLAY_SYSTEM );
+}
+
+ecs::SystemManager *GestionnaireECS::getECSSystemManager()
+{
+	return mSysMan;
+}
+
 /**
  * @brief GestionnaireECS::addEntity Création d'une entité avec les composants à y inclure.
  * @param bitsetComp La table contenant les composants à inclure.

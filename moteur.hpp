@@ -13,6 +13,7 @@ private:
 public:
 	Moteur();
 	void lancerBoucle();
+	GestionnaireECS &getGestionnaireECS();
 	bool loadTileMap( const std::string & pathTile );
 };
 

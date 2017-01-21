@@ -25,7 +25,7 @@ bool TileMap::loadTexture( const std::string &path )
  * @param path Chemin vers le fichier de configuration.
  * @return
  */
-bool TileMap::loadLevel(const std::string &path , unsigned int uiNumEntity )
+bool TileMap::loadLevel( const std::string &path , unsigned int uiNumEntity )
 {
 	std::string str;
 	std::ifstream flux( path, std::ios::in );
