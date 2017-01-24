@@ -33,6 +33,11 @@ public:
 	void displayTileMap()const;
 
 	bool bDessinerVertArrayNiveau();
+
+	unsigned int getLongueurTile()const{return muiLongueurTile;}
+	unsigned int getLargeurTile()const{return muiLargeurTile;}
+	unsigned int getLongueurNiveau()const{return muiLongueurNiveau;}
+	unsigned int getLargeurNiveau()const{return muiLargeurNiveau;}
 };
 
 #endif // TILEMAP_H

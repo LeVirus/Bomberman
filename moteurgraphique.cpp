@@ -1,5 +1,6 @@
 #include "moteurgraphique.hpp"
 #include "displaysystem.hpp"
+#include "constants.hpp"
 #include <cassert>
 #include "moteur.hpp"
 
@@ -7,7 +8,7 @@
 
 void MoteurGraphique::initialiserFenetre()
 {
-	mFenetre.create(sf::VideoMode( 800, 600 ), "Bomber", sf::Style::Default );
+	mFenetre.create(sf::VideoMode( WIDTH_SCREEN, HEIGHT_SCREEN ), "Bomber", sf::Style::Fullscreen );
 
 	mCamera.reset( sf::FloatRect( 0, 0, 800 , 600 ) );
 	mFenetre.setView( mCamera );
@@ -21,11 +22,11 @@ void MoteurGraphique::linkMainEngine( Moteur* ptrMoteur )
 	mPtrMoteurPrincipal = ptrMoteur;
 }
 
-bool MoteurGraphique::loadTileMap(const std::string &strPathConfFile , unsigned int uiNumEntity )
+bool MoteurGraphique::loadTileMap( const std::string &strPathConfFile , unsigned int uiNumEntity )
 {
 	mTileMap.loadLevel( strPathConfFile, uiNumEntity );
 	positionnerTileMap( uiNumEntity );
-	mTileMap.displayTileMap();
+	//mTileMap.displayTileMap();
 }
 
 void MoteurGraphique::displayECSSprite()
@@ -38,9 +39,20 @@ void MoteurGraphique::displayECSSprite()
 	{
 		unsigned int uiNumSprite = (* mVectComponentDisplaySystem )[ i ].first -> muiNumSprite;
 		const ecs::Vector2D vector2DPos = (* mVectComponentDisplaySystem )[ i ].second -> vect2DPosComp;
-		assert( uiNumSprite < mVectSprite.size() && "mVectSprite overflow\n" );
-		mVectSprite[ uiNumSprite ] -> setPosition( vector2DPos . mfX, vector2DPos . mfY );
-		mFenetre.draw( *mVectSprite[ uiNumSprite ].get() );
+		assert( uiNumSprite == SPRITE_TILEMAP || uiNumSprite < mVectSprite.size() && "mVectSprite overflow\n" );
+
+		//affichage du tilemap
+		if( uiNumSprite == SPRITE_TILEMAP )
+		{
+			mTileMap.setPosition( vector2DPos . mfX, vector2DPos . mfY );
+			mFenetre.draw( mTileMap );
+		}
+		else//affichage d'un sprite contenu dans le tableau
+		{
+			mVectSprite[ uiNumSprite ] -> setPosition( vector2DPos . mfX, vector2DPos . mfY );
+			mFenetre.draw( *mVectSprite[ uiNumSprite ].get() );
+		}
+
 	}
 }
 

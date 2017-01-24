@@ -18,7 +18,7 @@ private:
 	sf::VertexArray mVertArrayTileMap;
 	TileMap mTileMap;
 	Moteur* mPtrMoteurPrincipal = nullptr;
-	 const std::vector< std::pair< ecs::DisplayComponent *, ecs::PositionComponent * > > *
+	const std::vector< std::pair< ecs::DisplayComponent *, ecs::PositionComponent * > > *
 			mVectComponentDisplaySystem;
 public:
 	MoteurGraphique() = default;

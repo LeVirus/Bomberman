@@ -15,6 +15,7 @@ public:
 	void lancerBoucle();
 	GestionnaireECS &getGestionnaireECS();
 	bool loadTileMap( const std::string & pathTile );
+	bool loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot );
 };
 
 #endif // MOTEUR_H

@@ -1,0 +1,8 @@
+#ifndef CONSTANTS_HPP
+#define CONSTANTS_HPP
+
+const unsigned int SPRITE_TILEMAP = 500, WIDTH_SCREEN = 1920, HEIGHT_SCREEN = 1080,
+MAX_PLAYER = 4;
+
+
+#endif // CONSTANTS_HPP

@@ -26,4 +26,5 @@ HEADERS += \
     gestionnaireecs.hpp \
     niveau.hpp \
     tilemap.hpp \
-    tableau2d.hpp
+    tableau2d.hpp \
+    constants.hpp

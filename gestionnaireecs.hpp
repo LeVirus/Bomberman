@@ -14,6 +14,7 @@ private:
 public:
 	GestionnaireECS();
 	ecs::SystemManager *getECSSystemManager();
+	ecs::ComponentManager *getECSComponentManager();
 	void initECS();
 	unsigned int addEntity( const std::bitset<ecs::NUMBR_COMPONENT> &bitsetComp );
 };

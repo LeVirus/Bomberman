@@ -4,7 +4,6 @@
 #include "moteur.hpp"
 #include "niveau.hpp"
 
-
 class Jeu
 {
 private:
