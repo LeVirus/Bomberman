@@ -28,16 +28,19 @@ GestionnaireECS &Moteur::getGestionnaireECS()
 bool Moteur::loadTileMap( const std::string &pathTile )
 {
 	unsigned int memEntity;
+	//création de l'entité avec les composants nécessaires
 	std::bitset< ecs::NUMBR_COMPONENT > bitsetComp;
 	bitsetComp[ ecs::DISPLAY_COMPONENT ] = true;
 	bitsetComp[ ecs::POSITION_COMPONENT ] = true;
 	memEntity = mGestECS.addEntity( bitsetComp );
+
+	//récupération et modification des composants
 	mMoteurGraphique.loadTileMap( pathTile, memEntity );
 	ecs::DisplayComponent * dc = mGestECS.getECSComponentManager() ->
-			searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT);
+			searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT );
 	dc->muiNumSprite = SPRITE_TILEMAP;
 	ecs::PositionComponent * pc = mGestECS.getECSComponentManager() ->
-			searchComponentByType< ecs::PositionComponent >( memEntity, ecs::POSITION_COMPONENT);
+			searchComponentByType< ecs::PositionComponent >( memEntity, ecs::POSITION_COMPONENT );
 	pc->vect2DPosComp.mfX = 180;
 	pc->vect2DPosComp.mfY = 70;
 }
@@ -45,6 +48,7 @@ bool Moteur::loadTileMap( const std::string &pathTile )
 bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot )
 {
 	if( MAX_PLAYER < uiNumPlayer + uiNumBot )return false;
+	const std::pair<unsigned int, unsigned int> &positionLevel = mMoteurGraphique.getPositionLevel();
 	for( unsigned int i ; i < uiNumPlayer ; ++i )
 	{
 		std::bitset< ecs::NUMBR_COMPONENT > bitsetComp;
@@ -54,7 +58,19 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 		bitsetComp[ ecs::INPUT_COMPONENT ] = true;
 		bitsetComp[ ecs::COLL_RECTBOX_COMPONENT ] = true;
 
-		memEntity = mGestECS.addEntity( bitsetComp );
+		unsigned int memEntity = mGestECS.addEntity( bitsetComp );
+		unsigned int memNumSprite = mMoteurGraphique.loadSprite(
+					TEXTURE_BOMBERMAN, sf::IntRect( 71, 45, 16, 25 ) );
+
+		ecs::DisplayComponent * dc = mGestECS.getECSComponentManager() ->
+				searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT );
+		dc->muiNumSprite = memNumSprite;
+
+		ecs::PositionComponent * pc = mGestECS.getECSComponentManager() ->
+				searchComponentByType< ecs::PositionComponent >( memEntity, ecs::POSITION_COMPONENT );
+		pc->vect2DPosComp.mfX = 180;//positionLevel.first;
+		pc->vect2DPosComp.mfY = 50;//positionLevel.second;
 	}
+	//uiNumBot a implémenter ultérieurement
 }
 
