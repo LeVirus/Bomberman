@@ -14,7 +14,7 @@ public:
 	Moteur();
 	void lancerBoucle();
 	GestionnaireECS &getGestionnaireECS();
-	bool loadTileMap( const std::string & pathTile );
+	void loadTileMap( const std::string & pathTile );
 	bool loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot );
 };
 

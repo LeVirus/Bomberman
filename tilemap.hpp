@@ -34,6 +34,8 @@ public:
 
 	bool bDessinerVertArrayNiveau();
 
+	void adaptToScale( float fX, float fY );
+	unsigned int getNumEntity()const{return muiNumEntity;}
 	unsigned int getLongueurTile()const{return muiLongueurTile;}
 	unsigned int getLargeurTile()const{return muiLargeurTile;}
 	unsigned int getLongueurNiveau()const{return muiLongueurNiveau;}

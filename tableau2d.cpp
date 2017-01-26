@@ -57,7 +57,6 @@ bool Tableau2D::bAttribuerTab( std::ifstream &flux, unsigned int uiLongueurTab, 
 		mVectChar[ cmpt ] = static_cast< unsigned char >( uiMemTile ) ;
 		++cmpt;
 	}
-	std::cout << "fermer flux" << std::endl;
 	flux.close();
 	return final;
 

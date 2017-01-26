@@ -57,6 +57,8 @@ bool TileMap::loadLevel( const std::string &path , unsigned int uiNumEntity )
 
 	muiNumEntity = uiNumEntity;
 	bDessinerVertArrayNiveau();
+
+
 	return true;
 
 }
@@ -136,8 +138,6 @@ void TileMap::setPositionPair( std::ifstream &flux )
 	unsigned int uiNbrTuile;
 	flux >> uiNbrTuile;
 	mvectPositionTuile.resize( uiNbrTuile );
-	std::cout << "AFFICHAGE TILEMAP\n";
-
 	for( unsigned int i = 0; i < mvectPositionTuile.size() ; ++i )
 	{
 		flux >> mvectPositionTuile[ i ].first;
@@ -175,7 +175,8 @@ bool TileMap::bDessinerVertArrayNiveau()
 	for( unsigned int i = 0; i < mVertArrayTileMap.getVertexCount() ; i+=4 )
 	{
 
-		if( uiCoordTabX == muiLongueurNiveau ){
+		if( uiCoordTabX == muiLongueurNiveau )
+		{
 			uiCoordTabY++;
 			uiCoordTabX = 0;
 		}
@@ -195,4 +196,10 @@ bool TileMap::bDessinerVertArrayNiveau()
 
 	}
 	return retour;
+}
+
+void TileMap::adaptToScale( float fX, float fY )
+{
+	muiLongueurTile *= fX;
+	muiLargeurTile *= fY;
 }

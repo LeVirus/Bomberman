@@ -32,7 +32,6 @@ unsigned int GestionnaireECS::addEntity( const std::bitset< ecs::NUMBR_COMPONENT
 	{
 		if( bitsetComp[ i ] )//composant
 		{
-			std::cout << "add comp" << i << "\n";
 			mEngineECS.bAddComponentToEntity( mem, i );
 		}
 		//this->getECSComponentManager()->displayComponent();

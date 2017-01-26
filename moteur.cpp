@@ -25,7 +25,7 @@ GestionnaireECS &Moteur::getGestionnaireECS()
 	return mGestECS;
 }
 
-bool Moteur::loadTileMap( const std::string &pathTile )
+void Moteur::loadTileMap( const std::string &pathTile )
 {
 	unsigned int memEntity;
 	//création de l'entité avec les composants nécessaires
@@ -34,22 +34,21 @@ bool Moteur::loadTileMap( const std::string &pathTile )
 	bitsetComp[ ecs::POSITION_COMPONENT ] = true;
 	memEntity = mGestECS.addEntity( bitsetComp );
 
-	//récupération et modification des composants
-	mMoteurGraphique.loadTileMap( pathTile, memEntity );
 	ecs::DisplayComponent * dc = mGestECS.getECSComponentManager() ->
 			searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT );
 	dc->muiNumSprite = SPRITE_TILEMAP;
 	ecs::PositionComponent * pc = mGestECS.getECSComponentManager() ->
 			searchComponentByType< ecs::PositionComponent >( memEntity, ecs::POSITION_COMPONENT );
-	pc->vect2DPosComp.mfX = 180;
-	pc->vect2DPosComp.mfY = 70;
+	pc->vect2DPosComp.mfX = POSITION_LEVEL_X;
+	pc->vect2DPosComp.mfY = POSITION_LEVEL_Y;
+	//récupération et modification des composants
+	mMoteurGraphique.loadTileMap( pathTile, memEntity );
 }
 
 bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot )
 {
 	if( MAX_PLAYER < uiNumPlayer + uiNumBot )return false;
-	const std::pair<unsigned int, unsigned int> &positionLevel = mMoteurGraphique.getPositionLevel();
-	for( unsigned int i ; i < uiNumPlayer ; ++i )
+	for( unsigned int i = 0 ; i < uiNumPlayer ; ++i )
 	{
 		std::bitset< ecs::NUMBR_COMPONENT > bitsetComp;
 		bitsetComp[ ecs::DISPLAY_COMPONENT ] = true;
@@ -66,11 +65,10 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 				searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT );
 		dc->muiNumSprite = memNumSprite;
 
-		ecs::PositionComponent * pc = mGestECS.getECSComponentManager() ->
-				searchComponentByType< ecs::PositionComponent >( memEntity, ecs::POSITION_COMPONENT );
-		pc->vect2DPosComp.mfX = 180;//positionLevel.first;
-		pc->vect2DPosComp.mfY = 50;//positionLevel.second;
+		mMoteurGraphique.positionnerCaseTileMap( memEntity, 1, 1 );
+
 	}
+	return true;
 	//uiNumBot a implémenter ultérieurement
 }
 

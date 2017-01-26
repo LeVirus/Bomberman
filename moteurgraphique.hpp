@@ -16,21 +16,19 @@ private:
 	std::vector< sf::Texture > mVectTexture;
 	sf::View mCamera;
 	sf::VertexArray mVertArrayTileMap;
-	std::pair< unsigned int, unsigned int> mPairPositionLevel;
 	TileMap mTileMap;
 	Moteur* mPtrMoteurPrincipal = nullptr;
 	const std::vector< std::pair< ecs::DisplayComponent *, ecs::PositionComponent * > > *
 			mVectComponentDisplaySystem;
 public:
 	MoteurGraphique();
-	const std::pair< unsigned int, unsigned int> &getPositionLevel()const;
 	void initialiserFenetre();
 	void linkMainEngine( Moteur* ptrMoteur );
-	bool loadTileMap( const std::string &strPathConfFile, unsigned int uiNumEntity );
+	void loadTileMap( const std::string &strPathConfFile, unsigned int uiNumEntity );
 	unsigned int loadSprite(unsigned int uiNumTexture, const sf::IntRect &positionSprite );
 	void raffraichirEcran();
 	void displayECSSprite();
-	void positionnerTileMap( unsigned int uiPosition );
+	void positionnerCaseTileMap(unsigned int uiNumEntity, unsigned int uiPositionX, unsigned int uiPositionY );
 };
 
 #endif // MOTEURGRAPHIQUE_H
