@@ -48,7 +48,7 @@ unsigned int MoteurGraphique::loadSprite( unsigned int uiNumTexture, const sf::I
 
 void MoteurGraphique::displayECSSprite()
 {
-	mVectComponentDisplaySystem = mPtrMoteurPrincipal -> getGestionnaireECS().getECSSystemManager()->
+	mVectComponentDisplaySystem = mPtrMoteurPrincipal -> getGestionnaireECS().getECSSystemManager() ->
 			searchSystemByType< ecs::DisplaySystem > ( ecs::DISPLAY_SYSTEM ) ->
 			getVectComponentDisplaySystem();
 	assert( mVectComponentDisplaySystem && "mVectComponentDisplaySystem == null\n" );

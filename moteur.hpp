@@ -13,6 +13,7 @@ private:
 public:
 	Moteur();
 	void lancerBoucle();
+	void earnInput();
 	GestionnaireECS &getGestionnaireECS();
 	void loadTileMap( const std::string & pathTile );
 	bool loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot );

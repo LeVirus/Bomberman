@@ -9,6 +9,7 @@ GestionnaireECS::GestionnaireECS()
 void GestionnaireECS::initECS()
 {
 	mSysMan->bAddSystem( ecs::DISPLAY_SYSTEM );
+	mSysMan->bAddSystem( ecs::INPUT_SYSTEM );
 }
 
 ecs::SystemManager *GestionnaireECS::getECSSystemManager()

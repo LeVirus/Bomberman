@@ -1,4 +1,6 @@
 #include "moteur.hpp"
+#include "inputcomponent.hpp"
+#include "inputsystem.hpp"
 #include "ECSconstantes.hpp"
 #include "constants.hpp"
 #include <SFML/Graphics.hpp>
@@ -18,6 +20,15 @@ void Moteur::lancerBoucle()
 		mMoteurGraphique.raffraichirEcran();
 		if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )break;
 	}while( true );
+}
+
+void Moteur::earnInput()
+{
+	/*const std::vector< unsigned int > &vectNumEntitySystem = mGestECS.getECSSystemManager() ->
+			searchSystemByType< ecs::InputSystem > ( ecs::INPUT_SYSTEM )->getVectNumEntity();
+	ecs::InputComponent ic = mGestECS.getECSComponentManager() ->
+			searchComponentByType< ecs::InputComponent >( memEntity, ecs::INPUT_COMPONENT );
+	if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Z ) )break;*/
 }
 
 GestionnaireECS &Moteur::getGestionnaireECS()
