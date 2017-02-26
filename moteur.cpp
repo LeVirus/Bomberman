@@ -40,7 +40,7 @@ void Moteur::loadTileMap( const std::string &pathTile )
 {
 	unsigned int memEntity;
 	//création de l'entité avec les composants nécessaires
-	std::bitset< ecs::NUMBR_COMPONENT > bitsetComp;
+	std::vector< bool > bitsetComp;
 	bitsetComp[ ecs::DISPLAY_COMPONENT ] = true;
 	bitsetComp[ ecs::POSITION_COMPONENT ] = true;
 	memEntity = mGestECS.addEntity( bitsetComp );
@@ -61,7 +61,7 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 	if( MAX_PLAYER < uiNumPlayer + uiNumBot )return false;
 	for( unsigned int i = 0 ; i < uiNumPlayer ; ++i )
 	{
-		std::bitset< ecs::NUMBR_COMPONENT > bitsetComp;
+		std::vector< bool > bitsetComp;
 		bitsetComp[ ecs::DISPLAY_COMPONENT ] = true;
 		bitsetComp[ ecs::POSITION_COMPONENT ] = true;
 		bitsetComp[ ecs::MOVEABLE_COMPONENT ] = true;

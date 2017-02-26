@@ -9,5 +9,9 @@ enum{
 	TEXTURE_BOMBERMAN
 };
 
+enum{
+	MOVE_RIGHT, MOVE_LEFT, MOVE_UP, MOVE_DOWN
+};
+
 
 #endif // CONSTANTS_HPP

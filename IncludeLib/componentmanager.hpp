@@ -18,17 +18,25 @@ class Engine;
  * Leurs emplacements sont déterminés par le numéro de leur entité associée ainsi que par leurs type(associé à une énumération).
  * numéro emplacement = numéro entité * nombre total de type de composant + numéro type de composant.
  */
-class ComponentManager{
+class ComponentManager
+{
 private:
     Engine * mptrEngine;
     std::vector< std::unique_ptr< Component > > mVectComponent;
+	static unsigned int muiNumberComponent;//à la base dans l'ECS
 public:
-    ComponentManager();
+
+	ComponentManager();
     void updateComponentFromEntity();
     void linkEngineToComponentManager( Engine *ptrEngine );
     void instanciateComponent( unsigned int uiNumCase );
     void displayComponent()const;
     bool bVerifComponentInstanciate( unsigned int uiNumEntity, unsigned int uiTypeComponent );
+	void addEmplacementsForExternComponent( unsigned int uiNumberExternalComponent );
+	void instanciateExternComponent( unsigned int uiNumEntity, std::unique_ptr< Component > &ptrComp );
+
+	static unsigned int getNumberComponent();
+	static void resetVectBitSet( std::vector< bool > &bitset );
 
     /**
      * @brief ComponentManager::searchComponentByType
@@ -46,11 +54,11 @@ public:
 
      componentTemplate * searchComponentByType( unsigned int uiNumEntity, unsigned int uiTypeComponent ){
 
-        if( ( uiNumEntity * NUMBR_COMPONENT + uiTypeComponent ) >=  mVectComponent.size() ||
-              !  mVectComponent[ uiNumEntity * NUMBR_COMPONENT + uiTypeComponent ] )return nullptr;
+		if( ( uiNumEntity * ComponentManager::getNumberComponent() + uiTypeComponent ) >=  mVectComponent.size() ||
+			  !  mVectComponent[ uiNumEntity * ComponentManager::getNumberComponent() + uiTypeComponent ] )return nullptr;
         static_assert( std::is_base_of< Component, componentTemplate >(), "componentTemplate n'est pas un composant" );
         //récupérer un pointeur vers l'objet contenu dans le unique_ptr
-        return static_cast< componentTemplate* >( mVectComponent[ uiNumEntity * NUMBR_COMPONENT + uiTypeComponent ].get() );
+		return static_cast< componentTemplate* >( mVectComponent[ uiNumEntity * ComponentManager::getNumberComponent() + uiTypeComponent ].get() );
     }
 };
 
