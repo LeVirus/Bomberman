@@ -2,6 +2,7 @@
 #include "inputcomponent.hpp"
 #include "inputsystem.hpp"
 #include "ECSconstantes.hpp"
+#include "componentmanager.hpp"
 #include "constants.hpp"
 #include <SFML/Graphics.hpp>
 #include <bitset>
@@ -41,6 +42,7 @@ void Moteur::loadTileMap( const std::string &pathTile )
 	unsigned int memEntity;
 	//création de l'entité avec les composants nécessaires
 	std::vector< bool > bitsetComp;
+	bitsetComp.resize( getGestionnaireECS().getECSComponentManager()->getNumberComponent() );
 	bitsetComp[ ecs::DISPLAY_COMPONENT ] = true;
 	bitsetComp[ ecs::POSITION_COMPONENT ] = true;
 	memEntity = mGestECS.addEntity( bitsetComp );
@@ -62,6 +64,7 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 	for( unsigned int i = 0 ; i < uiNumPlayer ; ++i )
 	{
 		std::vector< bool > bitsetComp;
+		bitsetComp.resize( getGestionnaireECS().getECSComponentManager()->getNumberComponent() );
 		bitsetComp[ ecs::DISPLAY_COMPONENT ] = true;
 		bitsetComp[ ecs::POSITION_COMPONENT ] = true;
 		bitsetComp[ ecs::MOVEABLE_COMPONENT ] = true;
