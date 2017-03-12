@@ -29,4 +29,5 @@ HEADERS += \
     tilemap.hpp \
     tableau2d.hpp \
     constants.hpp \
-    inputbombermansystem.hpp
+    inputbombermansystem.hpp \
+    inputbombermancomponent.hpp

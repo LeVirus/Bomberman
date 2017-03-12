@@ -6,13 +6,9 @@
 
 InputBombermanSystem::InputBombermanSystem()
 {
-	if( ! bAddComponentToSystem( ecs::INPUT_COMPONENT ) )
+	if( ! bAddComponentToSystem( BOMBER_INPUT_COMPONENT ) )
 	{
-			std::cout << "Erreur InputSystem ajout INPUT_COMPONENT.\n";
-	}
-	if( ! bAddComponentToSystem( ecs::POSITION_COMPONENT ) )
-	{
-			std::cout << "Erreur InputSystem ajout INPUT_COMPONENT.\n";
+			std::cout << "Erreur InputSystem ajout BOMBER_INPUT_COMPONENT.\n";
 	}
 }
 
