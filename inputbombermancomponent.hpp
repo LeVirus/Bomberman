@@ -3,9 +3,10 @@
 #include "component.hpp"
 #include "ECSconstantes.hpp"
 #include "constants.hpp"
+#include <bitset>
 
 
-struct InputBombermanComponent : public Component
+struct InputBombermanComponent : public ecs::Component
 {
 	InputBombermanComponent()
 	{
@@ -17,7 +18,7 @@ struct InputBombermanComponent : public Component
 		//Component::displayComponent();
 		std::cout << "muiNumSprite" << muiNumSprite << "\n";
 	}
+	std::bitset<NUMBR_INPUT> mBitsetInput;
 	unsigned int muiNumSprite;
-	bool bInMovement = false;
 };
 #endif // INPUTBOMBERMANCOMPONENT_HPP

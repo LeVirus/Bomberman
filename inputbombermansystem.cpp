@@ -1,5 +1,5 @@
+#include "inputbombermancomponent.hpp"
 #include "inputbombermansystem.hpp"
-#include "inputcomponent.hpp"
 #include "positioncomponent.hpp"
 #include "moveablecomponent.hpp"
 #include "constants.hpp"
@@ -10,6 +10,14 @@ InputBombermanSystem::InputBombermanSystem()
 	{
 			std::cout << "Erreur InputSystem ajout BOMBER_INPUT_COMPONENT.\n";
 	}
+	if( ! bAddComponentToSystem( ecs::POSITION_COMPONENT ) )
+	{
+			std::cout << "Erreur InputSystem ajout POSITION_COMPONENT.\n";
+	}
+	if( ! bAddComponentToSystem( ecs::MOVEABLE_COMPONENT ) )
+	{
+			std::cout << "Erreur InputSystem ajout MOVEABLE_COMPONENT.\n";
+	}
 }
 
 void InputBombermanSystem::execSystem()
@@ -17,22 +25,25 @@ void InputBombermanSystem::execSystem()
 	System::execSystem();
 		for( unsigned int i = 0 ; i < mVectNumEntity.size() ; ++i ){
 
-			ecs::InputComponent * inputComponent = stairwayToComponentManager() .
-					searchComponentByType < ecs::InputComponent > ( mVectNumEntity[ i ], ecs::INPUT_COMPONENT );
+			InputBombermanComponent * inputComponent = stairwayToComponentManager() .
+					searchComponentByType < InputBombermanComponent > ( mVectNumEntity[ i ],
+																	BOMBER_INPUT_COMPONENT );
 			if( ! inputComponent ){
-				std::cout << " IASystem pointeur NULL inputComponent \n";
+				std::cout << " InputBombermanSystem pointeur NULL inputComponent \n";
 				continue;
 			}
 			ecs::PositionComponent * positionComp = stairwayToComponentManager() .
-					searchComponentByType < ecs::PositionComponent > ( mVectNumEntity[ i ], ecs::POSITION_COMPONENT );
+					searchComponentByType < ecs::PositionComponent > ( mVectNumEntity[ i ],
+																	   ecs::POSITION_COMPONENT );
 			if( ! positionComp ){
-				std::cout << " IASystem pointeur NULL positionComponent \n";
+				std::cout << " InputBombermanSystem pointeur NULL positionComponent \n";
 				continue;
 			}
 			ecs::MoveableComponent * moveableComponent = stairwayToComponentManager() .
-					searchComponentByType < ecs::MoveableComponent > ( mVectNumEntity[ i ], ecs::MOVEABLE_COMPONENT );
+					searchComponentByType < ecs::MoveableComponent > ( mVectNumEntity[ i ],
+																	   ecs::MOVEABLE_COMPONENT );
 			if( ! moveableComponent ){
-				std::cout << " IASystem pointeur NULL moveableComponent \n";
+				std::cout << " InputBombermanSystem pointeur NULL moveableComponent \n";
 				continue;
 			}
 
@@ -48,22 +59,26 @@ void InputBombermanSystem::execSystem()
 
 			//traitement évènement joueur
 
+			if( inputComponent -> mBitsetInput[ MOVE_RIGHT ] )positionComp ->
+					vect2DPosComp . mfX +=  moveableComponent -> mfVelocite;
+			else if( inputComponent -> mBitsetInput[ MOVE_LEFT ] )positionComp ->
+					vect2DPosComp . mfX -=  moveableComponent -> mfVelocite;
 
+			if( inputComponent -> mBitsetInput[ MOVE_RIGHT ] )positionComp ->
+					vect2DPosComp . mfX +=  moveableComponent -> mfVelocite;
+			else if( inputComponent -> mBitsetInput[ MOVE_LEFT ] )positionComp ->
+					vect2DPosComp . mfX -=  moveableComponent -> mfVelocite;
 
-			//if( moveableComponent -> mbTerrestrial && moveableComponent -> mbOnTheGround ){
-				if( inputComponent -> mBitsetInput[ MOVE_RIGHT ] )positionComp -> vect2DPosComp . mfX +=  moveableComponent -> mfVelocite;
-				else if( inputComponent -> mBitsetInput[ MOVE_LEFT ] )positionComp -> vect2DPosComp . mfX -=  moveableComponent -> mfVelocite;
-				//JUMP a implémenter
-			//}
-			//else{
-				if( inputComponent -> mBitsetInput[ MOVE_RIGHT ] )positionComp -> vect2DPosComp . mfX +=  moveableComponent -> mfVelocite;
-				else if( inputComponent -> mBitsetInput[ MOVE_LEFT ] )positionComp -> vect2DPosComp . mfX -=  moveableComponent -> mfVelocite;
+			if( inputComponent -> mBitsetInput[ MOVE_UP ] )
+			{
+				std::cout <<"hautsys\n";
 
-				if( inputComponent -> mBitsetInput[ MOVE_UP ] )positionComp -> vect2DPosComp . mfY -=  moveableComponent -> mfVelocite;
-				else if( inputComponent -> mBitsetInput[ MOVE_DOWN ] )positionComp -> vect2DPosComp . mfY +=  moveableComponent -> mfVelocite;
-			//}
+				positionComp ->
+					vect2DPosComp . mfY -=  moveableComponent -> mfVelocite;
+			}
+			else if( inputComponent -> mBitsetInput[ MOVE_DOWN ] )positionComp ->
+					vect2DPosComp . mfY +=  moveableComponent -> mfVelocite;
 
-			//réinitialisation du bitset du composant
 			inputComponent -> mBitsetInput . reset();
 
 		}
