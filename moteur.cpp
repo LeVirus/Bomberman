@@ -1,5 +1,6 @@
 #include "moteur.hpp"
 #include "ECSconstantes.hpp"
+#include "moveablebombermancomponent.hpp"
 #include "constants.hpp"
 #include "componentmanager.hpp"
 #include "inputbombermancomponent.hpp"
@@ -19,9 +20,7 @@ void Moteur::lancerBoucle()
 	do
 	{
 		mGestECS.getECSSystemManager()->bExecAllSystem();
-		std::cout<< "in\n";
 		earnInput();
-		std::cout<< "out\n";
 
 		mMoteurGraphique.raffraichirEcran();
 		if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )break;
@@ -33,20 +32,14 @@ void Moteur::earnInput()
 	const std::vector< unsigned int > &vectNumEntitySystem = mGestECS.getECSSystemManager() ->
 			searchSystemByType< InputBombermanSystem > ( INPUT_BOMBER_SYSTEM )->getVectNumEntity();
 
-	std::cout <<"ss\n";
 
 	for( unsigned int i = 0 ; i < vectNumEntitySystem.size() ; ++i )
 	{
-		std::cout <<"qq\n";
 
 		InputBombermanComponent *ic = mGestECS.getECSComponentManager() ->
 				searchComponentByType< InputBombermanComponent >(
 					vectNumEntitySystem[i], BOMBER_INPUT_COMPONENT );
-		if( sf::Keyboard::isKeyPressed( sf::Keyboard::Z ) )
-		{
-			std::cout <<"haut\n";
-			ic->mBitsetInput[MOVE_UP] = true;
-		}
+		if( sf::Keyboard::isKeyPressed( sf::Keyboard::Z ) )ic->mBitsetInput[MOVE_UP] = true;
 		if( sf::Keyboard::isKeyPressed( sf::Keyboard::S ) )ic->mBitsetInput[MOVE_DOWN] = true;
 		if( sf::Keyboard::isKeyPressed( sf::Keyboard::Q ) )ic->mBitsetInput[MOVE_LEFT] = true;
 		if( sf::Keyboard::isKeyPressed( sf::Keyboard::D ) )ic->mBitsetInput[MOVE_RIGHT] = true;
@@ -89,7 +82,7 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 		bitsetComp.resize( getGestionnaireECS().getECSComponentManager()->getNumberComponent() );
 		bitsetComp[ ecs::DISPLAY_COMPONENT ] = true;
 		bitsetComp[ ecs::POSITION_COMPONENT ] = true;
-		bitsetComp[ ecs::MOVEABLE_COMPONENT ] = true;
+		bitsetComp[ BOMBER_MOVEABLE_COMPONENT] = true;
 		bitsetComp[ ecs::COLL_RECTBOX_COMPONENT ] = true;
 		bitsetComp[ BOMBER_INPUT_COMPONENT ] = true;
 
@@ -97,16 +90,20 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 		mGestECS.getECSComponentManager()->
 				instanciateExternComponent(memEntity, std::make_unique<InputBombermanComponent>());
 
+		mGestECS.getECSComponentManager()->
+				instanciateExternComponent(memEntity, std::make_unique<MoveableBombermanComponent>());
+
 		unsigned int memNumSprite = mMoteurGraphique.loadSprite(
 					TEXTURE_BOMBERMAN, sf::IntRect( 71, 45, 16, 25 ) );
-
-		ecs::DisplayComponent * dc = mGestECS.getECSComponentManager() ->
+		/*MoveableBombermanComponent * mc = mGestECS.getECSComponentManager() ->
+						searchComponentByType< MoveableBombermanComponent >( memEntity, BOMBER_MOVEABLE_COMPONENT );*/
+		/*ecs::DisplayComponent * dc = mGestECS.getECSComponentManager() ->
 				searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT );
 		dc->muiNumSprite = memNumSprite;
 
 		InputBombermanComponent * ib = mGestECS.getECSComponentManager() ->
 				searchComponentByType< InputBombermanComponent >( memEntity, BOMBER_INPUT_COMPONENT );
-		std::cerr<<ib->muiGetIdComponent()<<"\n";
+		std::cerr<<ib->muiGetIdComponent()<<"\n";*/
 
 		mMoteurGraphique.positionnerCaseTileMap( memEntity, 1, 1 );
 

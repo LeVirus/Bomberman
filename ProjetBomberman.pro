@@ -30,4 +30,5 @@ HEADERS += \
     tableau2d.hpp \
     constants.hpp \
     inputbombermansystem.hpp \
-    inputbombermancomponent.hpp
+    inputbombermancomponent.hpp \
+    moveablebombermancomponent.hpp

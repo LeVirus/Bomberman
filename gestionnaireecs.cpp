@@ -9,7 +9,7 @@ GestionnaireECS::GestionnaireECS()
 
 void GestionnaireECS::initECS()
 {
-	mCompMan->addEmplacementsForExternComponent( 1 );
+	mCompMan->addEmplacementsForExternComponent( 2 );//inputComp & moveableComp
 	mSysMan->bAddSystem( ecs::DISPLAY_SYSTEM );
 	mSysMan->bAddExternSystem(std::make_unique<InputBombermanSystem>());
 }

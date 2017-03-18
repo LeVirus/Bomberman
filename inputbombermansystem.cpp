@@ -1,7 +1,7 @@
 #include "inputbombermancomponent.hpp"
 #include "inputbombermansystem.hpp"
 #include "positioncomponent.hpp"
-#include "moveablecomponent.hpp"
+#include "moveablebombermancomponent.hpp"
 #include "constants.hpp"
 
 InputBombermanSystem::InputBombermanSystem()
@@ -14,7 +14,7 @@ InputBombermanSystem::InputBombermanSystem()
 	{
 			std::cout << "Erreur InputSystem ajout POSITION_COMPONENT.\n";
 	}
-	if( ! bAddComponentToSystem( ecs::MOVEABLE_COMPONENT ) )
+	if( ! bAddComponentToSystem( BOMBER_MOVEABLE_COMPONENT ) )
 	{
 			std::cout << "Erreur InputSystem ajout MOVEABLE_COMPONENT.\n";
 	}
@@ -39,9 +39,9 @@ void InputBombermanSystem::execSystem()
 				std::cout << " InputBombermanSystem pointeur NULL positionComponent \n";
 				continue;
 			}
-			ecs::MoveableComponent * moveableComponent = stairwayToComponentManager() .
-					searchComponentByType < ecs::MoveableComponent > ( mVectNumEntity[ i ],
-																	   ecs::MOVEABLE_COMPONENT );
+			MoveableBombermanComponent * moveableComponent = stairwayToComponentManager() .
+					searchComponentByType < MoveableBombermanComponent > ( mVectNumEntity[ i ],
+																	   BOMBER_MOVEABLE_COMPONENT );
 			if( ! moveableComponent ){
 				std::cout << " InputBombermanSystem pointeur NULL moveableComponent \n";
 				continue;
@@ -64,17 +64,9 @@ void InputBombermanSystem::execSystem()
 			else if( inputComponent -> mBitsetInput[ MOVE_LEFT ] )positionComp ->
 					vect2DPosComp . mfX -=  moveableComponent -> mfVelocite;
 
-			if( inputComponent -> mBitsetInput[ MOVE_RIGHT ] )positionComp ->
-					vect2DPosComp . mfX +=  moveableComponent -> mfVelocite;
-			else if( inputComponent -> mBitsetInput[ MOVE_LEFT ] )positionComp ->
-					vect2DPosComp . mfX -=  moveableComponent -> mfVelocite;
-
 			if( inputComponent -> mBitsetInput[ MOVE_UP ] )
 			{
-				std::cout <<"hautsys\n";
-
-				positionComp ->
-					vect2DPosComp . mfY -=  moveableComponent -> mfVelocite;
+				positionComp -> vect2DPosComp . mfY -=  moveableComponent -> mfVelocite;
 			}
 			else if( inputComponent -> mBitsetInput[ MOVE_DOWN ] )positionComp ->
 					vect2DPosComp . mfY +=  moveableComponent -> mfVelocite;
