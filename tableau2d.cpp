@@ -109,6 +109,20 @@ void Tableau2D::afficherTab()const
 	}
 
 }
+bool Tableau2D::setValAt( unsigned int uiCaseX, unsigned int uiCaseY, unsigned char value )
+{
+	if( uiCaseX > muiLongueurTab || uiCaseY > muiLargeurTab )
+	{
+		return false;
+	}
+	mVectChar[uiCaseX + uiCaseY * muiLargeurTab] = 1;
+	return true;
+}
+
+void Tableau2D::reset()
+{
+	mVectChar.assign(mVectChar.size(), 0);
+}
 
 /**
  * @brief Récupération de la valeur a un endroit du

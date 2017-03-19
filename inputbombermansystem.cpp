@@ -20,6 +20,7 @@ InputBombermanSystem::InputBombermanSystem()
 	}
 }
 
+
 void InputBombermanSystem::execSystem()
 {
 	System::execSystem();

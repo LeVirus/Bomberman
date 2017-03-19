@@ -5,6 +5,7 @@
 #include "componentmanager.hpp"
 #include "inputbombermancomponent.hpp"
 #include "inputbombermansystem.hpp"
+#include "flagcomponent.hpp"
 #include "constants.hpp"
 #include <SFML/Graphics.hpp>
 #include <bitset>
@@ -85,6 +86,7 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 		bitsetComp[ BOMBER_MOVEABLE_COMPONENT] = true;
 		bitsetComp[ ecs::COLL_RECTBOX_COMPONENT ] = true;
 		bitsetComp[ BOMBER_INPUT_COMPONENT ] = true;
+		bitsetComp[ BOMBER_FLAG_COMPONENT ] = true;
 
 		unsigned int memEntity = mGestECS.addEntity( bitsetComp );
 		mGestECS.getECSComponentManager()->
@@ -92,18 +94,15 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 
 		mGestECS.getECSComponentManager()->
 				instanciateExternComponent(memEntity, std::make_unique<MoveableBombermanComponent>());
+		mGestECS.getECSComponentManager()->
+				instanciateExternComponent(memEntity, std::make_unique<FlagBombermanComponent>());
+
+		FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
+				searchComponentByType < FlagBombermanComponent > ( memEntity, BOMBER_FLAG_COMPONENT );
+		fc->muiNumFlag = FLAG_BOMBERMAN;
 
 		unsigned int memNumSprite = mMoteurGraphique.loadSprite(
 					TEXTURE_BOMBERMAN, sf::IntRect( 71, 45, 16, 25 ) );
-		/*MoveableBombermanComponent * mc = mGestECS.getECSComponentManager() ->
-						searchComponentByType< MoveableBombermanComponent >( memEntity, BOMBER_MOVEABLE_COMPONENT );*/
-		/*ecs::DisplayComponent * dc = mGestECS.getECSComponentManager() ->
-				searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT );
-		dc->muiNumSprite = memNumSprite;
-
-		InputBombermanComponent * ib = mGestECS.getECSComponentManager() ->
-				searchComponentByType< InputBombermanComponent >( memEntity, BOMBER_INPUT_COMPONENT );
-		std::cerr<<ib->muiGetIdComponent()<<"\n";*/
 
 		mMoteurGraphique.positionnerCaseTileMap( memEntity, 1, 1 );
 

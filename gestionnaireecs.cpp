@@ -1,5 +1,6 @@
 #include "gestionnaireecs.hpp"
 #include "inputbombermansystem.hpp"
+#include "collisionbombermansystem.hpp"
 
 GestionnaireECS::GestionnaireECS()
 {
@@ -9,9 +10,10 @@ GestionnaireECS::GestionnaireECS()
 
 void GestionnaireECS::initECS()
 {
-	mCompMan->addEmplacementsForExternComponent( 2 );//inputComp & moveableComp
+	mCompMan->addEmplacementsForExternComponent( 3 );//inputComp, moveableComp & flagComp
 	mSysMan->bAddSystem( ecs::DISPLAY_SYSTEM );
 	mSysMan->bAddExternSystem(std::make_unique<InputBombermanSystem>());
+	mSysMan->bAddExternSystem(std::make_unique<CollisionBombermanSystem>());
 }
 
 ecs::SystemManager *GestionnaireECS::getECSSystemManager()

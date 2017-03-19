@@ -21,11 +21,12 @@ public:
 	Tableau2D() = default;
 	Tableau2D( unsigned int longueur,
 			   unsigned int largeur );
-
+	void reset();
 	bool bAttribuerTab( const std::vector< unsigned char > &vect, unsigned int uiLongueurTab, unsigned int uiLargeurTab );
 	bool bAttribuerTab(std::ifstream &flux, unsigned int uiLongueurTab, unsigned int uiLargeurTab );
 
 	unsigned char getValAt( unsigned int uiCaseX, unsigned int uiCaseY )const;
+	bool setValAt( unsigned int uiCaseX, unsigned int uiCaseY, unsigned char value );
 
 
 	const std::vector< unsigned char > &getTab()const;
