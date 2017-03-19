@@ -103,33 +103,44 @@ void CollisionBombermanSystem::execSystem()
 					{
 						continue;
 					}
+
 					collRectBoxComponentB->mRectBox.mSetOriginsRectBox(
 								positionCompB->vect2DPosComp + collRectBoxComponentB->mVect2dVectOrigins);
 				}
+
+
+
 				if(flagBombermanComponent->muiNumFlag == FLAG_BOMBERMAN)
 				{
 					ecs::PositionComponent * positionComp = stairwayToComponentManager() .
 							searchComponentByType < ecs::PositionComponent > ( mVectNumEntity[ i ],
 																			   ecs::POSITION_COMPONENT );
-					if( ! positionComp )
+					if( ! positionComp)
 					{
 						continue;
 					}
+					std::cout << "before\n";
+					collRectBoxComponent->displayComponent();
+
 					collRectBoxComponent->mRectBox.mSetOriginsRectBox(
 								positionComp->vect2DPosComp + collRectBoxComponent->mVect2dVectOrigins);
+					//PROBLEME//////////////////////////////////////
+					collRectBoxComponent->displayComponent();
+					std::cout << "beforddddddddddddddddddd\n";
+
 				}
 
 
 				if(bIsInCollision( collRectBoxComponent->mRectBox, collRectBoxComponentB->mRectBox ))
 				{
-					mTabInColl.setValAt( mVectNumEntity[ j ], mVectNumEntity[ i ], 1 );
-					mTabInColl.setValAt( mVectNumEntity[ i ], mVectNumEntity[ j ], 1 );
+					mTabInColl.setValAt(  j ,  i , 1 );
+					mTabInColl.setValAt(  i ,  j , 1 );
 				}
 
 			}
 
 		}
-		//mTabInColl.afficherTab();
+		mTabInColl.afficherTab();
 
 }
 

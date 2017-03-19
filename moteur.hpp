@@ -17,6 +17,7 @@ public:
 	GestionnaireECS &getGestionnaireECS();
 	void loadTileMap( const std::string & pathTile );
 	bool loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot );
+	void loadLevelWall();
 };
 
 #endif // MOTEUR_H

@@ -5,6 +5,7 @@
 #include "componentmanager.hpp"
 #include "inputbombermancomponent.hpp"
 #include "inputbombermansystem.hpp"
+#include "collrectboxcomponent.hpp"
 #include "flagcomponent.hpp"
 #include "constants.hpp"
 #include <SFML/Graphics.hpp>
@@ -101,7 +102,14 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 				searchComponentByType < FlagBombermanComponent > ( memEntity, BOMBER_FLAG_COMPONENT );
 		fc->muiNumFlag = FLAG_BOMBERMAN;
 
-		unsigned int memNumSprite = mMoteurGraphique.loadSprite(
+		ecs::CollRectBoxComponent * cc = mGestECS.getECSComponentManager() ->
+				searchComponentByType< ecs::CollRectBoxComponent >( memEntity, ecs::COLL_RECTBOX_COMPONENT );
+		cc->mRectBox.mSetHeightRectBox(20);
+		cc->mRectBox.mSetLenghtRectBox(20);
+		cc->mVect2dVectOrigins.mfX = 5;
+		cc->mVect2dVectOrigins.mfY = 5;
+
+		/*unsigned int memNumSprite =*/ mMoteurGraphique.loadSprite(
 					TEXTURE_BOMBERMAN, sf::IntRect( 71, 45, 16, 25 ) );
 
 		mMoteurGraphique.positionnerCaseTileMap( memEntity, 1, 1 );
@@ -111,3 +119,33 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 	//uiNumBot a implémenter ultérieurement
 }
 
+void Moteur::loadLevelWall()
+{
+	std::vector< bool > bitsetComp;
+	bitsetComp.resize( getGestionnaireECS().getECSComponentManager()->getNumberComponent() );
+	bitsetComp[ ecs::POSITION_COMPONENT ] = true;
+	bitsetComp[ ecs::COLL_RECTBOX_COMPONENT ] = true;
+	bitsetComp[ BOMBER_FLAG_COMPONENT ] = true;
+
+	unsigned int memEntity = mGestECS.addEntity( bitsetComp );
+
+
+	mGestECS.getECSComponentManager()->
+			instanciateExternComponent(memEntity, std::make_unique<FlagBombermanComponent>());
+
+	FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
+			searchComponentByType < FlagBombermanComponent > ( memEntity, BOMBER_FLAG_COMPONENT );
+	fc->muiNumFlag = FLAG_SOLID_WALL;
+
+	ecs::PositionComponent * pc = mGestECS.getECSComponentManager() ->
+			searchComponentByType< ecs::PositionComponent >( memEntity, ecs::POSITION_COMPONENT );
+	pc->vect2DPosComp.mfX = POSITION_LEVEL_X + 1000;
+	pc->vect2DPosComp.mfY = POSITION_LEVEL_Y;
+
+	ecs::CollRectBoxComponent * cc = mGestECS.getECSComponentManager() ->
+			searchComponentByType< ecs::CollRectBoxComponent >( memEntity, ecs::COLL_RECTBOX_COMPONENT );
+	cc->mRectBox.mSetHeightRectBox(20);
+	cc->mRectBox.mSetLenghtRectBox(20);
+	cc->mVect2dVectOrigins.mfX = 5;
+	cc->mVect2dVectOrigins.mfY = 5;
+}
