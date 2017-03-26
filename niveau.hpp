@@ -1,22 +1,18 @@
-#ifndef NIVEAU_H
-#define NIVEAU_H
+#ifndef NIVEAU_HPP
+#define NIVEAU_HPP
 
-#include <string>
-#include <vector>
-
-class Jeu;
+#include <tableau2d.hpp>
 
 class Niveau
 {
 private:
-	Jeu* mJeu;
-	unsigned int MUI_TOTAL_NIVEAU = 1;
-	std::vector< std::string > mvectPathFileTileMap;
+	Tableau2D mtabNiveau;
+	unsigned int muiLongueurCase, muiLargeurCase;
 public:
 	Niveau();
-	void linkJeu( Jeu * jeu );
-	const std::string &getConfLevelTileMap( unsigned int numNiv )const;
-	void initListeNiveau();
+	void adaptToScale( float fX, float fY );
+	void setPositionPair( std::ifstream &flux );
+	bool loadLevel(const std::string &path );
 };
 
-#endif // NIVEAU_H
+#endif // NIVEAU_HPP

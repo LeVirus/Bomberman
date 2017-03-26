@@ -29,6 +29,7 @@ public:
 	void configTileMap( unsigned int uiLongueurTile, unsigned int uiLargeurTile,
 						unsigned int uiLongueurNiveau, unsigned int uiLargeurNiveau);
 	const sf::VertexArray &getVertexArrayTileMap()const;
+	//const Tableau2D &getTabLevel()const;
 	const sf::Texture &getTextureTileMap()const;
 	void displayTileMap()const;
 

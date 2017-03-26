@@ -1,23 +1,78 @@
 #include "niveau.hpp"
-#include "jeu.hpp"
 
 Niveau::Niveau()
 {
-	initListeNiveau();
+
 }
 
-const std::string &Niveau::getConfLevelTileMap( unsigned int numNiv )const
+void Niveau::adaptToScale( float fX, float fY )
 {
-	return mvectPathFileTileMap[ numNiv ];
+	muiLongueurCase *= fX;
+	muiLargeurCase *= fY;
 }
 
-void Niveau::linkJeu( Jeu * jeu )
+/*void TileMap::setPositionPair( const std::vector< std::pair< unsigned int, unsigned int > > &vectPosTile )
 {
-	mJeu = jeu;
+	mvectPositionTuile = vectPosTile;
+}*/
+
+void Niveau::setPositionPair( std::ifstream &flux )
+{
+	unsigned int uiNbrTuile;
+	flux >> uiNbrTuile;
+	mvectPositionTuile.resize( uiNbrTuile );
+	for( unsigned int i = 0; i < mvectPositionTuile.size() ; ++i )
+	{
+		flux >> mvectPositionTuile[ i ].first;
+		flux >> mvectPositionTuile[ i ].second;
+	}
 }
 
-void Niveau::initListeNiveau()
+/**
+ * @brief TileMap::loadLevel Chargement du niveau à partir du fichier texte de la classe Niveau.
+ * structure du fichier::
+ * chemin vers la texture du TileMap
+ * muiLongueurNiveau
+ * muiLargeurNiveau
+ * muiLongueurTile
+ * muiLargeurTile
+ * nombre de tuile différentes
+ * tableau de positions des tuiles dans la texture
+ * tableau tilemap(Suite de nombre représentant le type de tuile pour chaque case)
+ * fin fichier::
+ * @param path Chemin vers le fichier de configuration.
+ * @return
+ */
+bool Niveau::loadLevel( const std::string &path)
 {
-	mvectPathFileTileMap.resize( MUI_TOTAL_NIVEAU );
-	mvectPathFileTileMap[ 0 ] = "../ProjetBomberman/Ressources/Niveau/Niveau1TM";
+	std::string str;
+	std::ifstream flux( path, std::ios::in );
+	assert( flux && "flux erreur" );
+	if( !flux )
+	{
+		flux.close();
+		return false;
+	}
+
+	flux >> str;
+	assert(loadTexture( str ) && "erreur texture non chargé");
+	if( ! loadTexture( str ) )
+	{
+		flux.close();
+		return false;
+	}
+	flux >> muiLongueurNiveau;
+	flux >> muiLargeurNiveau;
+	flux >> muiLongueurTile;
+	flux >> muiLargeurTile;
+
+	setPositionPair( flux );
+	//initialiserVertexArray();
+
+	//si tout se passe correctement le flux est fermé dans la fonction bAttribuerTab.
+	if( ! mtabNiveau.bAttribuerTab( flux, muiLongueurNiveau , muiLargeurNiveau ) )return false;
+
+	//bDessinerVertArrayNiveau();
+	return true;
+
 }

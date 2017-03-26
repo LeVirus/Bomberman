@@ -22,6 +22,7 @@ private:
 			mVectComponentDisplaySystem;
 public:
 	MoteurGraphique();
+	const TileMap &getTileMap()const;
 	void initialiserFenetre();
 	void linkMainEngine( Moteur* ptrMoteur );
 	void loadTileMap( const std::string &strPathConfFile, unsigned int uiNumEntity );

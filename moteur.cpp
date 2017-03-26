@@ -1,4 +1,5 @@
 #include "moteur.hpp"
+#include "tilemap.hpp"
 #include "vector2D.hpp"
 #include "ECSconstantes.hpp"
 #include "moveablebombermancomponent.hpp"
@@ -11,6 +12,7 @@
 #include "constants.hpp"
 #include <SFML/Graphics.hpp>
 #include <bitset>
+#include <cassert>
 
 Moteur::Moteur()
 {
@@ -121,6 +123,11 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 
 void Moteur::loadLevelWall()
 {
+	const TileMap &tilemap = mMoteurGraphique.getTileMap();
+	unsigned int tailleNiveauX = tilemap.getLongueurNiveau(), tailleNiveauY = tilemap.getLargeurNiveau(),
+			tailleTileX = tilemap.getLongueurTile(), tailleTileY = tilemap.getLargeurTile();
+
+
 	std::vector< bool > bitsetComp;
 	bitsetComp.resize( getGestionnaireECS().getECSComponentManager()->getNumberComponent() );
 	bitsetComp[ ecs::POSITION_COMPONENT ] = true;
@@ -139,8 +146,11 @@ void Moteur::loadLevelWall()
 
 	ecs::PositionComponent * pc = mGestECS.getECSComponentManager() ->
 			searchComponentByType< ecs::PositionComponent >( memEntity, ecs::POSITION_COMPONENT );
-	pc->vect2DPosComp.mfX = POSITION_LEVEL_X + 1000;
-	pc->vect2DPosComp.mfY = POSITION_LEVEL_Y;
+
+	assert(pc && "Moteur::loadLevelWall positionComp == null\n");
+	positionnerComponent(*pc, 9, 3, tailleTileX, tailleTileY);//test
+	//pc->vect2DPosComp.mfX = POSITION_LEVEL_X + 1000;
+	//pc->vect2DPosComp.mfY = POSITION_LEVEL_Y;
 	ecs::CollRectBoxComponent * cc = mGestECS.getECSComponentManager() ->
 			searchComponentByType< ecs::CollRectBoxComponent >( memEntity, ecs::COLL_RECTBOX_COMPONENT );
 	cc->mRectBox.mSetHeightRectBox(20);
@@ -148,4 +158,18 @@ void Moteur::loadLevelWall()
 	cc->mVect2dVectOrigins.mfX = 5;//positionner le décallage
 	cc->mVect2dVectOrigins.mfY = 5;
 	cc->mRectBox.mSetOriginsRectBox(ecs::Vector2D(POSITION_LEVEL_X, POSITION_LEVEL_Y));
+}
+
+const Niveau &Moteur::getNiveau() const
+{
+	return mNiveau;
+}
+
+void Moteur::positionnerComponent(ecs::PositionComponent &posComp, unsigned int posX, unsigned int posY,
+								  unsigned int taileTileX, unsigned int taileTileY)
+{
+	/*std::cout << "POSITION_LEVEL_X " << POSITION_LEVEL_X<< "posX " <<  posX <<
+				 "taileTileX " << taileTileX << "SIZE_SCALE " << SIZE_SCALE << " 48 "<<std::endl;*/
+	posComp.vect2DPosComp.mfX = POSITION_LEVEL_X + posX * taileTileX;
+	posComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + posY * taileTileY;
 }

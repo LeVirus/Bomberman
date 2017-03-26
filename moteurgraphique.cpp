@@ -14,6 +14,11 @@ MoteurGraphique::MoteurGraphique()
 			&& "error while loading texture\n" );
 }
 
+const TileMap &MoteurGraphique::getTileMap()const
+{
+	return mTileMap;
+}
+
 void MoteurGraphique::initialiserFenetre()
 {
 	mFenetre.create( sf::VideoMode( 1040, 640 ), "Bomber", sf::Style::Default/*Fullscreen*/ );
