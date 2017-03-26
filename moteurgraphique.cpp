@@ -16,7 +16,7 @@ MoteurGraphique::MoteurGraphique()
 
 void MoteurGraphique::initialiserFenetre()
 {
-	mFenetre.create( sf::VideoMode( WIDTH_SCREEN, HEIGHT_SCREEN ), "Bomber", sf::Style::Fullscreen );
+	mFenetre.create( sf::VideoMode( 1040, 640 ), "Bomber", sf::Style::Default/*Fullscreen*/ );
 
 	mCamera.reset( sf::FloatRect( 0, 0, WIDTH_SCREEN , HEIGHT_SCREEN ) );
 	mFenetre.setView( mCamera );

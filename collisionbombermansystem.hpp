@@ -13,6 +13,7 @@ public:
 	CollisionBombermanSystem();
 	virtual void execSystem();
 	virtual void displaySystem()const;
+	bool bCheckFlag(unsigned int flagA, unsigned int flagB);
 };
 
 #endif // COLLISIONBOMBERMANSYSTEM_HPP

@@ -1,4 +1,5 @@
 #include "moteur.hpp"
+#include "vector2D.hpp"
 #include "ECSconstantes.hpp"
 #include "moveablebombermancomponent.hpp"
 #include "constants.hpp"
@@ -109,8 +110,7 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 		cc->mVect2dVectOrigins.mfX = 5;
 		cc->mVect2dVectOrigins.mfY = 5;
 
-		/*unsigned int memNumSprite =*/ mMoteurGraphique.loadSprite(
-					TEXTURE_BOMBERMAN, sf::IntRect( 71, 45, 16, 25 ) );
+		mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect( 71, 45, 16, 25 ) );
 
 		mMoteurGraphique.positionnerCaseTileMap( memEntity, 1, 1 );
 
@@ -141,11 +141,11 @@ void Moteur::loadLevelWall()
 			searchComponentByType< ecs::PositionComponent >( memEntity, ecs::POSITION_COMPONENT );
 	pc->vect2DPosComp.mfX = POSITION_LEVEL_X + 1000;
 	pc->vect2DPosComp.mfY = POSITION_LEVEL_Y;
-
 	ecs::CollRectBoxComponent * cc = mGestECS.getECSComponentManager() ->
 			searchComponentByType< ecs::CollRectBoxComponent >( memEntity, ecs::COLL_RECTBOX_COMPONENT );
 	cc->mRectBox.mSetHeightRectBox(20);
 	cc->mRectBox.mSetLenghtRectBox(20);
-	cc->mVect2dVectOrigins.mfX = 5;
+	cc->mVect2dVectOrigins.mfX = 5;//positionner le décallage
 	cc->mVect2dVectOrigins.mfY = 5;
+	cc->mRectBox.mSetOriginsRectBox(ecs::Vector2D(POSITION_LEVEL_X, POSITION_LEVEL_Y));
 }

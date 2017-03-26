@@ -41,15 +41,15 @@ CollisionBombermanSystem::CollisionBombermanSystem()
 
 	if( ! bAddComponentToSystem( ecs::POSITION_COMPONENT ) )
 	{
-			std::cout << "Erreur CollisionBombermanSystem ajout POSITION_COMPONENT.\n";
+		std::cout << "Erreur CollisionBombermanSystem ajout POSITION_COMPONENT.\n";
 	}
 	if( ! bAddComponentToSystem( ecs::COLL_RECTBOX_COMPONENT ) )
 	{
-			std::cout << "Erreur CollisionBombermanSystem ajout COLL_RECTBOX_COMPONENT.\n";
+		std::cout << "Erreur CollisionBombermanSystem ajout COLL_RECTBOX_COMPONENT.\n";
 	}
 	if( ! bAddComponentToSystem( BOMBER_FLAG_COMPONENT ) )
 	{
-			std::cout << "Erreur CollisionBombermanSystem ajout POSITION_COMPONENT.\n";
+		std::cout << "Erreur CollisionBombermanSystem ajout POSITION_COMPONENT.\n";
 	}
 }
 
@@ -58,93 +58,98 @@ void CollisionBombermanSystem::execSystem()
 	System::execSystem();
 	mTabInColl.resize(mVectNumEntity.size(), mVectNumEntity.size());
 	mTabInColl.reset();
-		for( unsigned int i = 0 ; i < mVectNumEntity.size() ; ++i ){
-
-			ecs::CollRectBoxComponent* collRectBoxComponent = stairwayToComponentManager() .
-					searchComponentByType < ecs::CollRectBoxComponent > ( mVectNumEntity[ i ],
-																	ecs::COLL_RECTBOX_COMPONENT );
-			if( ! collRectBoxComponent )
-			{
-				continue;
-			}
-			FlagBombermanComponent * flagBombermanComponent = stairwayToComponentManager() .
-					searchComponentByType < FlagBombermanComponent > ( mVectNumEntity[ i ],
-																	   BOMBER_FLAG_COMPONENT );
-			if( ! flagBombermanComponent )
-			{
-				continue;
-			}
-
-			for( unsigned int j = i + 1; j < mVectNumEntity.size(); ++j )
-			{
-				FlagBombermanComponent * flagBombermanComponentB = stairwayToComponentManager() .
-						searchComponentByType < FlagBombermanComponent > ( mVectNumEntity[ j ],
-																		   BOMBER_FLAG_COMPONENT );
-				if(!flagBombermanComponentB || !mTabFlag.getValAt(
-							flagBombermanComponent->muiNumFlag, flagBombermanComponentB->muiNumFlag ))
-				{
-					continue;
-				}
-
-				ecs::CollRectBoxComponent* collRectBoxComponentB = stairwayToComponentManager() .
-						searchComponentByType < ecs::CollRectBoxComponent > ( mVectNumEntity[ j ],
-																		ecs::COLL_RECTBOX_COMPONENT );
-				if( ! collRectBoxComponentB )
-				{
-					continue;
-				}
-
-				if(flagBombermanComponentB->muiNumFlag == FLAG_BOMBERMAN)
-				{
-					ecs::PositionComponent * positionCompB = stairwayToComponentManager() .
-							searchComponentByType < ecs::PositionComponent > ( mVectNumEntity[ j ],
-																			   ecs::POSITION_COMPONENT );
-					if( ! positionCompB )
-					{
-						continue;
-					}
-
-					collRectBoxComponentB->mRectBox.mSetOriginsRectBox(
-								positionCompB->vect2DPosComp + collRectBoxComponentB->mVect2dVectOrigins);
-				}
-
-
-
-				if(flagBombermanComponent->muiNumFlag == FLAG_BOMBERMAN)
-				{
-					ecs::PositionComponent * positionComp = stairwayToComponentManager() .
-							searchComponentByType < ecs::PositionComponent > ( mVectNumEntity[ i ],
-																			   ecs::POSITION_COMPONENT );
-					if( ! positionComp)
-					{
-						continue;
-					}
-					std::cout << "before\n";
-					collRectBoxComponent->displayComponent();
-
-					collRectBoxComponent->mRectBox.mSetOriginsRectBox(
-								positionComp->vect2DPosComp + collRectBoxComponent->mVect2dVectOrigins);
-					//PROBLEME//////////////////////////////////////
-					collRectBoxComponent->displayComponent();
-					std::cout << "beforddddddddddddddddddd\n";
-
-				}
-
-
-				if(bIsInCollision( collRectBoxComponent->mRectBox, collRectBoxComponentB->mRectBox ))
-				{
-					mTabInColl.setValAt(  j ,  i , 1 );
-					mTabInColl.setValAt(  i ,  j , 1 );
-				}
-
-			}
-
+	for( unsigned int i = 0 ; i < mVectNumEntity.size() ; ++i ){
+		ecs::PositionComponent * positionComponent = stairwayToComponentManager() .
+				searchComponentByType < ecs::PositionComponent > ( mVectNumEntity[ i ],
+																   ecs::POSITION_COMPONENT );
+		if( ! positionComponent )
+		{
+			continue;
 		}
-		mTabInColl.afficherTab();
+		ecs::CollRectBoxComponent* collRectBoxComponent = stairwayToComponentManager() .
+				searchComponentByType < ecs::CollRectBoxComponent > ( mVectNumEntity[ i ],
+																	  ecs::COLL_RECTBOX_COMPONENT );
+		if( ! collRectBoxComponent )
+		{
+			continue;
+		}
+		FlagBombermanComponent * flagBombermanComponent = stairwayToComponentManager() .
+				searchComponentByType < FlagBombermanComponent > ( mVectNumEntity[ i ],
+																   BOMBER_FLAG_COMPONENT );
+		if( ! flagBombermanComponent )
+		{
+			continue;
+		}
+
+		if( i == 0 )
+		{
+			collRectBoxComponent->mRectBox.mSetOriginsRectBox(positionComponent->vect2DPosComp +
+															  collRectBoxComponent->mVect2dVectOrigins);
+		}
+
+		/*std::cout << "beforeAAA\n";
+		collRectBoxComponent->mRectBox.mGetOriginsRectBox().displayVector();
+		std::cout << "beforddddddddddddddddddd\n";*/
+		//loop check collision
+		for( unsigned int j = i + 1; j < mVectNumEntity.size(); ++j )
+		{
+
+			FlagBombermanComponent * flagBombermanComponentB = stairwayToComponentManager() .
+					searchComponentByType < FlagBombermanComponent > ( mVectNumEntity[ j ],
+																	   BOMBER_FLAG_COMPONENT );
+
+			if(!flagBombermanComponentB || !mTabFlag.getValAt(
+						flagBombermanComponent->muiNumFlag, flagBombermanComponentB->muiNumFlag ))
+			{
+				continue;
+			}
+
+			ecs::CollRectBoxComponent* collRectBoxComponentB = stairwayToComponentManager() .
+					searchComponentByType < ecs::CollRectBoxComponent > ( mVectNumEntity[ j ],
+																		  ecs::COLL_RECTBOX_COMPONENT );
+			if( ! collRectBoxComponentB )
+			{
+				continue;
+			}
+
+			ecs::PositionComponent * positionComponentB = stairwayToComponentManager() .
+					searchComponentByType < ecs::PositionComponent > ( mVectNumEntity[ j ],
+																	   ecs::POSITION_COMPONENT );
+			if( ! positionComponentB )
+			{
+				continue;
+			}
+			if( i == 0 )
+			{
+				collRectBoxComponentB->mRectBox.mSetOriginsRectBox(
+							positionComponentB->vect2DPosComp + collRectBoxComponentB->mVect2dVectOrigins);
+			}
+
+			/*std::cout << "beforeBBB\n";
+			collRectBoxComponentB->mRectBox.mGetOriginsRectBox().displayVector();
+			std::cout << "beforddddddddddddddddddd\n";*/
+
+
+
+			if(bIsInCollision( collRectBoxComponent->mRectBox, collRectBoxComponentB->mRectBox ))
+			{
+				mTabInColl.setValAt(  j ,  i , 1 );
+				mTabInColl.setValAt(  i ,  j , 1 );
+				mTabInColl.afficherTab();
+			}
+		}
+
+	}
+	mTabInColl.afficherTab();
 
 }
 
 void CollisionBombermanSystem::displaySystem() const
 {
 
+}
+
+bool CollisionBombermanSystem::bCheckFlag(unsigned int flagA, unsigned int flagB)
+{
+	return mTabFlag[flagA][flagB];
 }
