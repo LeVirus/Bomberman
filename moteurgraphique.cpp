@@ -35,9 +35,10 @@ void MoteurGraphique::linkMainEngine( Moteur* ptrMoteur )
 	mPtrMoteurPrincipal = ptrMoteur;
 }
 
-void MoteurGraphique::loadTileMap( const std::string &strPathConfFile , unsigned int uiNumEntity )
+void MoteurGraphique::loadTileMap(const Niveau &level, unsigned int uiNumEntity )
 {
-	mTileMap.loadLevel( strPathConfFile, uiNumEntity );
+	mTileMap.configTileMap(level);
+	mTileMap.loadLevel(level, uiNumEntity );
 	mTileMap.adaptToScale( SIZE_SCALE, SIZE_SCALE );
 }
 
@@ -67,7 +68,7 @@ void MoteurGraphique::displayECSSprite()
 		//affichage du tilemap
 		if( uiNumSprite == SPRITE_TILEMAP )
 		{
-			mTileMap.setPosition( vector2DPos . mfX, vector2DPos . mfY );
+			mTileMap.setPosition(vector2DPos.mfX, vector2DPos.mfY);
 			mFenetre.draw( mTileMap );
 		}
 		else//affichage d'un sprite contenu dans le tableau
@@ -85,15 +86,18 @@ void MoteurGraphique::positionnerCaseTileMap( unsigned int uiNumEntity, unsigned
 			searchComponentByType< ecs::PositionComponent >( uiNumEntity, ecs::POSITION_COMPONENT );
 
 	assert( pc && "pc == null\n");
-	pc->vect2DPosComp.mfX = POSITION_LEVEL_X + uiPositionX * mTileMap.getLongueurTile();
-	pc->vect2DPosComp.mfY = POSITION_LEVEL_Y + uiPositionY * mTileMap.getLargeurTile();
+	pc->vect2DPosComp.mfX = POSITION_LEVEL_X + uiPositionX * mPtrMoteurPrincipal->getNiveau().getLongueurTile();
+	pc->vect2DPosComp.mfY = POSITION_LEVEL_Y + uiPositionY * mPtrMoteurPrincipal->getNiveau().getLargeurTile();
+
+	std::cout << "mPtrMoteurPrincipal->getNiveau().getLongueurTile()" << mPtrMoteurPrincipal->getNiveau().getLongueurTile() <<
+				 "mPtrMoteurPrincipal->getNiveau().getLargeurTile()" <<mPtrMoteurPrincipal->getNiveau().getLargeurTile() << "\n";
 }
 
 void MoteurGraphique::raffraichirEcran()
 {
 	mFenetre.clear( sf::Color::Black );
-	mTileMap.setScale( SIZE_SCALE, SIZE_SCALE );
-	mTileMap.setPosition( 0.0f, 0.0f );
+	//mTileMap.setScale( SIZE_SCALE, SIZE_SCALE );
+	//mTileMap.setPosition( 0.0f, 0.0f );
 	displayECSSprite();
 
 	mFenetre.display();

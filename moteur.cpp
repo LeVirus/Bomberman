@@ -57,7 +57,7 @@ GestionnaireECS &Moteur::getGestionnaireECS()
 	return mGestECS;
 }
 
-void Moteur::loadTileMap( const std::string &pathTile )
+void Moteur::loadTileMap()
 {
 	unsigned int memEntity;
 	//création de l'entité avec les composants nécessaires
@@ -75,7 +75,7 @@ void Moteur::loadTileMap( const std::string &pathTile )
 	pc->vect2DPosComp.mfX = POSITION_LEVEL_X;
 	pc->vect2DPosComp.mfY = POSITION_LEVEL_Y;
 	//récupération et modification des composants
-	mMoteurGraphique.loadTileMap( pathTile, memEntity );
+	mMoteurGraphique.loadTileMap( mNiveau, memEntity );
 }
 
 bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot )
@@ -124,8 +124,8 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 void Moteur::loadLevelWall()
 {
 	const TileMap &tilemap = mMoteurGraphique.getTileMap();
-	unsigned int tailleNiveauX = tilemap.getLongueurNiveau(), tailleNiveauY = tilemap.getLargeurNiveau(),
-			tailleTileX = tilemap.getLongueurTile(), tailleTileY = tilemap.getLargeurTile();
+	unsigned int tailleNiveauX = mNiveau.getLongueurNiveau(), tailleNiveauY = mNiveau.getLargeurNiveau(),
+			tailleTileX = mNiveau.getLongueurTile(), tailleTileY = mNiveau.getLargeurTile();
 
 
 	std::vector< bool > bitsetComp;

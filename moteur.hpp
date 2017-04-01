@@ -20,7 +20,7 @@ public:
 	void lancerBoucle();
 	void earnInput();
 	GestionnaireECS &getGestionnaireECS();
-	void loadTileMap( const std::string & pathTile );
+	void loadTileMap();
 	bool loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot );
 	void loadLevelWall();
 	const Niveau &getNiveau()const;

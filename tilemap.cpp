@@ -25,9 +25,9 @@ bool TileMap::loadTexture( const std::string &path )
  * @param path Chemin vers le fichier de configuration.
  * @return
  */
-bool TileMap::loadLevel( const std::string &path , unsigned int uiNumEntity )
+bool TileMap::loadLevel(const Niveau &level, unsigned int uiNumEntity )
 {
-	std::string str;
+	/*std::string str;
 	std::ifstream flux( path, std::ios::in );
 	assert( flux && "flux erreur" );
 	if( !flux )
@@ -38,38 +38,39 @@ bool TileMap::loadLevel( const std::string &path , unsigned int uiNumEntity )
 
 	flux >> str;
 	assert(loadTexture( str ) && "erreur texture non chargé");
-	if( ! loadTexture( str ) )
-	{
-		flux.close();
-		return false;
-	}
+
 	flux >> muiLongueurNiveau;
 	flux >> muiLargeurNiveau;
 	flux >> muiLongueurTile;
 	flux >> muiLargeurTile;
+*/
 
+	//setPositionPair( flux );
 
-	setPositionPair( flux );
-	initialiserVertexArray();
+	if(! loadTexture(/*"../Ressources/Texture/output/level_mini_tiles.png"*/level.getPathToTexture()))
+	{
+		std::cout << "err TileMap::loadLevel ::" << level.getPathToTexture() <<"\n";
+		return false;
+	}
+	initialiserVertexArray(level);
 
 	//si tout se passe correctement le flux est fermé dans la fonction bAttribuerTab.
-	if( ! mTab.bAttribuerTab( flux, muiLongueurNiveau , muiLargeurNiveau ) )return false;
+	//if( ! mTab.bAttribuerTab( flux, muiLongueurNiveau , muiLargeurNiveau ) )return false;
 
 	muiNumEntity = uiNumEntity;
-	bDessinerVertArrayNiveau();
+	bDessinerVertArrayNiveau(level);
 
 
 	return true;
 
 }
 
-void TileMap::configTileMap( unsigned int uiLongueurTile, unsigned int uiLargeurTile,
-					unsigned int uiLongueurNiveau, unsigned int uiLargeurNiveau)
+void TileMap::configTileMap(const Niveau &niveau)
 {
-	muiLongueurTile = uiLongueurTile;
-	muiLargeurTile = uiLargeurTile;
-	muiLongueurNiveau = uiLongueurNiveau;
-	muiLargeurNiveau = uiLargeurNiveau;
+	muiLongueurTile = niveau.getLongueurTile();
+	muiLargeurTile = niveau.getLargeurTile();
+	muiLongueurNiveau = niveau.getLongueurNiveau();
+	muiLargeurNiveau = niveau.getLargeurNiveau();
 }
 
 const sf::VertexArray &TileMap::getVertexArrayTileMap()const
@@ -83,7 +84,7 @@ const sf::Texture &TileMap::getTextureTileMap() const
 }
 
 
-void TileMap::initialiserVertexArray()
+void TileMap::initialiserVertexArray(const Niveau &niv)
 {
 
 	unsigned int uiPosCaseX = 0, uiPosCaseY = 0;
@@ -118,11 +119,11 @@ void TileMap::displayTileMap() const
 				 "\nmuiLargeurNiveau::"<< muiLargeurNiveau <<
 				 "\nmuiLongueurTile::"<< muiLongueurTile <<
 				 "\nmuiLargeurTile::"<< muiLargeurTile << "\n";
-	for( auto i : mvectPositionTuile )
+	/*for( auto i : mvectPositionTuile )
 	{
 		std::cout << "tuile x::" << i.first <<"tuile y::" << i.second <<"\n" ;
 	}
-	mTab.afficherTab();
+	mTab.afficherTab();*/
 	std::cout << "FIN AFFICHAGE TILEMAP\n";
 
 
@@ -133,7 +134,7 @@ void TileMap::displayTileMap() const
 	mvectPositionTuile = vectPosTile;
 }*/
 
-void TileMap::setPositionPair( std::ifstream &flux )
+/*void TileMap::setPositionPair( std::ifstream &flux )
 {
 	unsigned int uiNbrTuile;
 	flux >> uiNbrTuile;
@@ -143,7 +144,7 @@ void TileMap::setPositionPair( std::ifstream &flux )
 		flux >> mvectPositionTuile[ i ].first;
 		flux >> mvectPositionTuile[ i ].second;
 	}
-}
+}*/
 
 void TileMap::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
@@ -168,11 +169,13 @@ void TileMap::draw(sf::RenderTarget &target, sf::RenderStates states) const
  * @return si les valeurs de tabNivEcran sont valide
  * false sinon.
  */
-bool TileMap::bDessinerVertArrayNiveau()
+bool TileMap::bDessinerVertArrayNiveau(const Niveau &niv)
 {
 	bool retour = true;
 	unsigned int uiCoordBlockX, uiCoordBlockY, uiCoordTabX = 0, uiCoordTabY = 0, uiValTile;
-	for( unsigned int i = 0; i < mVertArrayTileMap.getVertexCount() ; i+=4 )
+	const vectPairUi_t &vectPos = niv.getVectPositionTile();
+	const Tableau2D &memTab = niv.getTabNiveau();
+	for( unsigned int i = 0; i < mVertArrayTileMap.getVertexCount() ; i += 4 )
 	{
 
 		if( uiCoordTabX == muiLongueurNiveau )
@@ -181,9 +184,9 @@ bool TileMap::bDessinerVertArrayNiveau()
 			uiCoordTabX = 0;
 		}
 
-		uiValTile = mTab.getValAt( uiCoordTabX, uiCoordTabY );
-		uiCoordBlockX = mvectPositionTuile[ uiValTile ].first;
-		uiCoordBlockY = mvectPositionTuile[ uiValTile ].second;
+		uiValTile = memTab.getValAt( uiCoordTabX, uiCoordTabY );
+		uiCoordBlockX = vectPos[ uiValTile ].first;
+		uiCoordBlockY = vectPos[ uiValTile ].second;
 
 		if( ! retour )break;
 

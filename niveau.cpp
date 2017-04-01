@@ -1,20 +1,11 @@
 #include "niveau.hpp"
+#include <cassert>
+#include <iostream>
 
 Niveau::Niveau()
 {
 
 }
-
-void Niveau::adaptToScale( float fX, float fY )
-{
-	muiLongueurCase *= fX;
-	muiLargeurCase *= fY;
-}
-
-/*void TileMap::setPositionPair( const std::vector< std::pair< unsigned int, unsigned int > > &vectPosTile )
-{
-	mvectPositionTuile = vectPosTile;
-}*/
 
 void Niveau::setPositionPair( std::ifstream &flux )
 {
@@ -43,9 +34,16 @@ void Niveau::setPositionPair( std::ifstream &flux )
  * @param path Chemin vers le fichier de configuration.
  * @return
  */
-bool Niveau::loadLevel( const std::string &path)
+bool Niveau::loadLevel( unsigned int uiNumNiveau)
 {
-	std::string str;
+	std::string path;
+	switch (uiNumNiveau) {
+	case 0:
+		path = "../ProjetBomberman/Ressources/Niveau/Niveau1TM";
+		break;
+	default:
+		break;
+	}
 	std::ifstream flux( path, std::ios::in );
 	assert( flux && "flux erreur" );
 	if( !flux )
@@ -54,13 +52,8 @@ bool Niveau::loadLevel( const std::string &path)
 		return false;
 	}
 
-	flux >> str;
-	assert(loadTexture( str ) && "erreur texture non chargé");
-	if( ! loadTexture( str ) )
-	{
-		flux.close();
-		return false;
-	}
+	flux >> mPathToTexture;
+
 	flux >> muiLongueurNiveau;
 	flux >> muiLargeurNiveau;
 	flux >> muiLongueurTile;
@@ -71,8 +64,57 @@ bool Niveau::loadLevel( const std::string &path)
 
 	//si tout se passe correctement le flux est fermé dans la fonction bAttribuerTab.
 	if( ! mtabNiveau.bAttribuerTab( flux, muiLongueurNiveau , muiLargeurNiveau ) )return false;
-
 	//bDessinerVertArrayNiveau();
 	return true;
 
+}
+
+const Tableau2D &Niveau::getTabNiveau() const
+{
+	return mtabNiveau;
+}
+
+unsigned int Niveau::getLongueurNiveau() const
+{
+	return muiLongueurNiveau;
+}
+
+unsigned int Niveau::getLargeurNiveau() const
+{
+	return muiLargeurNiveau;
+}
+
+const std::__cxx11::string &Niveau::getPathToTexture() const
+{
+	return mPathToTexture;
+}
+
+const vectPairUi_t &Niveau::getVectPositionTile() const
+{
+	return mvectPositionTuile;
+}
+
+void Niveau::displayLevel() const
+{
+	std::cout << "AFFICHAGE TILEMAP\n";
+	std::cout << "muiLongueurNiveau::"<< muiLongueurNiveau <<
+				 "\nmuiLargeurNiveau::"<< muiLargeurNiveau <<
+				 "\nmuiLongueurTile::"<< muiLongueurTile <<
+				 "\nmuiLargeurTile::"<< muiLargeurTile << "\n";
+	for( auto i : mvectPositionTuile )
+	{
+		std::cout << "tuile x::" << i.first <<"tuile y::" << i.second <<"\n" ;
+	}
+	mtabNiveau.afficherTab();
+	std::cout << "FIN AFFICHAGE TILEMAP\n";
+}
+
+unsigned int Niveau::getLargeurTile() const
+{
+	return muiLargeurTile;
+}
+
+unsigned int Niveau::getLongueurTile()const
+{
+	return muiLongueurTile;
 }

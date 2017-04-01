@@ -6,6 +6,7 @@ class Moteur;
 #include <SFML/Graphics.hpp>
 #include "tilemap.hpp"
 #include "displaycomponent.hpp"
+#include "niveau.hpp"
 #include "positioncomponent.hpp"
 
 class MoteurGraphique
@@ -25,7 +26,7 @@ public:
 	const TileMap &getTileMap()const;
 	void initialiserFenetre();
 	void linkMainEngine( Moteur* ptrMoteur );
-	void loadTileMap( const std::string &strPathConfFile, unsigned int uiNumEntity );
+	void loadTileMap(const Niveau &level, unsigned int uiNumEntity );
 	unsigned int loadSprite(unsigned int uiNumTexture, const sf::IntRect &positionSprite );
 	void raffraichirEcran();
 	void displayECSSprite();
