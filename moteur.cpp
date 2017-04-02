@@ -10,13 +10,24 @@
 #include "collrectboxcomponent.hpp"
 #include "flagcomponent.hpp"
 #include "constants.hpp"
+#include "jeu.hpp"
 #include <SFML/Graphics.hpp>
 #include <bitset>
 #include <cassert>
 
-Moteur::Moteur()
+Moteur::Moteur(const Jeu &jeu): mPtrJeu(jeu)
 {
 	mMoteurGraphique.linkMainEngine( this );
+}
+
+/*void Moteur::linkJeu(Jeu &jeu)
+{
+	mPtrJeu = &jeu;
+}*/
+
+const Jeu &Moteur::getJeu() const
+{
+	return mPtrJeu;
 }
 
 void Moteur::lancerBoucle()
@@ -57,7 +68,7 @@ GestionnaireECS &Moteur::getGestionnaireECS()
 	return mGestECS;
 }
 
-void Moteur::loadTileMap()
+void Moteur::loadTileMap(const Niveau &niv)
 {
 	unsigned int memEntity;
 	//création de l'entité avec les composants nécessaires
@@ -75,7 +86,7 @@ void Moteur::loadTileMap()
 	pc->vect2DPosComp.mfX = POSITION_LEVEL_X;
 	pc->vect2DPosComp.mfY = POSITION_LEVEL_Y;
 	//récupération et modification des composants
-	mMoteurGraphique.loadTileMap( mNiveau, memEntity );
+	mMoteurGraphique.loadTileMap( niv, memEntity );
 }
 
 bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot )
@@ -121,11 +132,11 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 	//uiNumBot a implémenter ultérieurement
 }
 
-void Moteur::loadLevelWall()
+void Moteur::loadLevelWall(const Niveau &niv)
 {
 	const TileMap &tilemap = mMoteurGraphique.getTileMap();
-	unsigned int tailleNiveauX = mNiveau.getLongueurNiveau(), tailleNiveauY = mNiveau.getLargeurNiveau(),
-			tailleTileX = mNiveau.getLongueurTile(), tailleTileY = mNiveau.getLargeurTile();
+	unsigned int tailleNiveauX = niv.getLongueurNiveau(), tailleNiveauY = niv.getLargeurNiveau(),
+			tailleTileX = niv.getLongueurTile(), tailleTileY = niv.getLargeurTile();
 
 
 	std::vector< bool > bitsetComp;
@@ -158,11 +169,6 @@ void Moteur::loadLevelWall()
 	cc->mVect2dVectOrigins.mfX = 5;//positionner le décallage
 	cc->mVect2dVectOrigins.mfY = 5;
 	cc->mRectBox.mSetOriginsRectBox(ecs::Vector2D(POSITION_LEVEL_X, POSITION_LEVEL_Y));
-}
-
-const Niveau &Moteur::getNiveau() const
-{
-	return mNiveau;
 }
 
 void Moteur::positionnerComponent(ecs::PositionComponent &posComp, unsigned int posX, unsigned int posY,

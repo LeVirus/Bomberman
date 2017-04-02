@@ -6,24 +6,26 @@
 #include "niveau.hpp"
 #include <string>
 
+class Jeu;
+
 class Moteur
 {
 private:
 	GestionnaireECS mGestECS;
 	MoteurGraphique mMoteurGraphique;
-	Niveau mNiveau;
-
 	void positionnerComponent(ecs::PositionComponent &posComp, unsigned int posX, unsigned int posY,
 							  unsigned int taileTileX, unsigned int taileTileY);
+	const Jeu &mPtrJeu;
 public:
-	Moteur();
+	Moteur(const Jeu &jeu);
+	void linkJeu(Jeu &jeu);
+	const Jeu &getJeu()const;
 	void lancerBoucle();
 	void earnInput();
 	GestionnaireECS &getGestionnaireECS();
-	void loadTileMap();
+	void loadTileMap(const Niveau &niv);
 	bool loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot );
-	void loadLevelWall();
-	const Niveau &getNiveau()const;
+	void loadLevelWall(const Niveau &niv);
 };
 
 #endif // MOTEUR_H

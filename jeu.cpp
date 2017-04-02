@@ -1,15 +1,24 @@
 #include "jeu.hpp"
 #include <cassert>
 
+Jeu::Jeu():mMoteurPrincipal(*this)
+{
+
+}
+
 bool Jeu::chargerNiveau( unsigned int numNiv )
 {
 	mNiveau.loadLevel(numNiv);
-	mNiveau.displayLevel();
 	mMoteurPrincipal.getGestionnaireECS().initECS();
-	mMoteurPrincipal.loadTileMap( );
+	mMoteurPrincipal.loadTileMap(mNiveau);
 	mMoteurPrincipal.loadPlayersAndBot( 1, 0 );
-	mMoteurPrincipal.loadLevelWall();
+	mMoteurPrincipal.loadLevelWall(mNiveau);
 	return true;
+}
+
+const Niveau &Jeu::getNiveau() const
+{
+	return mNiveau;
 }
 
 void Jeu::lancerJeu()

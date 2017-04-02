@@ -10,8 +10,9 @@ private:
 	Moteur mMoteurPrincipal;
 	Niveau mNiveau;
 public:
-	Jeu() = default;
+	Jeu();
 	bool chargerNiveau( unsigned int numNiv );
+	const Niveau &getNiveau()const;
 	void lancerJeu();
 };
 

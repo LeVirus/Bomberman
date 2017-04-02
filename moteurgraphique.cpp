@@ -3,6 +3,7 @@
 #include "constants.hpp"
 #include <cassert>
 #include "moteur.hpp"
+#include "jeu.hpp"
 
 
 
@@ -39,7 +40,7 @@ void MoteurGraphique::loadTileMap(const Niveau &level, unsigned int uiNumEntity 
 {
 	mTileMap.configTileMap(level);
 	mTileMap.loadLevel(level, uiNumEntity );
-	mTileMap.adaptToScale( SIZE_SCALE, SIZE_SCALE );
+	mTileMap.adaptToScale(SIZE_SCALE, SIZE_SCALE);
 }
 
 unsigned int MoteurGraphique::loadSprite( unsigned int uiNumTexture, const sf::IntRect &positionSprite )
@@ -86,17 +87,18 @@ void MoteurGraphique::positionnerCaseTileMap( unsigned int uiNumEntity, unsigned
 			searchComponentByType< ecs::PositionComponent >( uiNumEntity, ecs::POSITION_COMPONENT );
 
 	assert( pc && "pc == null\n");
-	pc->vect2DPosComp.mfX = POSITION_LEVEL_X + uiPositionX * mPtrMoteurPrincipal->getNiveau().getLongueurTile();
-	pc->vect2DPosComp.mfY = POSITION_LEVEL_Y + uiPositionY * mPtrMoteurPrincipal->getNiveau().getLargeurTile();
+	const Niveau &memNiveau = mPtrMoteurPrincipal->getJeu().getNiveau();
+	pc->vect2DPosComp.mfX = POSITION_LEVEL_X + uiPositionX * memNiveau.getLongueurTile();
+	pc->vect2DPosComp.mfY = POSITION_LEVEL_Y + uiPositionY * memNiveau.getLargeurTile();
 
-	std::cout << "mPtrMoteurPrincipal->getNiveau().getLongueurTile()" << mPtrMoteurPrincipal->getNiveau().getLongueurTile() <<
-				 "mPtrMoteurPrincipal->getNiveau().getLargeurTile()" <<mPtrMoteurPrincipal->getNiveau().getLargeurTile() << "\n";
+	std::cout << "mPtrMoteurPrincipal->getNiveau().getLongueurTile()" << memNiveau.getLongueurTile() <<
+				 "mPtrMoteurPrincipal->getNiveau().getLargeurTile()" <<memNiveau.getLargeurTile() << "\n";
 }
 
 void MoteurGraphique::raffraichirEcran()
 {
 	mFenetre.clear( sf::Color::Black );
-	//mTileMap.setScale( SIZE_SCALE, SIZE_SCALE );
+	mTileMap.setScale( SIZE_SCALE, SIZE_SCALE );
 	//mTileMap.setPosition( 0.0f, 0.0f );
 	displayECSSprite();
 
