@@ -16,7 +16,7 @@ private:
 	unsigned int muiLongueurTile = 0, muiLargeurTile = 0,
 	muiLongueurNiveau = 0, muiLargeurNiveau = 0, muiNumEntity = 9000;
 
-	void initialiserVertexArray(const Niveau &niv);
+	void initialiserVertexArray();
 	void setPositionPair( std::ifstream &flux );
 
 	virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const;

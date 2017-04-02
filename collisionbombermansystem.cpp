@@ -87,9 +87,9 @@ void CollisionBombermanSystem::execSystem()
 															  collRectBoxComponent->mVect2dVectOrigins);
 		}
 
-		std::cout << "beforeAAA\n";
+		/*std::cout << "beforeAAA\n";
 		collRectBoxComponent->mRectBox.mGetOriginsRectBox().displayVector();
-		std::cout << "beforddddddddddddddddddd\n";
+		std::cout << "beforddddddddddddddddddd\n";*/
 		//loop check collision
 		for( unsigned int j = i + 1; j < mVectNumEntity.size(); ++j )
 		{
@@ -125,9 +125,9 @@ void CollisionBombermanSystem::execSystem()
 							positionComponentB->vect2DPosComp + collRectBoxComponentB->mVect2dVectOrigins);
 			}
 
-			std::cout << "beforeBBB\n";
+			/*std::cout << "beforeBBB\n";
 			collRectBoxComponentB->mRectBox.mGetOriginsRectBox().displayVector();
-			std::cout << "beforddddddddddddddddddd\n";
+			std::cout << "beforddddddddddddddddddd\n";*/
 
 
 
@@ -135,12 +135,18 @@ void CollisionBombermanSystem::execSystem()
 			{
 				mTabInColl.setValAt(  j ,  i , 1 );
 				mTabInColl.setValAt(  i ,  j , 1 );
-				mTabInColl.afficherTab();
+				std::cout << "coll " << i << "  "<< j <<"\n";
+				std::cout << "beforeAAA\n";
+				collRectBoxComponent->mRectBox.mGetOriginsRectBox().displayVector();
+				std::cout << "afterAAA\n";
+				std::cout << "beforeBBB\n";
+				collRectBoxComponentB->mRectBox.mGetOriginsRectBox().displayVector();
+				std::cout << "afterBBB\n";
+
 			}
 		}
 
 	}
-	mTabInColl.afficherTab();
 
 }
 

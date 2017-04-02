@@ -60,11 +60,9 @@ bool Niveau::loadLevel( unsigned int uiNumNiveau)
 	flux >> muiLargeurTile;
 
 	setPositionPair( flux );
-	//initialiserVertexArray();
 
 	//si tout se passe correctement le flux est fermé dans la fonction bAttribuerTab.
 	if( ! mtabNiveau.bAttribuerTab( flux, muiLongueurNiveau , muiLargeurNiveau ) )return false;
-	//bDessinerVertArrayNiveau();
 	return true;
 
 }

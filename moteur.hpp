@@ -13,12 +13,10 @@ class Moteur
 private:
 	GestionnaireECS mGestECS;
 	MoteurGraphique mMoteurGraphique;
-	void positionnerComponent(ecs::PositionComponent &posComp, unsigned int posX, unsigned int posY,
-							  unsigned int taileTileX, unsigned int taileTileY);
+	void positionnerComponent(ecs::PositionComponent &posComp, unsigned int posX, unsigned int posY);
 	const Jeu &mPtrJeu;
 public:
 	Moteur(const Jeu &jeu);
-	void linkJeu(Jeu &jeu);
 	const Jeu &getJeu()const;
 	void lancerBoucle();
 	void earnInput();

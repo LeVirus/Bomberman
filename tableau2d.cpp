@@ -115,7 +115,7 @@ bool Tableau2D::setValAt( unsigned int uiCaseX, unsigned int uiCaseY, unsigned c
 	{
 		return false;
 	}
-	mVectChar[uiCaseX + uiCaseY * muiLargeurTab] = 1;
+	mVectChar[uiCaseX + uiCaseY * muiLargeurTab] = value;
 	return true;
 }
 
@@ -134,9 +134,7 @@ void Tableau2D::reset()
  */
 unsigned char Tableau2D::getValAt( unsigned int uiCaseX, unsigned int uiCaseY )const{
 	if( uiCaseX > muiLongueurTab || uiCaseY > muiLargeurTab ){
-		//std::cout<<"getValAt Tableau2D Hors tab  "<<uiCaseX<<"  "<<muiLongueurTab<<"  "<<uiCaseY<<"  "<<muiLargeurTab<<std::endl;
-		return 254;//hors table
+		return 254;
 	}
-	//std::cout<< uiCaseX << "   " << uiCaseY <<std::endl;
 	return mVectChar[ uiCaseX + uiCaseY * muiLargeurTab ];
 }

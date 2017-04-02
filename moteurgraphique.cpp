@@ -91,15 +91,12 @@ void MoteurGraphique::positionnerCaseTileMap( unsigned int uiNumEntity, unsigned
 	pc->vect2DPosComp.mfX = POSITION_LEVEL_X + uiPositionX * memNiveau.getLongueurTile();
 	pc->vect2DPosComp.mfY = POSITION_LEVEL_Y + uiPositionY * memNiveau.getLargeurTile();
 
-	std::cout << "mPtrMoteurPrincipal->getNiveau().getLongueurTile()" << memNiveau.getLongueurTile() <<
-				 "mPtrMoteurPrincipal->getNiveau().getLargeurTile()" <<memNiveau.getLargeurTile() << "\n";
 }
 
 void MoteurGraphique::raffraichirEcran()
 {
 	mFenetre.clear( sf::Color::Black );
 	mTileMap.setScale( SIZE_SCALE, SIZE_SCALE );
-	//mTileMap.setPosition( 0.0f, 0.0f );
 	displayECSSprite();
 
 	mFenetre.display();

@@ -134,48 +134,65 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 
 void Moteur::loadLevelWall(const Niveau &niv)
 {
-	const TileMap &tilemap = mMoteurGraphique.getTileMap();
-	unsigned int tailleNiveauX = niv.getLongueurNiveau(), tailleNiveauY = niv.getLargeurNiveau(),
-			tailleTileX = niv.getLongueurTile(), tailleTileY = niv.getLargeurTile();
+	std::vector< bool > bitsetComp(getGestionnaireECS().getECSComponentManager()->getNumberComponent());
+	const std::vector<unsigned char> &memTabNiv = niv.getTabNiveau().getTab();
+	unsigned int longueurNiveau = niv.getTabNiveau().getLongueur();
+	//bitsetComp.resize( getGestionnaireECS().getECSComponentManager()->getNumberComponent() );
 
+	unsigned int cmptX = 0, cmptY = 0;
+	for(std::vector<unsigned char>::const_iterator it = memTabNiv.begin(); it != memTabNiv.end(); ++it)
+	{
+		if(*it != FLAG_SOLID_WALL && *it != FLAG_DESTRUCTIBLE_WALL)
+		{
+			++cmptX;
+			if(cmptX >= longueurNiveau)
+			{
+				cmptX = 0;
+				++cmptY;
+			}
+			continue;
+		}
+		bitsetComp.assign(bitsetComp.size(), false);
 
-	std::vector< bool > bitsetComp;
-	bitsetComp.resize( getGestionnaireECS().getECSComponentManager()->getNumberComponent() );
-	bitsetComp[ ecs::POSITION_COMPONENT ] = true;
-	bitsetComp[ ecs::COLL_RECTBOX_COMPONENT ] = true;
-	bitsetComp[ BOMBER_FLAG_COMPONENT ] = true;
+		bitsetComp[ ecs::POSITION_COMPONENT ] = true;
+		bitsetComp[ ecs::COLL_RECTBOX_COMPONENT ] = true;
+		bitsetComp[ BOMBER_FLAG_COMPONENT ] = true;
 
-	unsigned int memEntity = mGestECS.addEntity( bitsetComp );
+		unsigned int memEntity = mGestECS.addEntity( bitsetComp );
 
+		mGestECS.getECSComponentManager()->
+				instanciateExternComponent(memEntity, std::make_unique<FlagBombermanComponent>());
 
-	mGestECS.getECSComponentManager()->
-			instanciateExternComponent(memEntity, std::make_unique<FlagBombermanComponent>());
+		FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
+				searchComponentByType < FlagBombermanComponent > ( memEntity, BOMBER_FLAG_COMPONENT );
+		fc->muiNumFlag = *it;
 
-	FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
-			searchComponentByType < FlagBombermanComponent > ( memEntity, BOMBER_FLAG_COMPONENT );
-	fc->muiNumFlag = FLAG_SOLID_WALL;
+		ecs::PositionComponent * pc = mGestECS.getECSComponentManager() ->
+				searchComponentByType< ecs::PositionComponent >( memEntity, ecs::POSITION_COMPONENT );
 
-	ecs::PositionComponent * pc = mGestECS.getECSComponentManager() ->
-			searchComponentByType< ecs::PositionComponent >( memEntity, ecs::POSITION_COMPONENT );
+		assert(pc && "Moteur::loadLevelWall positionComp == null\n");
+		ecs::CollRectBoxComponent * cc = mGestECS.getECSComponentManager() ->
+				searchComponentByType< ecs::CollRectBoxComponent >( memEntity, ecs::COLL_RECTBOX_COMPONENT );
+		cc->mRectBox.mSetHeightRectBox(20);
+		cc->mRectBox.mSetLenghtRectBox(20);
+		//positionner le décallage
+		cc->mRectBox.mSetOriginsRectBox(ecs::Vector2D(5, 5));
 
-	assert(pc && "Moteur::loadLevelWall positionComp == null\n");
-	positionnerComponent(*pc, 9, 3, tailleTileX, tailleTileY);//test
-	//pc->vect2DPosComp.mfX = POSITION_LEVEL_X + 1000;
-	//pc->vect2DPosComp.mfY = POSITION_LEVEL_Y;
-	ecs::CollRectBoxComponent * cc = mGestECS.getECSComponentManager() ->
-			searchComponentByType< ecs::CollRectBoxComponent >( memEntity, ecs::COLL_RECTBOX_COMPONENT );
-	cc->mRectBox.mSetHeightRectBox(20);
-	cc->mRectBox.mSetLenghtRectBox(20);
-	cc->mVect2dVectOrigins.mfX = 5;//positionner le décallage
-	cc->mVect2dVectOrigins.mfY = 5;
-	cc->mRectBox.mSetOriginsRectBox(ecs::Vector2D(POSITION_LEVEL_X, POSITION_LEVEL_Y));
+		positionnerComponent(*pc, cmptX, cmptY);
+
+		++cmptX;
+		if(cmptX >= longueurNiveau)
+		{
+			cmptX = 0;
+			++cmptY;
+		}
+	}
 }
 
-void Moteur::positionnerComponent(ecs::PositionComponent &posComp, unsigned int posX, unsigned int posY,
-								  unsigned int taileTileX, unsigned int taileTileY)
+void Moteur::positionnerComponent(ecs::PositionComponent &posComp, unsigned int posX, unsigned int posY)
 {
-	/*std::cout << "POSITION_LEVEL_X " << POSITION_LEVEL_X<< "posX " <<  posX <<
-				 "taileTileX " << taileTileX << "SIZE_SCALE " << SIZE_SCALE << " 48 "<<std::endl;*/
-	posComp.vect2DPosComp.mfX = POSITION_LEVEL_X + posX * taileTileX;
-	posComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + posY * taileTileY;
+	posComp.vect2DPosComp.mfX = POSITION_LEVEL_X + posX * getJeu().getNiveau().getLongueurTile() * SIZE_SCALE;
+	posComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + posY * getJeu().getNiveau().getLargeurTile() * SIZE_SCALE;
+	std::cout << "XX " << posX << " posComp.X " <<posComp.vect2DPosComp.mfX
+			  << " YY " << posY << " posComp.Y " <<posComp.vect2DPosComp.mfY<< std::endl;
 }

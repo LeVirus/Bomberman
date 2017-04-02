@@ -27,40 +27,14 @@ bool TileMap::loadTexture( const std::string &path )
  */
 bool TileMap::loadLevel(const Niveau &level, unsigned int uiNumEntity )
 {
-	/*std::string str;
-	std::ifstream flux( path, std::ios::in );
-	assert( flux && "flux erreur" );
-	if( !flux )
-	{
-		flux.close();
-		return false;
-	}
-
-	flux >> str;
-	assert(loadTexture( str ) && "erreur texture non chargé");
-
-	flux >> muiLongueurNiveau;
-	flux >> muiLargeurNiveau;
-	flux >> muiLongueurTile;
-	flux >> muiLargeurTile;
-*/
-
-	//setPositionPair( flux );
-
-	if(! loadTexture(/*"../Ressources/Texture/output/level_mini_tiles.png"*/level.getPathToTexture()))
+	if(! loadTexture(level.getPathToTexture()))
 	{
 		std::cout << "err TileMap::loadLevel ::" << level.getPathToTexture() <<"\n";
 		return false;
 	}
-	initialiserVertexArray(level);
-
-	//si tout se passe correctement le flux est fermé dans la fonction bAttribuerTab.
-	//if( ! mTab.bAttribuerTab( flux, muiLongueurNiveau , muiLargeurNiveau ) )return false;
-
+	initialiserVertexArray();
 	muiNumEntity = uiNumEntity;
 	bDessinerVertArrayNiveau(level);
-
-
 	return true;
 
 }
@@ -84,7 +58,7 @@ const sf::Texture &TileMap::getTextureTileMap() const
 }
 
 
-void TileMap::initialiserVertexArray(const Niveau &niv)
+void TileMap::initialiserVertexArray()
 {
 
 	unsigned int uiPosCaseX = 0, uiPosCaseY = 0;
@@ -128,23 +102,6 @@ void TileMap::displayTileMap() const
 
 
 }
-
-/*void TileMap::setPositionPair( const std::vector< std::pair< unsigned int, unsigned int > > &vectPosTile )
-{
-	mvectPositionTuile = vectPosTile;
-}*/
-
-/*void TileMap::setPositionPair( std::ifstream &flux )
-{
-	unsigned int uiNbrTuile;
-	flux >> uiNbrTuile;
-	mvectPositionTuile.resize( uiNbrTuile );
-	for( unsigned int i = 0; i < mvectPositionTuile.size() ; ++i )
-	{
-		flux >> mvectPositionTuile[ i ].first;
-		flux >> mvectPositionTuile[ i ].second;
-	}
-}*/
 
 void TileMap::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
