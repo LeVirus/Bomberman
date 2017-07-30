@@ -85,12 +85,10 @@ CollisionBombermanSystem::CollisionBombermanSystem()
 
 void CollisionBombermanSystem::execSystem()
 {
-    bool bMoveableCompA, bMoveableCompB;
 	System::execSystem();
 	mTabInColl.resize(mVectNumEntity.size(), mVectNumEntity.size());
 	mTabInColl.reset();
 	for( unsigned int i = 0 ; i < mVectNumEntity.size() ; ++i ){
-        bMoveableCompA = false;
         ecs::PositionComponent *positionComponent;
         ecs::CollRectBoxComponent *collRectBoxComponent;
         FlagBombermanComponent *flagBombermanComponent;
@@ -103,13 +101,11 @@ void CollisionBombermanSystem::execSystem()
 
         if(i == 0 && moveableBomberComp)
         {
-            bMoveableCompA = true;
             collRectBoxComponent->mRectBox.mSetOriginsRectBox(positionComponent->vect2DPosComp +
                                                               collRectBoxComponent->mVect2dVectOrigins);
         }
 		for( unsigned int j = i + 1; j < mVectNumEntity.size(); ++j )
 		{
-            bMoveableCompB = false;
             ecs::PositionComponent *positionComponentB;
             ecs::CollRectBoxComponent *collRectBoxComponentB;
             FlagBombermanComponent *flagBombermanComponentB;
@@ -122,7 +118,6 @@ void CollisionBombermanSystem::execSystem()
 
             if(i == 0 && moveableBomberCompB)
             {
-                bMoveableCompB = true;
                 collRectBoxComponent->mRectBox.mSetOriginsRectBox(positionComponent->vect2DPosComp +
                                                                   collRectBoxComponent->mVect2dVectOrigins);
             }
@@ -143,12 +138,12 @@ void CollisionBombermanSystem::execSystem()
                 collRectBoxComponentB->mRectBox.mGetOriginsRectBox().displayVector();
 				std::cout << "afterBBB\n";
 */
-                if(flagBombermanComponent->muiNumFlag == FLAG_BOMBERMAN)
+                if(moveableBomberComp)
                 {
                     //définis les flags non traversable (inferieur à FLAG_BOMBERMAN (2))
                     if(flagBombermanComponentB->muiNumFlag < FLAG_BOMBERMAN)
                     {
-                        treatBombermanCollisionBehavior(*positionComponent, *collRectBoxComponent, *collRectBoxComponentB);
+                        treatBombermanCollisionBehavior(*positionComponent, *moveableBomberComp, *collRectBoxComponent, *collRectBoxComponentB);
                     }
 
                 }
@@ -167,8 +162,11 @@ bool CollisionBombermanSystem::bCheckFlag(unsigned int flagA, unsigned int flagB
     return mTabFlag.getValAt(flagA, flagB);
 }
 
-bool CollisionBombermanSystem::treatBombermanCollisionBehavior(ecs::PositionComponent &posA, const ecs::CollRectBoxComponent &RectA,
-                                                               const ecs::CollRectBoxComponent &RectB)
+bool CollisionBombermanSystem::treatBombermanCollisionBehavior(ecs::PositionComponent &posA,
+                                                               MoveableBombermanComponent &moveableBomberComp,
+                                                               ecs::CollRectBoxComponent &RectA,
+                                                               ecs::CollRectBoxComponent &RectB)
 {
-
+    //MOVE_RIGHT, MOVE_LEFT, MOVE_UP, MOVE_DOWN
+    //moveableBomberComp.mBitsetDirection[];
 }

@@ -63,8 +63,8 @@ void MoteurGraphique::displayECSSprite()
 	{
 		unsigned int uiNumSprite = (* mVectComponentDisplaySystem )[ i ].first -> muiNumSprite;
 		const ecs::Vector2D vector2DPos = (* mVectComponentDisplaySystem )[ i ].second -> vect2DPosComp;
-        //assert( ( ( uiNumSprite == SPRITE_TILEMAP ) || ( uiNumSprite < mVectSprite.size() ) )
-            //	&& "mVectSprite overflow\n" );
+        assert( ( ( uiNumSprite == SPRITE_TILEMAP ) || ( uiNumSprite < mVectSprite.size() ) )
+                && "mVectSprite overflow\n" );
 
 		//affichage du tilemap
 		if( uiNumSprite == SPRITE_TILEMAP )

@@ -91,7 +91,10 @@ void Moteur::loadTileMap(const Niveau &niv)
 
 bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot )
 {
+    unsigned int memBombermanSprite;
 	if( MAX_PLAYER < uiNumPlayer + uiNumBot )return false;
+    memBombermanSprite = mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect( 71, 45, 16, 25 ) );
+
 	for( unsigned int i = 0 ; i < uiNumPlayer ; ++i )
 	{
 		std::vector< bool > bitsetComp;
@@ -111,7 +114,6 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 				instanciateExternComponent(memEntity, std::make_unique<MoveableBombermanComponent>());
 		mGestECS.getECSComponentManager()->
 				instanciateExternComponent(memEntity, std::make_unique<FlagBombermanComponent>());
-
 		FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
 				searchComponentByType < FlagBombermanComponent > ( memEntity, BOMBER_FLAG_COMPONENT );
 		fc->muiNumFlag = FLAG_BOMBERMAN;
@@ -123,7 +125,9 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 		cc->mVect2dVectOrigins.mfX = 5;
 		cc->mVect2dVectOrigins.mfY = 5;
 
-		mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect( 71, 45, 16, 25 ) );
+        ecs::DisplayComponent * dc = mGestECS.getECSComponentManager() ->
+                searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT );
+        dc->muiNumSprite = memBombermanSprite;
 
 		mMoteurGraphique.positionnerCaseTileMap( memEntity, 1, 1 );
 
