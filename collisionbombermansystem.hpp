@@ -25,7 +25,7 @@ public:
 	virtual void execSystem();
 	virtual void displaySystem()const;
 	bool bCheckFlag(unsigned int flagA, unsigned int flagB);
-    bool treatBombermanCollisionBehavior(ecs::PositionComponent &posA, MoveableBombermanComponent &moveableBomberComp,
+    void treatBombermanCollisionBehavior(ecs::PositionComponent &posA, MoveableBombermanComponent &moveableBomberComp,
                                          ecs::CollRectBoxComponent &RectA, ecs::CollRectBoxComponent &RectB);
 };
 

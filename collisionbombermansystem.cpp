@@ -162,11 +162,33 @@ bool CollisionBombermanSystem::bCheckFlag(unsigned int flagA, unsigned int flagB
     return mTabFlag.getValAt(flagA, flagB);
 }
 
-bool CollisionBombermanSystem::treatBombermanCollisionBehavior(ecs::PositionComponent &posA,
+void CollisionBombermanSystem::treatBombermanCollisionBehavior(ecs::PositionComponent &posA,
                                                                MoveableBombermanComponent &moveableBomberComp,
                                                                ecs::CollRectBoxComponent &RectA,
                                                                ecs::CollRectBoxComponent &RectB)
 {
     //MOVE_RIGHT, MOVE_LEFT, MOVE_UP, MOVE_DOWN
-    //moveableBomberComp.mBitsetDirection[];
+    if(moveableBomberComp.mBitsetDirection[MOVE_RIGHT])
+    {
+        std::cout << "right\n";
+        float memSizeBack = RectA.mRectBox.mfGetLenghtRectBox() + RectA.mVect2dVectOrigins.mfX;
+        //set the new position out of the collision box ==> - 1
+        posA.vect2DPosComp.mfX = RectB.mRectBox.mGetOriginsRectBox().mfX - memSizeBack - 1;
+    }
+    else if(moveableBomberComp.mBitsetDirection[MOVE_LEFT])
+    {
+        std::cout << "left\n";
+        posA.vect2DPosComp.mfX = RectB.mRectBox.mGetOriginsRectBox().mfX + RectA.mRectBox.mfGetLenghtRectBox() - RectA.mVect2dVectOrigins.mfX + 1;
+    }
+    if(moveableBomberComp.mBitsetDirection[MOVE_UP])
+    {
+        std::cout << "up\n";
+        posA.vect2DPosComp.mfY = RectB.mRectBox.mGetOriginsRectBox().mfY + RectA.mRectBox.mfGetHeightRectBox() - RectA.mVect2dVectOrigins.mfY + 1;
+    }
+    else if(moveableBomberComp.mBitsetDirection[MOVE_DOWN])
+    {
+        std::cout << "down\n";
+        float memSizeBack = RectA.mRectBox.mfGetHeightRectBox() + RectA.mVect2dVectOrigins.mfY;
+        posA.vect2DPosComp.mfY = RectB.mRectBox.mGetOriginsRectBox().mfY - memSizeBack - 1;
+    }
 }

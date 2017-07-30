@@ -5,6 +5,7 @@
 
 void InputBombermanSystem::setMoveableDirection(std::bitset<4> &directionComp, const std::bitset<NUMBR_INPUT> &inputComp)
 {
+    directionComp.reset();
     if(inputComp[MOVE_DOWN])
     {
         directionComp[MOVE_DOWN] = true;
@@ -66,15 +67,8 @@ void InputBombermanSystem::execSystem()
 				std::cout << " InputBombermanSystem pointeur NULL moveableComponent \n";
 				continue;
 			}
-			bool bAllFalse = true;
 			//si aucune entré utilisateur entité suivante
-			for( unsigned int j = 0; j < inputComponent -> mBitsetInput.size();j++ ){
-				if( inputComponent -> mBitsetInput[ j ] ){
-					bAllFalse = false;
-					break;
-				}
-			}
-			if( bAllFalse )continue;
+            if(inputComponent -> mBitsetInput.none())continue;
 
 			//traitement évènement joueur
 
