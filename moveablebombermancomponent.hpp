@@ -3,12 +3,15 @@
 
 #include "component.hpp"
 #include "constants.hpp"
+#include <bitset>
 
 struct MoveableBombermanComponent : public ecs::Component
 {
 	float mfVelocite = 10;
 	bool moveInProgress = false;
 	unsigned int muiDirection;
+    std::bitset<4> mBitsetDirection;
+
 	MoveableBombermanComponent()//: muiTypeComponent(BOMBER_MOVEABLE_COMPONENT)
 	{
 		muiTypeComponent = BOMBER_MOVEABLE_COMPONENT;

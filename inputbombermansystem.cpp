@@ -1,8 +1,27 @@
-#include "inputbombermancomponent.hpp"
 #include "inputbombermansystem.hpp"
 #include "positioncomponent.hpp"
+#include "inputbombermancomponent.hpp"
 #include "moveablebombermancomponent.hpp"
-#include "constants.hpp"
+
+void InputBombermanSystem::setMoveableDirection(std::bitset<4> &directionComp, const std::bitset<NUMBR_INPUT> &inputComp)
+{
+    if(inputComp[MOVE_DOWN])
+    {
+        directionComp[MOVE_DOWN] = true;
+    }
+    else if(inputComp[MOVE_UP])
+    {
+        directionComp[MOVE_UP] = true;
+    }
+    if(inputComp[MOVE_LEFT])
+    {
+        directionComp[MOVE_LEFT] = true;
+    }
+    else if(inputComp[MOVE_RIGHT])
+    {
+        directionComp[MOVE_RIGHT] = true;
+    }
+}
 
 InputBombermanSystem::InputBombermanSystem()
 {
@@ -47,7 +66,6 @@ void InputBombermanSystem::execSystem()
 				std::cout << " InputBombermanSystem pointeur NULL moveableComponent \n";
 				continue;
 			}
-
 			bool bAllFalse = true;
 			//si aucune entré utilisateur entité suivante
 			for( unsigned int j = 0; j < inputComponent -> mBitsetInput.size();j++ ){
@@ -60,22 +78,30 @@ void InputBombermanSystem::execSystem()
 
 			//traitement évènement joueur
 
-			if( inputComponent -> mBitsetInput[ MOVE_RIGHT ] )positionComp ->
-					vect2DPosComp . mfX +=  moveableComponent -> mfVelocite;
-			else if( inputComponent -> mBitsetInput[ MOVE_LEFT ] )positionComp ->
-					vect2DPosComp . mfX -=  moveableComponent -> mfVelocite;
+            setMoveableDirection(moveableComponent->mBitsetDirection, inputComponent->mBitsetInput);
+            if( inputComponent->mBitsetInput[ MOVE_RIGHT ] )
+            {
+                positionComp->vect2DPosComp . mfX +=  moveableComponent -> mfVelocite;
+            }
+            else if( inputComponent -> mBitsetInput[ MOVE_LEFT ] )
+            {
+                positionComp->vect2DPosComp . mfX -=  moveableComponent->mfVelocite;
+            }
 
 			if( inputComponent -> mBitsetInput[ MOVE_UP ] )
 			{
-				positionComp -> vect2DPosComp . mfY -=  moveableComponent -> mfVelocite;
+                positionComp->vect2DPosComp . mfY -=  moveableComponent -> mfVelocite;
 			}
-			else if( inputComponent -> mBitsetInput[ MOVE_DOWN ] )positionComp ->
-					vect2DPosComp . mfY +=  moveableComponent -> mfVelocite;
-
-			inputComponent -> mBitsetInput . reset();
+            else if( inputComponent -> mBitsetInput[ MOVE_DOWN ] )
+            {
+                positionComp->vect2DPosComp . mfY +=  moveableComponent -> mfVelocite;
+            }
+            inputComponent -> mBitsetInput.reset();
 
 		}
 }
+
+
 
 void InputBombermanSystem::displaySystem() const
 {

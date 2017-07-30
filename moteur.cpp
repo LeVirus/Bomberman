@@ -176,9 +176,12 @@ void Moteur::loadLevelWall(const Niveau &niv)
 		cc->mRectBox.mSetHeightRectBox(20);
 		cc->mRectBox.mSetLenghtRectBox(20);
 		//positionner le décallage
-		cc->mRectBox.mSetOriginsRectBox(ecs::Vector2D(5, 5));
+        cc->mVect2dVectOrigins.mfX = 5;
+        cc->mVect2dVectOrigins.mfY = 5;
+        positionnerComponent(*pc, cmptX, cmptY);
 
-		positionnerComponent(*pc, cmptX, cmptY);
+        cc->mRectBox.mSetOriginsRectBox(pc->vect2DPosComp + cc->mVect2dVectOrigins);
+
 
 		++cmptX;
 		if(cmptX >= longueurNiveau)
