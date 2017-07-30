@@ -94,6 +94,8 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
     unsigned int memBombermanSprite;
 	if( MAX_PLAYER < uiNumPlayer + uiNumBot )return false;
     memBombermanSprite = mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect( 71, 45, 16, 25 ) );
+    unsigned int largeurTile = mPtrJeu.getNiveau().getLargeurTile();
+    unsigned int longueurTile = mPtrJeu.getNiveau().getLongueurTile();
 
 	for( unsigned int i = 0 ; i < uiNumPlayer ; ++i )
 	{
@@ -120,10 +122,10 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 
 		ecs::CollRectBoxComponent * cc = mGestECS.getECSComponentManager() ->
 				searchComponentByType< ecs::CollRectBoxComponent >( memEntity, ecs::COLL_RECTBOX_COMPONENT );
-		cc->mRectBox.mSetHeightRectBox(20);
-		cc->mRectBox.mSetLenghtRectBox(20);
-		cc->mVect2dVectOrigins.mfX = 5;
-		cc->mVect2dVectOrigins.mfY = 5;
+        cc->mRectBox.mSetHeightRectBox(largeurTile);
+        cc->mRectBox.mSetLenghtRectBox(longueurTile);
+        cc->mVect2dVectOrigins.mfX = 5;
+        cc->mVect2dVectOrigins.mfY = 5;
 
         ecs::DisplayComponent * dc = mGestECS.getECSComponentManager() ->
                 searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT );
@@ -143,7 +145,9 @@ void Moteur::loadLevelWall(const Niveau &niv)
 	unsigned int longueurNiveau = niv.getTabNiveau().getLongueur();
 	//bitsetComp.resize( getGestionnaireECS().getECSComponentManager()->getNumberComponent() );
 
-	unsigned int cmptX = 0, cmptY = 0;
+    unsigned int largeurTile = mPtrJeu.getNiveau().getLargeurTile() * SIZE_SCALE;
+    unsigned int longueurTile = mPtrJeu.getNiveau().getLongueurTile() * SIZE_SCALE;
+    unsigned int cmptX = 0, cmptY = 0;
 	for(std::vector<unsigned char>::const_iterator it = memTabNiv.begin(); it != memTabNiv.end(); ++it)
 	{
 		if(*it != FLAG_SOLID_WALL && *it != FLAG_DESTRUCTIBLE_WALL)
@@ -177,11 +181,11 @@ void Moteur::loadLevelWall(const Niveau &niv)
 		assert(pc && "Moteur::loadLevelWall positionComp == null\n");
 		ecs::CollRectBoxComponent * cc = mGestECS.getECSComponentManager() ->
 				searchComponentByType< ecs::CollRectBoxComponent >( memEntity, ecs::COLL_RECTBOX_COMPONENT );
-		cc->mRectBox.mSetHeightRectBox(20);
-		cc->mRectBox.mSetLenghtRectBox(20);
+        cc->mRectBox.mSetHeightRectBox(largeurTile);
+        cc->mRectBox.mSetLenghtRectBox(longueurTile);
 		//positionner le décallage
-        cc->mVect2dVectOrigins.mfX = 5;
-        cc->mVect2dVectOrigins.mfY = 5;
+        cc->mVect2dVectOrigins.mfX = 0;
+        cc->mVect2dVectOrigins.mfY = 0;
         positionnerComponent(*pc, cmptX, cmptY);
 
         cc->mRectBox.mSetOriginsRectBox(pc->vect2DPosComp + cc->mVect2dVectOrigins);

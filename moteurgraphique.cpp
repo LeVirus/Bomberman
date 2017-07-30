@@ -22,7 +22,7 @@ const TileMap &MoteurGraphique::getTileMap()const
 
 void MoteurGraphique::initialiserFenetre()
 {
-	mFenetre.create( sf::VideoMode( 1040, 640 ), "Bomber", sf::Style::Default/*Fullscreen*/ );
+    mFenetre.create( sf::VideoMode( 1040, 640 ), "Bomber", sf::Style::Fullscreen );
 
 	mCamera.reset( sf::FloatRect( 0, 0, WIDTH_SCREEN , HEIGHT_SCREEN ) );
 	mFenetre.setView( mCamera );
