@@ -22,7 +22,7 @@ const TileMap &MoteurGraphique::getTileMap()const
 
 void MoteurGraphique::initialiserFenetre()
 {
-    mFenetre.create( sf::VideoMode( 1040, 640 ), "Bomber", sf::Style::Fullscreen );
+    mFenetre.create( sf::VideoMode( 1040, 640 ), "Bomber", sf::Style::/*Fullscreen*/Default );
 
 	mCamera.reset( sf::FloatRect( 0, 0, WIDTH_SCREEN , HEIGHT_SCREEN ) );
 	mFenetre.setView( mCamera );
@@ -88,8 +88,8 @@ void MoteurGraphique::positionnerCaseTileMap( unsigned int uiNumEntity, unsigned
 
 	assert( pc && "pc == null\n");
 	const Niveau &memNiveau = mPtrMoteurPrincipal->getJeu().getNiveau();
-	pc->vect2DPosComp.mfX = POSITION_LEVEL_X + uiPositionX * memNiveau.getLongueurTile();
-	pc->vect2DPosComp.mfY = POSITION_LEVEL_Y + uiPositionY * memNiveau.getLargeurTile();
+    pc->vect2DPosComp.mfX = POSITION_LEVEL_X + uiPositionX * mTileMap.getLongueurTile();
+    pc->vect2DPosComp.mfY = POSITION_LEVEL_Y + uiPositionY * mTileMap.getLargeurTile();
 
 }
 

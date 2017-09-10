@@ -94,9 +94,8 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
     unsigned int memBombermanSprite;
 	if( MAX_PLAYER < uiNumPlayer + uiNumBot )return false;
     memBombermanSprite = mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect( 71, 45, 16, 25 ) );
-    unsigned int largeurTile = mPtrJeu.getNiveau().getLargeurTile();
-    unsigned int longueurTile = mPtrJeu.getNiveau().getLongueurTile();
-
+    unsigned int largeurTile = mMoteurGraphique.getTileMap().getLargeurTile();
+    unsigned int longueurTile = mMoteurGraphique.getTileMap().getLongueurTile();
 	for( unsigned int i = 0 ; i < uiNumPlayer ; ++i )
 	{
 		std::vector< bool > bitsetComp;
@@ -122,16 +121,16 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 
 		ecs::CollRectBoxComponent * cc = mGestECS.getECSComponentManager() ->
 				searchComponentByType< ecs::CollRectBoxComponent >( memEntity, ecs::COLL_RECTBOX_COMPONENT );
-        cc->mRectBox.mSetHeightRectBox(largeurTile);
-        cc->mRectBox.mSetLenghtRectBox(longueurTile);
-        cc->mVect2dVectOrigins.mfX = 5;
-        cc->mVect2dVectOrigins.mfY = 5;
+        cc->mRectBox.mSetHeightRectBox(/*largeurTile*/10);
+        cc->mRectBox.mSetLenghtRectBox(/*longueurTile*/10);
+        cc->mVect2dVectOrigins.mfX = 0;
+        cc->mVect2dVectOrigins.mfY = 0;
 
         ecs::DisplayComponent * dc = mGestECS.getECSComponentManager() ->
                 searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT );
         dc->muiNumSprite = memBombermanSprite;
 
-		mMoteurGraphique.positionnerCaseTileMap( memEntity, 1, 1 );
+        mMoteurGraphique.positionnerCaseTileMap( memEntity, 1, 1 );
 
 	}
 	return true;
@@ -145,8 +144,8 @@ void Moteur::loadLevelWall(const Niveau &niv)
 	unsigned int longueurNiveau = niv.getTabNiveau().getLongueur();
 	//bitsetComp.resize( getGestionnaireECS().getECSComponentManager()->getNumberComponent() );
 
-    unsigned int largeurTile = mPtrJeu.getNiveau().getLargeurTile() * SIZE_SCALE;
-    unsigned int longueurTile = mPtrJeu.getNiveau().getLongueurTile() * SIZE_SCALE;
+    unsigned int largeurTile = mMoteurGraphique.getTileMap().getLargeurTile();
+    unsigned int longueurTile = mMoteurGraphique.getTileMap().getLongueurTile();
     unsigned int cmptX = 0, cmptY = 0;
 	for(std::vector<unsigned char>::const_iterator it = memTabNiv.begin(); it != memTabNiv.end(); ++it)
 	{
@@ -189,8 +188,6 @@ void Moteur::loadLevelWall(const Niveau &niv)
         positionnerComponent(*pc, cmptX, cmptY);
 
         cc->mRectBox.mSetOriginsRectBox(pc->vect2DPosComp + cc->mVect2dVectOrigins);
-
-
 		++cmptX;
 		if(cmptX >= longueurNiveau)
 		{
@@ -202,8 +199,8 @@ void Moteur::loadLevelWall(const Niveau &niv)
 
 void Moteur::positionnerComponent(ecs::PositionComponent &posComp, unsigned int posX, unsigned int posY)
 {
-	posComp.vect2DPosComp.mfX = POSITION_LEVEL_X + posX * getJeu().getNiveau().getLongueurTile() * SIZE_SCALE;
-	posComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + posY * getJeu().getNiveau().getLargeurTile() * SIZE_SCALE;
+    posComp.vect2DPosComp.mfX = POSITION_LEVEL_X + posX * mMoteurGraphique.getTileMap().getLongueurTile();
+    posComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + posY * mMoteurGraphique.getTileMap().getLargeurTile();
 	std::cout << "XX " << posX << " posComp.X " <<posComp.vect2DPosComp.mfX
 			  << " YY " << posY << " posComp.Y " <<posComp.vect2DPosComp.mfY<< std::endl;
 }
