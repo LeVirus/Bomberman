@@ -170,25 +170,52 @@ void CollisionBombermanSystem::treatBombermanCollisionBehavior(ecs::PositionComp
     //MOVE_RIGHT, MOVE_LEFT, MOVE_UP, MOVE_DOWN
     if(moveableBomberComp.mBitsetDirection[MOVE_RIGHT])
     {
-        std::cout << "right\n";
         float memSizeBack = RectA.mRectBox.mfGetLenghtRectBox() + RectA.mVect2dVectOrigins.mfX;
+        std::cout << "right\n" << "\n";
+
         //set the new position out of the collision box ==> - 1
-        posA.vect2DPosComp.mfX = RectB.mRectBox.mGetOriginsRectBox().mfX - memSizeBack - 1;
+        if( abs(posA.vect2DPosComp.mfX - (RectB.mRectBox.mGetOriginsRectBox().mfX - memSizeBack)) <= moveableBomberComp.mfVelocite)
+        {
+            posA.vect2DPosComp.mfX = RectB.mRectBox.mGetOriginsRectBox().mfX - memSizeBack;
+        }
+        else
+        {
+            std::cout << "ha\n";
+            //--posA.vect2DPosComp.mfX;
+        }
     }
     else if(moveableBomberComp.mBitsetDirection[MOVE_LEFT])
     {
         std::cout << "left\n";
-        posA.vect2DPosComp.mfX = RectB.mRectBox.mGetOriginsRectBox().mfX + RectA.mRectBox.mfGetLenghtRectBox() - RectA.mVect2dVectOrigins.mfX + 1;
+
+        float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfX + RectA.mRectBox.mfGetLenghtRectBox() - RectA.mVect2dVectOrigins.mfX;
+        if( abs(posA.vect2DPosComp.mfX - newTheoricalPosition) <= moveableBomberComp.mfVelocite)
+        {
+            posA.vect2DPosComp.mfX = newTheoricalPosition;
+        }
+        else
+        {
+            std::cout << "ha\n";
+
+            //++posA.vect2DPosComp.mfX;
+        }
     }
     if(moveableBomberComp.mBitsetDirection[MOVE_UP])
     {
         std::cout << "up\n";
-        posA.vect2DPosComp.mfY = RectB.mRectBox.mGetOriginsRectBox().mfY + RectA.mRectBox.mfGetHeightRectBox() - RectA.mVect2dVectOrigins.mfY + 1;
+        float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfY + RectA.mRectBox.mfGetHeightRectBox() - RectA.mVect2dVectOrigins.mfY;
+        if( abs(posA.vect2DPosComp.mfY - newTheoricalPosition) <= moveableBomberComp.mfVelocite)
+        {
+            posA.vect2DPosComp.mfY = newTheoricalPosition;
+        }
     }
     else if(moveableBomberComp.mBitsetDirection[MOVE_DOWN])
     {
         std::cout << "down\n";
-        float memSizeBack = RectA.mRectBox.mfGetHeightRectBox() + RectA.mVect2dVectOrigins.mfY;
-        posA.vect2DPosComp.mfY = RectB.mRectBox.mGetOriginsRectBox().mfY - memSizeBack - 1;
+        float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfY - RectA.mRectBox.mfGetHeightRectBox() + RectA.mVect2dVectOrigins.mfY;
+        if( abs(posA.vect2DPosComp.mfY - newTheoricalPosition) <= moveableBomberComp.mfVelocite)
+        {
+            posA.vect2DPosComp.mfY = newTheoricalPosition;
+        }
     }
 }
