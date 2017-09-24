@@ -124,8 +124,8 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
         std::cout << "largeurTile :: " << largeurTile << "  longueurTile :: " << longueurTile << std::endl;
 
 
-        cc->mVect2dVectOrigins.mfX = 0;
-        cc->mRectBox.mSetLenghtRectBox(longueurTile /*- 10*/);
+        cc->mVect2dVectOrigins.mfX = 5;
+        cc->mRectBox.mSetLenghtRectBox(longueurTile - 10);
 
         cc->mVect2dVectOrigins.mfY = 36;
         cc->mRectBox.mSetHeightRectBox(largeurTile - 10);

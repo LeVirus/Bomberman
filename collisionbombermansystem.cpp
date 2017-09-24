@@ -186,10 +186,12 @@ void CollisionBombermanSystem::treatBombermanCollisionBehavior(ecs::PositionComp
     }
     else if(moveableBomberComp.mBitsetDirection[MOVE_LEFT])
     {
-        float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfX +
-                RectA.mRectBox.mfGetLenghtRectBox() - RectA.mVect2dVectOrigins.mfX + 2;
+        float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfX + RectB.mRectBox.mfGetLenghtRectBox() -
+                RectA.mVect2dVectOrigins.mfX + 2;
         if( abs(posA.vect2DPosComp.mfX - newTheoricalPosition) <= moveableBomberComp.mfVelocite)
         {
+            std::cout << "ha\n" << posA.vect2DPosComp.mfX << "   d "<< newTheoricalPosition << "\n";
+
             posA.vect2DPosComp.mfX = newTheoricalPosition;
         }
         else

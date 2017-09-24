@@ -7,7 +7,7 @@
 
 struct MoveableBombermanComponent : public ecs::Component
 {
-	float mfVelocite = 10;
+    float mfVelocite = 6;
 	bool moveInProgress = false;
     //unsigned int muiDirection;
     std::bitset<4> mBitsetDirection;
