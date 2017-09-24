@@ -121,10 +121,15 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 
 		ecs::CollRectBoxComponent * cc = mGestECS.getECSComponentManager() ->
 				searchComponentByType< ecs::CollRectBoxComponent >( memEntity, ecs::COLL_RECTBOX_COMPONENT );
-        cc->mRectBox.mSetHeightRectBox(/*largeurTile*/10);
-        cc->mRectBox.mSetLenghtRectBox(/*longueurTile*/10);
+        std::cout << "largeurTile :: " << largeurTile << "  longueurTile :: " << longueurTile << std::endl;
+
+
         cc->mVect2dVectOrigins.mfX = 0;
-        cc->mVect2dVectOrigins.mfY = 0;
+        cc->mRectBox.mSetLenghtRectBox(longueurTile /*- 10*/);
+
+        cc->mVect2dVectOrigins.mfY = 36;
+        cc->mRectBox.mSetHeightRectBox(largeurTile - 10);
+
 
         ecs::DisplayComponent * dc = mGestECS.getECSComponentManager() ->
                 searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT );
