@@ -37,7 +37,6 @@ void Moteur::lancerBoucle()
 	{
 		mGestECS.getECSSystemManager()->bExecAllSystem();
 		earnInput();
-
 		mMoteurGraphique.raffraichirEcran();
 		if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )break;
 	}while( true );

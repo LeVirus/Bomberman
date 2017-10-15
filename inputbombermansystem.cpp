@@ -6,21 +6,21 @@
 void InputBombermanSystem::setMoveableDirection(std::bitset<4> &directionComp, const std::bitset<NUMBR_INPUT> &inputComp)
 {
     directionComp.reset();
-    if(inputComp[MOVE_DOWN])
-    {
-        directionComp[MOVE_DOWN] = true;
-    }
-    else if(inputComp[MOVE_UP])
+    if(inputComp[MOVE_UP])
     {
         directionComp[MOVE_UP] = true;
     }
-    if(inputComp[MOVE_LEFT])
+    else if(inputComp[MOVE_DOWN])
     {
-        directionComp[MOVE_LEFT] = true;
+        directionComp[MOVE_DOWN] = true;
     }
-    else if(inputComp[MOVE_RIGHT])
+    if(inputComp[MOVE_RIGHT])
     {
         directionComp[MOVE_RIGHT] = true;
+    }
+    else if(inputComp[MOVE_LEFT])
+    {
+        directionComp[MOVE_LEFT] = true;
     }
 }
 
@@ -70,6 +70,7 @@ void InputBombermanSystem::execSystem()
 			//si aucune entré utilisateur entité suivante
             if(inputComponent -> mBitsetInput.none())continue;
 
+
 			//traitement évènement joueur
 
             setMoveableDirection(moveableComponent->mBitsetDirection, inputComponent->mBitsetInput);
@@ -82,7 +83,7 @@ void InputBombermanSystem::execSystem()
                 positionComp->vect2DPosComp . mfX -=  moveableComponent->mfVelocite;
             }
 
-			if( inputComponent -> mBitsetInput[ MOVE_UP ] )
+            if( inputComponent -> mBitsetInput[ MOVE_UP ] )
 			{
                 positionComp->vect2DPosComp . mfY -=  moveableComponent -> mfVelocite;
 			}
@@ -90,6 +91,7 @@ void InputBombermanSystem::execSystem()
             {
                 positionComp->vect2DPosComp . mfY +=  moveableComponent -> mfVelocite;
             }
+
             inputComponent -> mBitsetInput.reset();
 
 		}

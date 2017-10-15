@@ -18,7 +18,7 @@ struct MoveableBombermanComponent : public ecs::Component
 	}
 
 	void displayComponent()const override{
-		std::cout << "\n mfVelocite" << mfVelocite << "\n";
+        std::cout << "\n mfVelocite : " << mfVelocite << "\n";
 	}
 };
 

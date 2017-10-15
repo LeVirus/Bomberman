@@ -36,6 +36,29 @@ bool CollisionBombermanSystem::getComponentForCollision(ecs::PositionComponent *
     return true;
 }
 
+bool CollisionBombermanSystem::checkLimitCollision(ecs::PositionComponent &posA, MoveableBombermanComponent &moveableBomberComp,
+                                                   ecs::CollRectBoxComponent &RectA, ecs::CollRectBoxComponent &RectB, bool vertical)
+{
+//    RectB.mRectBox.mGetOriginsRectBox().mfY -
+//                    (RectA.mRectBox.mfGetHeightRectBox() + RectA.mVect2dVectOrigins.mfY) - 2;
+    std::cout << "checkLimitCollision\n" << RectB.mRectBox.mGetOriginsRectBox().mfY << "   " << RectA.mRectBox.mfGetHeightRectBox()
+              << "   " << RectA.mVect2dVectOrigins.mfY << "\n";
+    if(vertical)
+    {
+        if(abs(RectB.mRectBox.mGetOriginsRectBox().mfY - (RectA.mRectBox.mfGetHeightRectBox() + RectA.mVect2dVectOrigins.mfY)) <=
+                moveableBomberComp.mfVelocite + 40)
+        {
+            std::cout << "checkLimitsss\n";
+
+            posA.vect2DPosComp.mfY = RectB.mRectBox.mGetOriginsRectBox().mfY - RectA.mRectBox.mfGetHeightRectBox() + 2;
+        }
+    }
+    else
+    {
+
+    }
+}
+
 CollisionBombermanSystem::CollisionBombermanSystem()
 {//FLAG_DESTRUCTIBLE_WALL, FLAG_SOLID_WALL, FLAG_BOMBERMAN, FLAG_EXPLOSION, FLAG_OBJECT, FLAG_BOMB
 	std::vector<unsigned char> vect;
@@ -116,12 +139,6 @@ void CollisionBombermanSystem::execSystem()
                 continue;
             }
 
-            if(i == 0 && moveableBomberCompB)
-            {
-                collRectBoxComponent->mRectBox.mSetOriginsRectBox(positionComponent->vect2DPosComp +
-                                                                  collRectBoxComponent->mVect2dVectOrigins);
-            }
-
             if(! bCheckFlag(flagBombermanComponent->muiNumFlag, flagBombermanComponentB->muiNumFlag))
             {
                 continue;
@@ -131,13 +148,6 @@ void CollisionBombermanSystem::execSystem()
 				mTabInColl.setValAt(  j ,  i , 1 );
 				mTabInColl.setValAt(  i ,  j , 1 );
                 std::cout << "coll " << i << "  "<< j <<"\n";
-                /*std::cout << "beforeAAA\n";
-                collRectBoxComponent->mRectBox.mGetOriginsRectBox().displayVector();
-				std::cout << "afterAAA\n";
-				std::cout << "beforeBBB\n";
-                collRectBoxComponentB->mRectBox.mGetOriginsRectBox().displayVector();
-				std::cout << "afterBBB\n";
-*/
                 if(moveableBomberComp)
                 {
                     //définis les flags non traversable (inferieur à FLAG_BOMBERMAN (2))
@@ -170,25 +180,33 @@ void CollisionBombermanSystem::treatBombermanCollisionBehavior(ecs::PositionComp
     //MOVE_RIGHT, MOVE_LEFT, MOVE_UP, MOVE_DOWN
     if(moveableBomberComp.mBitsetDirection[MOVE_RIGHT])
     {
-        float memSizeBack = RectB.mRectBox.mGetOriginsRectBox().mfX - RectA.mRectBox.mfGetLenghtRectBox() - RectA.mVect2dVectOrigins.mfX - 2;
+        float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfX - RectA.mRectBox.mfGetLenghtRectBox() - RectA.mVect2dVectOrigins.mfX - 2;
         std::cout << "right\n" << "\n";
 
         //set the new position out of the collision box ==> - 1
-        if( abs(posA.vect2DPosComp.mfX -  memSizeBack) <= moveableBomberComp.mfVelocite)
+        //+1 quick fix
+        if( abs(posA.vect2DPosComp.mfX -  newTheoricalPosition) <= moveableBomberComp.mfVelocite + 1)
         {
-            posA.vect2DPosComp.mfX = memSizeBack;
+            std::cout << "ha\n" << newTheoricalPosition << "\n" << posA.vect2DPosComp.mfX << " dddd  "<< moveableBomberComp.mfVelocite << "\n";
+            posA.vect2DPosComp.mfX = newTheoricalPosition;
         }
         else
         {
-            std::cout << "ha\n" << memSizeBack << "\n" << posA.vect2DPosComp.mfX << "\n";
+            std::cout << "ha non\n" << newTheoricalPosition << "\n" << posA.vect2DPosComp.mfX << " dddd  "<< moveableBomberComp.mfVelocite << "\n";
             //--posA.vect2DPosComp.mfX;
         }
+        //checkLimitCollision(posA, moveableBomberComp, RectA, RectB, true);
     }
     else if(moveableBomberComp.mBitsetDirection[MOVE_LEFT])
     {
+        std::cout << "left\n" << "\n";
+
         float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfX + RectB.mRectBox.mfGetLenghtRectBox() -
                 RectA.mVect2dVectOrigins.mfX + 2;
-        if( abs(posA.vect2DPosComp.mfX - newTheoricalPosition) <= moveableBomberComp.mfVelocite)
+        //vérifier si l'entité n'est pas déja en collision
+        //+1 quick fix=================
+
+        if( abs(posA.vect2DPosComp.mfX - newTheoricalPosition) <= moveableBomberComp.mfVelocite /*+ 1*/)
         {
             std::cout << "ha\n" << posA.vect2DPosComp.mfX << "   d "<< newTheoricalPosition << "\n";
 
@@ -196,27 +214,30 @@ void CollisionBombermanSystem::treatBombermanCollisionBehavior(ecs::PositionComp
         }
         else
         {
-            std::cout << "ha\n" << posA.vect2DPosComp.mfX << "   d "<< newTheoricalPosition<< "\n";
+            std::cout << "ha non\n" << posA.vect2DPosComp.mfX << "   d "<< newTheoricalPosition<< "\n";
 
             //++posA.vect2DPosComp.mfX;
         }
+        //checkLimitCollision(posA, moveableBomberComp, RectA, RectB, true);
     }
+
     if(moveableBomberComp.mBitsetDirection[MOVE_UP])
     {
-        std::cout << "up\n";
+        std::cout << "up====================\n";
         float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfY +
                 RectB.mRectBox.mfGetHeightRectBox() - RectA.mVect2dVectOrigins.mfY + 2;
-        if( abs(posA.vect2DPosComp.mfY - newTheoricalPosition) <= moveableBomberComp.mfVelocite)
+        if( abs(posA.vect2DPosComp.mfY - newTheoricalPosition) <= moveableBomberComp.mfVelocite /*+ 1*/)
         {
             posA.vect2DPosComp.mfY = newTheoricalPosition;
         }
+
     }
     else if(moveableBomberComp.mBitsetDirection[MOVE_DOWN])
     {
         std::cout << "down\n";
         float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfY -
                 (RectA.mRectBox.mfGetHeightRectBox() + RectA.mVect2dVectOrigins.mfY) - 2;
-        if( abs(posA.vect2DPosComp.mfY - newTheoricalPosition) <= moveableBomberComp.mfVelocite)
+        if( abs(posA.vect2DPosComp.mfY - newTheoricalPosition) <= moveableBomberComp.mfVelocite /*+ 1*/)
         {
             posA.vect2DPosComp.mfY = newTheoricalPosition;
         }
