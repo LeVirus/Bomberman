@@ -36,8 +36,8 @@ void Moteur::lancerBoucle()
 	mMoteurGraphique.initialiserFenetre();
 	do
 	{
-        clock.restart();
-		mGestECS.getECSSystemManager()->bExecAllSystem();
+//        clock.restart();
+        mGestECS.getECSSystemManager()->bExecAllSystem();
 		earnInput();
 		mMoteurGraphique.raffraichirEcran();
 		if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )break;
@@ -209,6 +209,6 @@ void Moteur::positionnerComponent(ecs::PositionComponent &posComp, unsigned int 
 {
     posComp.vect2DPosComp.mfX = POSITION_LEVEL_X + posX * mMoteurGraphique.getTileMap().getLongueurTile();
     posComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + posY * mMoteurGraphique.getTileMap().getLargeurTile();
-	std::cout << "XX " << posX << " posComp.X " <<posComp.vect2DPosComp.mfX
-			  << " YY " << posY << " posComp.Y " <<posComp.vect2DPosComp.mfY<< std::endl;
+//	std::cout << "XX " << posX << " posComp.X " <<posComp.vect2DPosComp.mfX
+//			  << " YY " << posY << " posComp.Y " <<posComp.vect2DPosComp.mfY<< std::endl;
 }
