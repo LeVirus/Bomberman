@@ -14,7 +14,7 @@
 #include <SFML/Graphics.hpp>
 #include <bitset>
 #include <cassert>
-
+#include <SFML/System/Clock.hpp>
 Moteur::Moteur(const Jeu &jeu): mPtrJeu(jeu)
 {
 	mMoteurGraphique.linkMainEngine( this );
@@ -32,13 +32,17 @@ const Jeu &Moteur::getJeu() const
 
 void Moteur::lancerBoucle()
 {
+//    sf::Clock clock;
 	mMoteurGraphique.initialiserFenetre();
 	do
 	{
+        clock.restart();
 		mGestECS.getECSSystemManager()->bExecAllSystem();
 		earnInput();
 		mMoteurGraphique.raffraichirEcran();
 		if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )break;
+//       float time = clock.getElapsedTime().asMilliseconds ();
+//       std::cout << "Time elapsed :: " << time << "\n";
 	}while( true );
 }
 
