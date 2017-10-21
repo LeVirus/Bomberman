@@ -39,24 +39,49 @@ bool CollisionBombermanSystem::getComponentForCollision(ecs::PositionComponent *
 bool CollisionBombermanSystem::checkLimitCollision(ecs::PositionComponent &posA, MoveableBombermanComponent &moveableBomberComp,
                                                    ecs::CollRectBoxComponent &RectA, ecs::CollRectBoxComponent &RectB, bool vertical)
 {
-//    RectB.mRectBox.mGetOriginsRectBox().mfY -
-//                    (RectA.mRectBox.mfGetHeightRectBox() + RectA.mVect2dVectOrigins.mfY) - 2;
-    std::cout << "checkLimitCollision\n" << RectB.mRectBox.mGetOriginsRectBox().mfY << "   " << RectA.mRectBox.mfGetHeightRectBox()
-              << "   " << RectA.mVect2dVectOrigins.mfY << "\n";
-    if(vertical)
+    if(! vertical)
     {
-        if(abs(RectB.mRectBox.mGetOriginsRectBox().mfY - (RectA.mRectBox.mfGetHeightRectBox() + RectA.mVect2dVectOrigins.mfY)) <=
-                moveableBomberComp.mfVelocite + 40)
+        if(moveableBomberComp.mBitsetDirection[MOVE_UP])
         {
-            std::cout << "checkLimitsss\n";
-
-            posA.vect2DPosComp.mfY = RectB.mRectBox.mGetOriginsRectBox().mfY - RectA.mRectBox.mfGetHeightRectBox() + 2;
+            float limitRectB = RectB.mRectBox.mGetOriginsRectBox().mfY +
+                    RectB.mRectBox.mfGetHeightRectBox();
+            //limite glissement
+            if( abs(RectA.mRectBox.mGetOriginsRectBox().mfY - limitRectB) <= moveableBomberComp.mfVelocite )
+            {
+                return true;
+            }
+        }
+        if(moveableBomberComp.mBitsetDirection[MOVE_DOWN])
+        {
+            float limitRectA = (RectA.mRectBox.mfGetHeightRectBox() + RectA.mRectBox.mGetOriginsRectBox().mfY);
+            if( abs(RectB.mRectBox.mGetOriginsRectBox().mfY - limitRectA) <= moveableBomberComp.mfVelocite)
+            {
+                return true;
+            }
         }
     }
+    //horizontal
     else
     {
-
+        if(moveableBomberComp.mBitsetDirection[MOVE_LEFT])
+        {
+            float limitRectB = RectB.mRectBox.mfGetLenghtRectBox() + RectB.mRectBox.mGetOriginsRectBox().mfX;
+            if(abs(RectA.mRectBox.mGetOriginsRectBox().mfX - limitRectB) <= moveableBomberComp.mfVelocite)
+            {
+                return true;
+            }
+        }
+        else if(moveableBomberComp.mBitsetDirection[MOVE_RIGHT])
+        {
+            float limitRectA = RectA.mRectBox.mfGetLenghtRectBox() + RectA.mRectBox.mGetOriginsRectBox().mfX;
+            if(abs(RectB.mRectBox.mGetOriginsRectBox().mfX - limitRectA) <= moveableBomberComp.mfVelocite)
+            {
+                return true;
+            }
+        }
     }
+    return false;
+
 }
 
 CollisionBombermanSystem::CollisionBombermanSystem()
@@ -147,7 +172,7 @@ void CollisionBombermanSystem::execSystem()
 			{
 				mTabInColl.setValAt(  j ,  i , 1 );
 				mTabInColl.setValAt(  i ,  j , 1 );
-                std::cout << "coll " << i << "  "<< j <<"\n";
+//                std::cout << "coll " << i << "  "<< j <<"\n";
                 if(moveableBomberComp)
                 {
                     //définis les flags non traversable (inferieur à FLAG_BOMBERMAN (2))
@@ -177,69 +202,55 @@ void CollisionBombermanSystem::treatBombermanCollisionBehavior(ecs::PositionComp
                                                                ecs::CollRectBoxComponent &RectA,
                                                                ecs::CollRectBoxComponent &RectB)
 {
-    //MOVE_RIGHT, MOVE_LEFT, MOVE_UP, MOVE_DOWN
     if(moveableBomberComp.mBitsetDirection[MOVE_RIGHT])
     {
-        float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfX - RectA.mRectBox.mfGetLenghtRectBox() - RectA.mVect2dVectOrigins.mfX - 2;
-        std::cout << "right\n" << "\n";
-
         //set the new position out of the collision box ==> - 1
         //+1 quick fix
-        if( abs(posA.vect2DPosComp.mfX -  newTheoricalPosition) <= moveableBomberComp.mfVelocite + 1)
+        if(! checkLimitCollision(posA, moveableBomberComp, RectA, RectB, false))
         {
-            std::cout << "ha\n" << newTheoricalPosition << "\n" << posA.vect2DPosComp.mfX << " dddd  "<< moveableBomberComp.mfVelocite << "\n";
-            posA.vect2DPosComp.mfX = newTheoricalPosition;
+            float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfX - RectA.mRectBox.mfGetLenghtRectBox() - RectA.mVect2dVectOrigins.mfX - 2;
+            if( abs(posA.vect2DPosComp.mfX -  newTheoricalPosition) <= moveableBomberComp.mfVelocite + 1)
+            {
+                posA.vect2DPosComp.mfX = newTheoricalPosition;
+            }
         }
-        else
-        {
-            std::cout << "ha non\n" << newTheoricalPosition << "\n" << posA.vect2DPosComp.mfX << " dddd  "<< moveableBomberComp.mfVelocite << "\n";
-            //--posA.vect2DPosComp.mfX;
-        }
-        //checkLimitCollision(posA, moveableBomberComp, RectA, RectB, true);
     }
     else if(moveableBomberComp.mBitsetDirection[MOVE_LEFT])
     {
-        std::cout << "left\n" << "\n";
-
-        float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfX + RectB.mRectBox.mfGetLenghtRectBox() -
-                RectA.mVect2dVectOrigins.mfX + 2;
-        //vérifier si l'entité n'est pas déja en collision
-        //+1 quick fix=================
-
-        if( abs(posA.vect2DPosComp.mfX - newTheoricalPosition) <= moveableBomberComp.mfVelocite /*+ 1*/)
+        if(! checkLimitCollision(posA, moveableBomberComp, RectA, RectB, false))
         {
-            std::cout << "ha\n" << posA.vect2DPosComp.mfX << "   d "<< newTheoricalPosition << "\n";
-
-            posA.vect2DPosComp.mfX = newTheoricalPosition;
-        }
-        else
-        {
-            std::cout << "ha non\n" << posA.vect2DPosComp.mfX << "   d "<< newTheoricalPosition<< "\n";
-
-            //++posA.vect2DPosComp.mfX;
-        }
-        //checkLimitCollision(posA, moveableBomberComp, RectA, RectB, true);
+            float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfX + RectB.mRectBox.mfGetLenghtRectBox() -
+                    RectA.mVect2dVectOrigins.mfX + 2;
+            if( abs(posA.vect2DPosComp.mfX - newTheoricalPosition) <= moveableBomberComp.mfVelocite /*+ 1*/)
+            {
+                posA.vect2DPosComp.mfX = newTheoricalPosition;
+            }
+         }
     }
 
     if(moveableBomberComp.mBitsetDirection[MOVE_UP])
     {
-        std::cout << "up====================\n";
-        float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfY +
-                RectB.mRectBox.mfGetHeightRectBox() - RectA.mVect2dVectOrigins.mfY + 2;
-        if( abs(posA.vect2DPosComp.mfY - newTheoricalPosition) <= moveableBomberComp.mfVelocite /*+ 1*/)
+        if(! checkLimitCollision(posA, moveableBomberComp, RectA, RectB, true))
         {
-            posA.vect2DPosComp.mfY = newTheoricalPosition;
+            float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfY +
+                    RectB.mRectBox.mfGetHeightRectBox() - RectA.mVect2dVectOrigins.mfY + 2;
+            if( abs(posA.vect2DPosComp.mfY - newTheoricalPosition) <= moveableBomberComp.mfVelocite /*+ 1*/)
+            {
+                posA.vect2DPosComp.mfY = newTheoricalPosition;
+            }
         }
 
     }
     else if(moveableBomberComp.mBitsetDirection[MOVE_DOWN])
     {
-        std::cout << "down\n";
-        float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfY -
-                (RectA.mRectBox.mfGetHeightRectBox() + RectA.mVect2dVectOrigins.mfY) - 2;
-        if( abs(posA.vect2DPosComp.mfY - newTheoricalPosition) <= moveableBomberComp.mfVelocite /*+ 1*/)
+        if(! checkLimitCollision(posA, moveableBomberComp, RectA, RectB, true))
         {
-            posA.vect2DPosComp.mfY = newTheoricalPosition;
+            float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfY -
+                    (RectA.mRectBox.mfGetHeightRectBox() + RectA.mVect2dVectOrigins.mfY) - 2;
+            if( abs(posA.vect2DPosComp.mfY - newTheoricalPosition) <= moveableBomberComp.mfVelocite /*+ 1*/)
+            {
+                posA.vect2DPosComp.mfY = newTheoricalPosition;
+            }
         }
     }
 }
