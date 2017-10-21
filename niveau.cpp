@@ -39,7 +39,7 @@ bool Niveau::loadLevel( unsigned int uiNumNiveau)
 	std::string path;
 	switch (uiNumNiveau) {
 	case 0:
-		path = "../ProjetBomberman/Ressources/Niveau/Niveau1TM";
+        path = "../Bomberman/Ressources/Niveau/Niveau1TM";
 		break;
 	default:
 		break;
