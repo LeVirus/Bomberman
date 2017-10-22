@@ -1,7 +1,27 @@
 #include "inputbombermansystem.hpp"
+#include "bombbombermansystem.hpp"
 #include "positioncomponent.hpp"
 #include "inputbombermancomponent.hpp"
 #include "moveablebombermancomponent.hpp"
+#include "constants.hpp"
+#include "flagcomponent.hpp"
+
+InputBombermanSystem::InputBombermanSystem()
+{
+	if( ! bAddComponentToSystem( BOMBER_INPUT_COMPONENT ) )
+	{
+			std::cout << "Erreur InputSystem ajout BOMBER_INPUT_COMPONENT.\n";
+	}
+	if( ! bAddComponentToSystem( ecs::POSITION_COMPONENT ) )
+	{
+			std::cout << "Erreur InputSystem ajout POSITION_COMPONENT.\n";
+	}
+	if( ! bAddComponentToSystem( BOMBER_MOVEABLE_COMPONENT ) )
+	{
+			std::cout << "Erreur InputSystem ajout MOVEABLE_COMPONENT.\n";
+	}
+}
+
 
 void InputBombermanSystem::setMoveableDirection(std::bitset<4> &directionComp, const std::bitset<NUMBR_INPUT> &inputComp)
 {
@@ -22,22 +42,6 @@ void InputBombermanSystem::setMoveableDirection(std::bitset<4> &directionComp, c
     {
         directionComp[MOVE_LEFT] = true;
     }
-}
-
-InputBombermanSystem::InputBombermanSystem()
-{
-	if( ! bAddComponentToSystem( BOMBER_INPUT_COMPONENT ) )
-	{
-			std::cout << "Erreur InputSystem ajout BOMBER_INPUT_COMPONENT.\n";
-	}
-	if( ! bAddComponentToSystem( ecs::POSITION_COMPONENT ) )
-	{
-			std::cout << "Erreur InputSystem ajout POSITION_COMPONENT.\n";
-	}
-	if( ! bAddComponentToSystem( BOMBER_MOVEABLE_COMPONENT ) )
-	{
-			std::cout << "Erreur InputSystem ajout MOVEABLE_COMPONENT.\n";
-	}
 }
 
 
@@ -91,13 +95,17 @@ void InputBombermanSystem::execSystem()
             {
                 positionComp->vect2DPosComp . mfY +=  moveableComponent -> mfVelocite;
             }
+            if( inputComponent -> mBitsetInput[LAUNCH_BOMB])
+            {
+                BombBombermanSystem *bombSystem = mptrSystemManager->searchSystemByType< BombBombermanSystem >( BOMB_BOMBER_SYSTEM );
+                //send notification to bomb system
+                bombSystem->lauchBomb(i, *positionComp);
+            }
 
             inputComponent -> mBitsetInput.reset();
 
 		}
 }
-
-
 
 void InputBombermanSystem::displaySystem() const
 {

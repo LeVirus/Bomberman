@@ -9,8 +9,8 @@
 #include "inputbombermansystem.hpp"
 #include "collrectboxcomponent.hpp"
 #include "flagcomponent.hpp"
-#include "constants.hpp"
 #include "jeu.hpp"
+
 #include <SFML/Graphics.hpp>
 #include <bitset>
 #include <cassert>
