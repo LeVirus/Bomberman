@@ -126,7 +126,7 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 				searchComponentByType< ecs::CollRectBoxComponent >( memEntity, ecs::COLL_RECTBOX_COMPONENT );
         std::cout << "largeurTile :: " << largeurTile << "  longueurTile :: " << longueurTile << std::endl;
 
-
+        //offset
         cc->mVect2dVectOrigins.mfX = 5;
         cc->mRectBox.mSetLenghtRectBox(longueurTile - 10);
 

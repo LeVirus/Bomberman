@@ -23,6 +23,7 @@ private:
     /**
      * @brief checkLimitCollision Vérifie si les collisions sont à une certaine limite.
      * Pour les cas ou l'objet mouvant puisse "glisser" sur l'entité en question.
+     * return true si il y a glissement, false sinon.
      */
     bool checkLimitCollision(ecs::PositionComponent &posA, MoveableBombermanComponent &moveableBomberComp, ecs::CollRectBoxComponent &RectA, ecs::CollRectBoxComponent &RectB, bool vertical);
 public:

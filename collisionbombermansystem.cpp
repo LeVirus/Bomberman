@@ -208,7 +208,8 @@ void CollisionBombermanSystem::treatBombermanCollisionBehavior(ecs::PositionComp
         //+1 quick fix
         if(! checkLimitCollision(posA, moveableBomberComp, RectA, RectB, false))
         {
-            float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfX - RectA.mRectBox.mfGetLenghtRectBox() - RectA.mVect2dVectOrigins.mfX - 2;
+            float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfX -
+                    RectA.mRectBox.mfGetLenghtRectBox() - RectA.mVect2dVectOrigins.mfX - 2;
             if( abs(posA.vect2DPosComp.mfX -  newTheoricalPosition) <= moveableBomberComp.mfVelocite + 1)
             {
                 posA.vect2DPosComp.mfX = newTheoricalPosition;
