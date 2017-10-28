@@ -1,6 +1,8 @@
 #include "bombbombermansystem.hpp"
 #include "timerbombermancomponent.hpp"
 #include "flagcomponent.hpp"
+#include "positioncomponent.hpp"
+#include "displaycomponent.hpp"
 #include "engine.hpp"
 #include <cassert>
 
@@ -55,6 +57,7 @@ void BombBombermanSystem::execSystem()
 
 void BombBombermanSystem::makeBombExplode(unsigned int numEntity)
 {
+    mptrSystemManager->getptrEngine()->bRmEntity(numEntity);
     std::cout << numEntity << "EXPLOOOODE!!!!\n";
 }
 
@@ -71,8 +74,20 @@ void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionC
     ECSEngine->bAddComponentToEntity( numCreatedEntity, BOMBER_TIMER_COMPONENT );
     stairwayToComponentManager().updateComponentFromEntity();
 
-    stairwayToComponentManager().instanciateExternComponent(numEntity, std::make_unique<FlagBombermanComponent>());
-    stairwayToComponentManager().instanciateExternComponent(numEntity, std::make_unique<TimerBombermanComponent>());
+    ecs::PositionComponent *posComponent = stairwayToComponentManager().searchComponentByType < ecs::PositionComponent >
+            (numCreatedEntity, ecs::POSITION_COMPONENT);
+    assert(posComponent && "BombBombermanSystem::lauchBomb posComponent is null\n");
+    posComponent->vect2DPosComp.mfX = posA.vect2DPosComp.mfX;
+    posComponent->vect2DPosComp.mfY = posA.vect2DPosComp.mfY;
+
+    ecs::DisplayComponent *dispComponent = stairwayToComponentManager().searchComponentByType < ecs::DisplayComponent >
+            (numCreatedEntity, ecs::DISPLAY_COMPONENT);
+    assert(posComponent && "BombBombermanSystem::lauchBomb dispComponent is null\n");
+
+    dispComponent->muiNumSprite = SPRITE_BOMB;
+
+    stairwayToComponentManager().instanciateExternComponent(numCreatedEntity, std::make_unique<FlagBombermanComponent>());
+    stairwayToComponentManager().instanciateExternComponent(numCreatedEntity, std::make_unique<TimerBombermanComponent>());
 
 
 }

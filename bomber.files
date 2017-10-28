@@ -27,6 +27,8 @@ IncludeLib/sinusoidbehaviorcomponent.hpp
 IncludeLib/system.hpp
 IncludeLib/systemmanager.hpp
 IncludeLib/vector2D.hpp
+bombbombermansystem.cpp
+bombbombermansystem.hpp
 collisionbombermansystem.cpp
 collisionbombermansystem.hpp
 constants.hpp
@@ -50,6 +52,4 @@ tableau2d.cpp
 tableau2d.hpp
 tilemap.cpp
 tilemap.hpp
-bombbombermansystem.cpp
-bombbombermansystem.hpp
 timerbombermancomponent.hpp

@@ -97,6 +97,7 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
     unsigned int memBombermanSprite;
 	if( MAX_PLAYER < uiNumPlayer + uiNumBot )return false;
     memBombermanSprite = mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect( 71, 45, 16, 25 ) );
+    mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect( 210, 138, 10, 11 ) );//TMP
     unsigned int largeurTile = mMoteurGraphique.getTileMap().getLargeurTile();
     unsigned int longueurTile = mMoteurGraphique.getTileMap().getLongueurTile();
 	for( unsigned int i = 0 ; i < uiNumPlayer ; ++i )
