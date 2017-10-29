@@ -6,7 +6,7 @@
 #include "engine.hpp"
 #include <cassert>
 
-BombBombermanSystem::BombBombermanSystem() : mTimeExplode(3000)
+BombBombermanSystem::BombBombermanSystem() : mTimeExplode(500)
 {
 //    if(! bAddComponentToSystem(ecs::POSITION_COMPONENT))
 //    {
@@ -16,10 +16,10 @@ BombBombermanSystem::BombBombermanSystem() : mTimeExplode(3000)
 //    {
 //        std::cout << "Erreur BombBombermanSystem ajout DISPLAY_COMPONENT.\n";
 //    }
-//    if(! bAddComponentToSystem(BOMBER_FLAG_COMPONENT))
-//    {
-//        std::cout << "Erreur BombBombermanSystem ajout BOMBER_FLAG_COMPONENT.\n";
-//    }
+    if(! bAddComponentToSystem(BOMBER_FLAG_COMPONENT))
+    {
+        std::cout << "Erreur BombBombermanSystem ajout BOMBER_FLAG_COMPONENT.\n";
+    }
     if(! bAddComponentToSystem(BOMBER_TIMER_COMPONENT))
     {
         std::cout << "Erreur BombBombermanSystem ajout BOMBER_TIMER_COMPONENT.\n";
@@ -33,6 +33,15 @@ void BombBombermanSystem::execSystem()
     TimerBombermanComponent* timerComp;
     for(; it != mVectNumEntity.end() ; ++it)
     {
+
+//        FlagBombermanComponent *flagComponent = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
+//                (*it, BOMBER_FLAG_COMPONENT);
+//        assert(flagComponent && "BombBombermanSystem::execSystem flagComponent is null\n");
+//        if(flagComponent->muiNumFlag != FLAG_BOMB)
+//        {
+//            std::cout << "ERROR " << *it << "\n";
+//        }
+
         timerComp = stairwayToComponentManager() .
                     searchComponentByType <TimerBombermanComponent> (*it, BOMBER_TIMER_COMPONENT);
         assert(timerComp && "BombBombermanSystem::execSystem :: timerComp == NULL\n");
@@ -83,8 +92,12 @@ void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionC
 
     dispComponent->muiNumSprite = SPRITE_BOMB;
 
+
     stairwayToComponentManager().instanciateExternComponent(numCreatedEntity, std::make_unique<FlagBombermanComponent>());
     stairwayToComponentManager().instanciateExternComponent(numCreatedEntity, std::make_unique<TimerBombermanComponent>());
 
-
+    FlagBombermanComponent *flagComponent = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
+            (numCreatedEntity, BOMBER_FLAG_COMPONENT);
+    assert(flagComponent && "BombBombermanSystem::lauchBomb flagComponent is null\n");
+    flagComponent->muiNumFlag = FLAG_BOMB;
 }

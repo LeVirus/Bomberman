@@ -15,7 +15,8 @@ public:
 	GestionnaireECS();
 	ecs::SystemManager *getECSSystemManager();
 	ecs::ComponentManager *getECSComponentManager();
-	void initECS();
+    ecs::Engine *getECSEngine();
+    void initECS();
 	unsigned int addEntity( const std::vector< bool > &bitsetComp );
 };
 

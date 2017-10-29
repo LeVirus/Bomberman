@@ -23,6 +23,7 @@ private:
 			mVectComponentDisplaySystem;
 public:
 	MoteurGraphique();
+    void getEventFromWindows(sf::Event &event);
 	const TileMap &getTileMap()const;
 	void initialiserFenetre();
 	void linkMainEngine( Moteur* ptrMoteur );

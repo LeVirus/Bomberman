@@ -34,10 +34,13 @@ void Moteur::lancerBoucle()
 {
 //    sf::Clock clock;
 	mMoteurGraphique.initialiserFenetre();
+
 	do
 	{
+        //mGestECS.getECSSystemManager()->updateComponentFromEntity();
 //        clock.restart();
-        mGestECS.getECSSystemManager()->bExecAllSystem();
+        //mGestECS.getECSSystemManager()->bExecAllSystem();
+        mGestECS.getECSEngine()->execIteration();
 		earnInput();
 		mMoteurGraphique.raffraichirEcran();
 		if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )break;
@@ -51,18 +54,32 @@ void Moteur::earnInput()
 	const std::vector< unsigned int > &vectNumEntitySystem = mGestECS.getECSSystemManager() ->
 			searchSystemByType< InputBombermanSystem > ( INPUT_BOMBER_SYSTEM )->getVectNumEntity();
 
-
+sf::Event event;
 	for( unsigned int i = 0 ; i < vectNumEntitySystem.size() ; ++i )
 	{
 
 		InputBombermanComponent *ic = mGestECS.getECSComponentManager() ->
 				searchComponentByType< InputBombermanComponent >(
 					vectNumEntitySystem[i], BOMBER_INPUT_COMPONENT );
-		if( sf::Keyboard::isKeyPressed( sf::Keyboard::Z ) )ic->mBitsetInput[MOVE_UP] = true;
-		if( sf::Keyboard::isKeyPressed( sf::Keyboard::S ) )ic->mBitsetInput[MOVE_DOWN] = true;
-		if( sf::Keyboard::isKeyPressed( sf::Keyboard::Q ) )ic->mBitsetInput[MOVE_LEFT] = true;
-		if( sf::Keyboard::isKeyPressed( sf::Keyboard::D ) )ic->mBitsetInput[MOVE_RIGHT] = true;
-		if( sf::Keyboard::isKeyPressed( sf::Keyboard::Space ) )ic->mBitsetInput[LAUNCH_BOMB] = true;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z))ic->mBitsetInput[MOVE_UP] = true;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))ic->mBitsetInput[MOVE_DOWN] = true;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))ic->mBitsetInput[MOVE_LEFT] = true;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))ic->mBitsetInput[MOVE_RIGHT] = true;
+        if(! mLockLaunchBomb && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        {
+            ic->mBitsetInput[LAUNCH_BOMB] = true;
+            mLockLaunchBomb = true;
+        }
+
+        if(mLockLaunchBomb)
+        {
+            mMoteurGraphique.getEventFromWindows(event);
+            if(sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space)
+            {
+                mMoteurGraphique.getEventFromWindows(event);
+                mLockLaunchBomb = false;
+            }
+        }
 	}
 }
 

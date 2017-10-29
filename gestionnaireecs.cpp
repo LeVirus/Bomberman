@@ -25,7 +25,12 @@ ecs::SystemManager *GestionnaireECS::getECSSystemManager()
 
 ecs::ComponentManager *GestionnaireECS::getECSComponentManager()
 {
-	return mCompMan;
+    return mCompMan;
+}
+
+ecs::Engine *GestionnaireECS::getECSEngine()
+{
+    return &mEngineECS;
 }
 
 /**

@@ -12,7 +12,12 @@ MoteurGraphique::MoteurGraphique()
 
 	mVectTexture.push_back( sf::Texture() );
     assert( mVectTexture[0].loadFromFile( "../Bomberman/Ressources/Texture/textBomberman.png" )
-			&& "error while loading texture\n" );
+            && "error while loading texture\n" );
+}
+
+void MoteurGraphique::getEventFromWindows(sf::Event &event)
+{
+    mFenetre.pollEvent(event);
 }
 
 const TileMap &MoteurGraphique::getTileMap()const

@@ -49,12 +49,11 @@ void InputBombermanSystem::execSystem()
 {
 	System::execSystem();
 		for( unsigned int i = 0 ; i < mVectNumEntity.size() ; ++i ){
-
 			InputBombermanComponent * inputComponent = stairwayToComponentManager() .
 					searchComponentByType < InputBombermanComponent > ( mVectNumEntity[ i ],
 																	BOMBER_INPUT_COMPONENT );
 			if( ! inputComponent ){
-				std::cout << " InputBombermanSystem pointeur NULL inputComponent \n";
+                std::cout << i << " InputBombermanSystem pointeur NULL inputComponent \n";
 				continue;
 			}
 			ecs::PositionComponent * positionComp = stairwayToComponentManager() .

@@ -15,6 +15,7 @@ private:
 	MoteurGraphique mMoteurGraphique;
 	void positionnerComponent(ecs::PositionComponent &posComp, unsigned int posX, unsigned int posY);
 	const Jeu &mPtrJeu;
+    bool mLockLaunchBomb = false;
 public:
 	Moteur(const Jeu &jeu);
 	const Jeu &getJeu()const;
