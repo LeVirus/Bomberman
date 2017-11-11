@@ -3,11 +3,14 @@
 
 class Moteur;
 
-#include <SFML/Graphics.hpp>
 #include "tilemap.hpp"
-#include "displaycomponent.hpp"
 #include "niveau.hpp"
-#include "positioncomponent.hpp"
+
+namespace ecs
+{
+    struct PositionComponent;
+    struct DisplayComponent;
+}
 
 class MoteurGraphique
 {
@@ -21,6 +24,7 @@ private:
 	Moteur* mPtrMoteurPrincipal = nullptr;
 	const std::vector< std::pair< ecs::DisplayComponent *, ecs::PositionComponent * > > *
 			mVectComponentDisplaySystem;
+    static float mCaseLenght, mCaseHeight;
 public:
 	MoteurGraphique();
     void getEventFromWindows(sf::Event &event);
@@ -32,6 +36,7 @@ public:
 	void raffraichirEcran();
 	void displayECSSprite();
 	void positionnerCaseTileMap(unsigned int uiNumEntity, unsigned int uiPositionX, unsigned int uiPositionY );
+    static void static_positionComponentCenterCurrentCase(ecs::PositionComponent &positionComp);
 };
 
 #endif // MOTEURGRAPHIQUE_H

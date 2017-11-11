@@ -4,8 +4,12 @@
 #include <cassert>
 #include "moteur.hpp"
 #include "jeu.hpp"
+#include "positioncomponent.hpp"
+#include <SFML/Graphics.hpp>
 
 
+float MoteurGraphique::mCaseLenght;
+float MoteurGraphique::mCaseHeight;
 
 MoteurGraphique::MoteurGraphique()
 {
@@ -46,6 +50,9 @@ void MoteurGraphique::loadTileMap(const Niveau &level, unsigned int uiNumEntity 
 	mTileMap.configTileMap(level);
 	mTileMap.loadLevel(level, uiNumEntity );
 	mTileMap.adaptToScale(SIZE_SCALE, SIZE_SCALE);
+
+    mCaseLenght = mTileMap.getLongueurTile() /** SIZE_SCALE*/;
+    mCaseHeight = mTileMap.getLargeurTile() /** SIZE_SCALE*/;
 }
 
 unsigned int MoteurGraphique::loadSprite( unsigned int uiNumTexture, const sf::IntRect &positionSprite )
@@ -98,12 +105,33 @@ void MoteurGraphique::positionnerCaseTileMap( unsigned int uiNumEntity, unsigned
 
 }
 
+//a améliorer
+void MoteurGraphique::static_positionComponentCenterCurrentCase(ecs::PositionComponent &positionComp)
+{
+    float thirdCaseLenght = mCaseLenght / 3 ;
+    float thirdCaseHeight = mCaseHeight / 3 ;
+
+    unsigned int caseX = (unsigned int)(positionComp.vect2DPosComp.mfX - POSITION_LEVEL_X) / mCaseLenght;
+    unsigned int caseY = (unsigned int)(positionComp.vect2DPosComp.mfY - POSITION_LEVEL_Y) / mCaseHeight;
+
+    if((unsigned int)(positionComp.vect2DPosComp.mfX - POSITION_LEVEL_X) % (unsigned int)mCaseLenght > (unsigned int)thirdCaseLenght)
+    {
+        ++caseX;
+    }
+
+    if((unsigned int)(positionComp.vect2DPosComp.mfY - POSITION_LEVEL_Y) % (unsigned int)mCaseHeight > (unsigned int)thirdCaseHeight)
+    {
+        ++caseY;
+    }
+
+    positionComp.vect2DPosComp.mfX = POSITION_LEVEL_X + caseX * mCaseLenght + thirdCaseLenght;
+    positionComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + caseY * mCaseHeight + thirdCaseHeight;
+}
+
 void MoteurGraphique::raffraichirEcran()
 {
 	mFenetre.clear( sf::Color::Black );
 	mTileMap.setScale( SIZE_SCALE, SIZE_SCALE );
 	displayECSSprite();
-
 	mFenetre.display();
-
 }

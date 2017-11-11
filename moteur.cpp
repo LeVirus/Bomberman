@@ -11,6 +11,9 @@
 #include "flagcomponent.hpp"
 #include "jeu.hpp"
 
+#include "displaysystem.hpp"
+#include "positioncomponent.hpp"
+
 #include <SFML/Graphics.hpp>
 #include <bitset>
 #include <cassert>

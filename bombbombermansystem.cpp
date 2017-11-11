@@ -3,6 +3,7 @@
 #include "flagcomponent.hpp"
 #include "positioncomponent.hpp"
 #include "displaycomponent.hpp"
+#include "moteurgraphique.hpp"
 #include "engine.hpp"
 #include <cassert>
 
@@ -72,6 +73,7 @@ void BombBombermanSystem::displaySystem() const
 
 void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionComponent &posA)
 {
+    //create entity
     unsigned int numCreatedEntity = mptrSystemManager->getptrEngine()->AddEntity();
     ecs::Engine *ECSEngine = mptrSystemManager->getptrEngine();
     ECSEngine->bAddComponentToEntity( numCreatedEntity, ecs::DISPLAY_COMPONENT );
@@ -80,11 +82,15 @@ void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionC
     ECSEngine->bAddComponentToEntity( numCreatedEntity, BOMBER_TIMER_COMPONENT );
     stairwayToComponentManager().updateComponentFromEntity();
 
+    //position entity
     ecs::PositionComponent *posComponent = stairwayToComponentManager().searchComponentByType < ecs::PositionComponent >
             (numCreatedEntity, ecs::POSITION_COMPONENT);
     assert(posComponent && "BombBombermanSystem::lauchBomb posComponent is null\n");
+
     posComponent->vect2DPosComp.mfX = posA.vect2DPosComp.mfX;
     posComponent->vect2DPosComp.mfY = posA.vect2DPosComp.mfY;
+    MoteurGraphique::static_positionComponentCenterCurrentCase(*posComponent);
+
 
     ecs::DisplayComponent *dispComponent = stairwayToComponentManager().searchComponentByType < ecs::DisplayComponent >
             (numCreatedEntity, ecs::DISPLAY_COMPONENT);
