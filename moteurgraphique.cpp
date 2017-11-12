@@ -51,8 +51,8 @@ void MoteurGraphique::loadTileMap(const Niveau &level, unsigned int uiNumEntity 
 	mTileMap.loadLevel(level, uiNumEntity );
 	mTileMap.adaptToScale(SIZE_SCALE, SIZE_SCALE);
 
-    mCaseLenght = mTileMap.getLongueurTile() /** SIZE_SCALE*/;
-    mCaseHeight = mTileMap.getLargeurTile() /** SIZE_SCALE*/;
+    mCaseLenght = mTileMap.getLongueurTile();
+    mCaseHeight = mTileMap.getLargeurTile();
 }
 
 unsigned int MoteurGraphique::loadSprite( unsigned int uiNumTexture, const sf::IntRect &positionSprite )
@@ -99,7 +99,6 @@ void MoteurGraphique::positionnerCaseTileMap( unsigned int uiNumEntity, unsigned
 			searchComponentByType< ecs::PositionComponent >( uiNumEntity, ecs::POSITION_COMPONENT );
 
 	assert( pc && "pc == null\n");
-	const Niveau &memNiveau = mPtrMoteurPrincipal->getJeu().getNiveau();
     pc->vect2DPosComp.mfX = POSITION_LEVEL_X + uiPositionX * mTileMap.getLongueurTile();
     pc->vect2DPosComp.mfY = POSITION_LEVEL_Y + uiPositionY * mTileMap.getLargeurTile();
 

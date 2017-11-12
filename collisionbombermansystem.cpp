@@ -115,6 +115,8 @@ CollisionBombermanSystem::CollisionBombermanSystem()
 	vect[NUMBR_MAX_FLAG * 2 + FLAG_BOMB] = 1;
 	vect[NUMBR_MAX_FLAG * 3 + FLAG_BOMB] = 1;
 
+    //FLAG_DESTRUCTIBLE_WALL, FLAG_SOLID_WALL, FLAG_BOMBERMAN,
+    //FLAG_EXPLOSION, FLAG_OBJECT, FLAG_BOMB
 	mTabFlag.bAttribuerTab(vect, NUMBR_MAX_FLAG, NUMBR_MAX_FLAG);
 
 	if( ! bAddComponentToSystem( ecs::POSITION_COMPONENT ) )

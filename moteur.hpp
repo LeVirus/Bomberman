@@ -24,7 +24,7 @@ public:
 	GestionnaireECS &getGestionnaireECS();
 	void loadTileMap(const Niveau &niv);
 	bool loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot );
-	void loadLevelWall(const Niveau &niv);
+    void loadLevelWall(const Niveau &niv);
 };
 
 #endif // MOTEUR_H

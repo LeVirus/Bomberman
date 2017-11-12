@@ -6,6 +6,8 @@
 #include "moteurgraphique.hpp"
 #include "engine.hpp"
 #include <cassert>
+#include "explosionbombermansystem.hpp"
+
 
 BombBombermanSystem::BombBombermanSystem() : mTimeExplode(500)
 {
@@ -35,13 +37,13 @@ void BombBombermanSystem::execSystem()
     for(; it != mVectNumEntity.end() ; ++it)
     {
 
-//        FlagBombermanComponent *flagComponent = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
-//                (*it, BOMBER_FLAG_COMPONENT);
-//        assert(flagComponent && "BombBombermanSystem::execSystem flagComponent is null\n");
-//        if(flagComponent->muiNumFlag != FLAG_BOMB)
-//        {
-//            std::cout << "ERROR " << *it << "\n";
-//        }
+        FlagBombermanComponent *flagComponent = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
+                (*it, BOMBER_FLAG_COMPONENT);
+        assert(flagComponent && "BombBombermanSystem::execSystem flagComponent is null\n");
+        if(flagComponent->muiNumFlag != FLAG_BOMB)
+        {
+            continue;
+        }
 
         timerComp = stairwayToComponentManager() .
                     searchComponentByType <TimerBombermanComponent> (*it, BOMBER_TIMER_COMPONENT);
@@ -64,6 +66,8 @@ void BombBombermanSystem::execSystem()
 
 void BombBombermanSystem::makeBombExplode(unsigned int numEntity)
 {
+    mptrSystemManager->searchSystemByType<ExplosionBombermanSystem>(EXPLOSION_BOMBER_SYSTEM);
+
     mptrSystemManager->getptrEngine()->bRmEntity(numEntity);
     std::cout << numEntity << "EXPLOOOODE!!!!\n";
 }

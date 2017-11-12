@@ -2,8 +2,10 @@
 #include "inputbombermansystem.hpp"
 #include "collisionbombermansystem.hpp"
 #include "bombbombermansystem.hpp"
+#include "explosionbombermansystem.hpp"
+#include "moteur.hpp"
 
-GestionnaireECS::GestionnaireECS()
+GestionnaireECS::GestionnaireECS(Moteur &refMoteur):mRefMoteur(refMoteur)
 {
 	mCompMan = &mEngineECS.getComponentManager();
 	mSysMan = &mEngineECS.getSystemManager();
@@ -16,6 +18,7 @@ void GestionnaireECS::initECS()
 	mSysMan->bAddExternSystem(std::make_unique<InputBombermanSystem>());
 	mSysMan->bAddExternSystem(std::make_unique<CollisionBombermanSystem>());
     mSysMan->bAddExternSystem(std::make_unique<BombBombermanSystem>());
+    mSysMan->bAddExternSystem(std::make_unique<ExplosionBombermanSystem>());
 }
 
 ecs::SystemManager *GestionnaireECS::getECSSystemManager()
@@ -51,5 +54,10 @@ unsigned int GestionnaireECS::addEntity( const std::vector< bool > &bitsetComp )
 	mCompMan->updateComponentFromEntity();
 	//mEngineECS.displayVectEntity();
 
-	return mem;
+    return mem;
+}
+
+const Moteur &GestionnaireECS::getMoteur() const
+{
+    return mRefMoteur;
 }

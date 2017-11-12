@@ -19,7 +19,6 @@ private:
 	sf::RenderWindow mFenetre;
 	std::vector< sf::Texture > mVectTexture;
 	sf::View mCamera;
-	sf::VertexArray mVertArrayTileMap;
 	TileMap mTileMap;
 	Moteur* mPtrMoteurPrincipal = nullptr;
 	const std::vector< std::pair< ecs::DisplayComponent *, ecs::PositionComponent * > > *

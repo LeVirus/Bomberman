@@ -53,3 +53,5 @@ tilemap.hpp
 bombbombermansystem.cpp
 bombbombermansystem.hpp
 timerbombermancomponent.hpp
+explosionbombermansystem.hpp
+explosionbombermansystem.cpp

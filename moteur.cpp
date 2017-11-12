@@ -18,15 +18,12 @@
 #include <bitset>
 #include <cassert>
 #include <SFML/System/Clock.hpp>
-Moteur::Moteur(const Jeu &jeu): mPtrJeu(jeu)
+
+
+Moteur::Moteur(const Jeu &jeu): mPtrJeu(jeu), mGestECS(*this)
 {
 	mMoteurGraphique.linkMainEngine( this );
 }
-
-/*void Moteur::linkJeu(Jeu &jeu)
-{
-	mPtrJeu = &jeu;
-}*/
 
 const Jeu &Moteur::getJeu() const
 {
