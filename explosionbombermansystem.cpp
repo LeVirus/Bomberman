@@ -1,4 +1,5 @@
 #include "explosionbombermansystem.hpp"
+#include "constants.hpp"
 
 ExplosionBombermanSystem::ExplosionBombermanSystem()
 {

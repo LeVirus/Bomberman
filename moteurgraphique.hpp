@@ -36,6 +36,8 @@ public:
 	void displayECSSprite();
 	void positionnerCaseTileMap(unsigned int uiNumEntity, unsigned int uiPositionX, unsigned int uiPositionY );
     static void static_positionComponentCenterCurrentCase(ecs::PositionComponent &positionComp);
+    static void static_getPositionsCurrentCase(const ecs::PositionComponent &positionComp,
+                                               unsigned int &caseX, unsigned int &caseY);
 };
 
 #endif // MOTEURGRAPHIQUE_H

@@ -93,7 +93,7 @@ void MoteurGraphique::displayECSSprite()
 	}
 }
 
-void MoteurGraphique::positionnerCaseTileMap( unsigned int uiNumEntity, unsigned int uiPositionX, unsigned int uiPositionY )
+void MoteurGraphique::positionnerCaseTileMap(unsigned int uiNumEntity, unsigned int uiPositionX, unsigned int uiPositionY )
 {
 	ecs::PositionComponent * pc = mPtrMoteurPrincipal->getGestionnaireECS().getECSComponentManager() ->
 			searchComponentByType< ecs::PositionComponent >( uiNumEntity, ecs::POSITION_COMPONENT );
@@ -110,8 +110,22 @@ void MoteurGraphique::static_positionComponentCenterCurrentCase(ecs::PositionCom
     float thirdCaseLenght = mCaseLenght / 3 ;
     float thirdCaseHeight = mCaseHeight / 3 ;
 
-    unsigned int caseX = (unsigned int)(positionComp.vect2DPosComp.mfX - POSITION_LEVEL_X) / mCaseLenght;
-    unsigned int caseY = (unsigned int)(positionComp.vect2DPosComp.mfY - POSITION_LEVEL_Y) / mCaseHeight;
+    unsigned int caseX;
+    unsigned int caseY;
+
+    static_getPositionsCurrentCase(positionComp, caseX, caseY);
+
+    positionComp.vect2DPosComp.mfX = POSITION_LEVEL_X + caseX * mCaseLenght + thirdCaseLenght;
+    positionComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + caseY * mCaseHeight + thirdCaseHeight;
+}
+
+void MoteurGraphique::static_getPositionsCurrentCase(const ecs::PositionComponent &positionComp,
+                                                     unsigned int &caseX, unsigned int &caseY)
+{
+    float thirdCaseLenght = mCaseLenght / 3;
+    float thirdCaseHeight = mCaseHeight / 3;
+    caseX = (unsigned int)(positionComp.vect2DPosComp.mfX - POSITION_LEVEL_X) / mCaseLenght;
+    caseY = (unsigned int)(positionComp.vect2DPosComp.mfY - POSITION_LEVEL_Y) / mCaseHeight;
 
     if((unsigned int)(positionComp.vect2DPosComp.mfX - POSITION_LEVEL_X) % (unsigned int)mCaseLenght > (unsigned int)thirdCaseLenght)
     {
@@ -122,9 +136,6 @@ void MoteurGraphique::static_positionComponentCenterCurrentCase(ecs::PositionCom
     {
         ++caseY;
     }
-
-    positionComp.vect2DPosComp.mfX = POSITION_LEVEL_X + caseX * mCaseLenght + thirdCaseLenght;
-    positionComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + caseY * mCaseHeight + thirdCaseHeight;
 }
 
 void MoteurGraphique::raffraichirEcran()

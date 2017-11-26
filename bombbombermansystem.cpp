@@ -66,7 +66,10 @@ void BombBombermanSystem::execSystem()
 
 void BombBombermanSystem::makeBombExplode(unsigned int numEntity)
 {
-    mptrSystemManager->searchSystemByType<ExplosionBombermanSystem>(EXPLOSION_BOMBER_SYSTEM);
+    ExplosionBombermanSystem *explosionSystem = mptrSystemManager->searchSystemByType<ExplosionBombermanSystem>(EXPLOSION_BOMBER_SYSTEM);
+
+    ecs::PositionComponent *posComponent = stairwayToComponentManager().searchComponentByType < ecs::PositionComponent >
+            (numEntity, ecs::POSITION_COMPONENT);
 
     mptrSystemManager->getptrEngine()->bRmEntity(numEntity);
     std::cout << numEntity << "EXPLOOOODE!!!!\n";

@@ -19,6 +19,7 @@ SOURCES += main.cpp \
     tilemap.cpp \
     tableau2d.cpp \
     inputbombermansystem.cpp \
+    explosionbombermansystem.cpp \
     collisionbombermansystem.cpp \
     bombbombermansystem.cpp
 
@@ -33,6 +34,7 @@ HEADERS += \
     constants.hpp \
     inputbombermansystem.hpp \
     inputbombermancomponent.hpp \
+    explosionbombermansystem.cpp \
     moveablebombermancomponent.hpp \
     collisionbombermansystem.hpp \
     flagcomponent.hpp \
