@@ -1,7 +1,6 @@
 #ifndef NIVEAU_HPP
 #define NIVEAU_HPP
 
-
 #include <tableau2d.hpp>
 
 typedef std::vector<std::pair<unsigned int, unsigned int>> vectPairUi_t;
@@ -9,7 +8,7 @@ typedef std::vector<std::pair<unsigned int, unsigned int>> vectPairUi_t;
 class Niveau
 {
 private:
-	Tableau2D mtabNiveau;
+    static Tableau2D mtabNiveau;
 	unsigned int muiLongueurTile, muiLargeurTile, muiLongueurNiveau, muiLargeurNiveau;
 	vectPairUi_t mvectPositionTuile;
 	std::string mPathToTexture;
@@ -18,7 +17,7 @@ public:
 	void adaptToScale( float fX, float fY );
 	void setPositionPair( std::ifstream &flux );
 	bool loadLevel(unsigned int uiNumNiveau );
-	const Tableau2D &getTabNiveau()const;
+    static const Tableau2D &getTabNiveau()const;
 	unsigned int getLongueurTile()const;
 	unsigned int getLargeurTile()const;
 	unsigned int getLongueurNiveau()const;

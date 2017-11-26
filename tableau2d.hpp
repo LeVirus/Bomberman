@@ -28,7 +28,6 @@ public:
 	unsigned char getValAt( unsigned int uiCaseX, unsigned int uiCaseY )const;
 	bool setValAt( unsigned int uiCaseX, unsigned int uiCaseY, unsigned char value );
 
-
 	const std::vector< unsigned char > &getTab()const;
 	void resize( unsigned int longueur, unsigned int largeur );
 

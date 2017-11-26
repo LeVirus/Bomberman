@@ -2,6 +2,8 @@
 #include <cassert>
 #include <iostream>
 
+Tableau2D Niveau::mtabNiveau;
+
 Niveau::Niveau()
 {
 

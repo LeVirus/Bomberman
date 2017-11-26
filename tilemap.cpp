@@ -4,7 +4,7 @@
 
 bool TileMap::loadTexture( const std::string &path )
 {
-	return mTexture.loadFromFile( path );
+    return mTexture.loadFromFile( path );
 }
 
 /**
@@ -25,7 +25,7 @@ bool TileMap::loadTexture( const std::string &path )
  * @param path Chemin vers le fichier de configuration.
  * @return
  */
-bool TileMap::loadLevel(const Niveau &level, unsigned int uiNumEntity )
+bool TileMap::loadLevel(const Niveau &level, unsigned int uiNumEntity)
 {
 	if(! loadTexture(level.getPathToTexture()))
 	{
