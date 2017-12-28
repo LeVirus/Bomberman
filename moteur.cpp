@@ -9,6 +9,7 @@
 #include "inputbombermansystem.hpp"
 #include "collrectboxcomponent.hpp"
 #include "flagcomponent.hpp"
+#include "playerconfigbombermancomponent.hpp"
 #include "jeu.hpp"
 
 #include "displaysystem.hpp"
@@ -109,26 +110,27 @@ void Moteur::loadTileMap(const Niveau &niv)
 	mMoteurGraphique.loadTileMap( niv, memEntity );
 }
 
-bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot )
+bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
 {
     unsigned int memBombermanSprite;
-	if( MAX_PLAYER < uiNumPlayer + uiNumBot )return false;
-    memBombermanSprite = mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect( 71, 45, 16, 25 ) );
-    mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect( 210, 138, 10, 11 ) );//TMP
+    if(MAX_PLAYER < uiNumPlayer + uiNumBot)return false;
+    memBombermanSprite = mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect(71, 45, 16, 25));
+    mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect(210, 138, 10, 11));//TMP
     unsigned int largeurTile = mMoteurGraphique.getTileMap().getLargeurTile();
     unsigned int longueurTile = mMoteurGraphique.getTileMap().getLongueurTile();
-	for( unsigned int i = 0 ; i < uiNumPlayer ; ++i )
+    for(unsigned int i = 0 ; i < uiNumPlayer ; ++i)
 	{
 		std::vector< bool > bitsetComp;
 		bitsetComp.resize( getGestionnaireECS().getECSComponentManager()->getNumberComponent() );
-		bitsetComp[ ecs::DISPLAY_COMPONENT ] = true;
-		bitsetComp[ ecs::POSITION_COMPONENT ] = true;
-		bitsetComp[ BOMBER_MOVEABLE_COMPONENT] = true;
-		bitsetComp[ ecs::COLL_RECTBOX_COMPONENT ] = true;
-		bitsetComp[ BOMBER_INPUT_COMPONENT ] = true;
-		bitsetComp[ BOMBER_FLAG_COMPONENT ] = true;
+        bitsetComp[ecs::DISPLAY_COMPONENT]          = true;
+        bitsetComp[ecs::POSITION_COMPONENT]         = true;
+        bitsetComp[BOMBER_MOVEABLE_COMPONENT]       = true;
+        bitsetComp[ecs::COLL_RECTBOX_COMPONENT]     = true;
+        bitsetComp[BOMBER_INPUT_COMPONENT]          = true;
+        bitsetComp[BOMBER_FLAG_COMPONENT]           = true;
+        bitsetComp[BOMBER_PLAYER_CONFIG_COMPONENT]  = true;
 
-		unsigned int memEntity = mGestECS.addEntity( bitsetComp );
+        unsigned int memEntity = mGestECS.addEntity(bitsetComp);
 		mGestECS.getECSComponentManager()->
 				instanciateExternComponent(memEntity, std::make_unique<InputBombermanComponent>());
 
@@ -136,27 +138,28 @@ bool Moteur::loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot 
 				instanciateExternComponent(memEntity, std::make_unique<MoveableBombermanComponent>());
 		mGestECS.getECSComponentManager()->
 				instanciateExternComponent(memEntity, std::make_unique<FlagBombermanComponent>());
-		FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
-				searchComponentByType < FlagBombermanComponent > ( memEntity, BOMBER_FLAG_COMPONENT );
+        mGestECS.getECSComponentManager()->
+                instanciateExternComponent(memEntity, std::make_unique<PlayerConfigBombermanComponent>());
+            std::cout << memEntity << "  <OKKKKKKKKK\n";
+
+        FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
+                searchComponentByType <FlagBombermanComponent> (memEntity, BOMBER_FLAG_COMPONENT);
 		fc->muiNumFlag = FLAG_BOMBERMAN;
 
 		ecs::CollRectBoxComponent * cc = mGestECS.getECSComponentManager() ->
-				searchComponentByType< ecs::CollRectBoxComponent >( memEntity, ecs::COLL_RECTBOX_COMPONENT );
+                searchComponentByType< ecs::CollRectBoxComponent >(memEntity, ecs::COLL_RECTBOX_COMPONENT);
         std::cout << "largeurTile :: " << largeurTile << "  longueurTile :: " << longueurTile << std::endl;
 
         //offset
         cc->mVect2dVectOrigins.mfX = 5;
         cc->mRectBox.mSetLenghtRectBox(longueurTile - 10);
-
         cc->mVect2dVectOrigins.mfY = 36;
         cc->mRectBox.mSetHeightRectBox(largeurTile - 10);
-
-
         ecs::DisplayComponent * dc = mGestECS.getECSComponentManager() ->
                 searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT );
         dc->muiNumSprite = memBombermanSprite;
 
-        mMoteurGraphique.positionnerCaseTileMap( memEntity, 1, 1 );
+        mMoteurGraphique.positionnerCaseTileMap(memEntity, 1, 1);
 
 	}
 	return true;
@@ -175,7 +178,7 @@ void Moteur::loadLevelWall(const Niveau &niv)
     unsigned int cmptX = 0, cmptY = 0;
 	for(std::vector<unsigned char>::const_iterator it = memTabNiv.begin(); it != memTabNiv.end(); ++it)
 	{
-		if(*it != FLAG_SOLID_WALL && *it != FLAG_DESTRUCTIBLE_WALL)
+        if(*it != TILE_SOLID_WALL && *it != TILE_DESTRUCTIBLE_WALL)
 		{
 			++cmptX;
 			if(cmptX >= longueurNiveau)

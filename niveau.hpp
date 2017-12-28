@@ -17,7 +17,7 @@ public:
 	void adaptToScale( float fX, float fY );
 	void setPositionPair( std::ifstream &flux );
 	bool loadLevel(unsigned int uiNumNiveau );
-    static const Tableau2D &getTabNiveau()const;
+    static const Tableau2D &getTabNiveau();
 	unsigned int getLongueurTile()const;
 	unsigned int getLargeurTile()const;
 	unsigned int getLongueurNiveau()const;
@@ -25,6 +25,7 @@ public:
 	const std::string &getPathToTexture()const;
 	const vectPairUi_t &getVectPositionTile()const;
 	void displayLevel()const;
+    bool destructWall(unsigned int x, unsigned int y);
 };
 
 #endif // NIVEAU_HPP

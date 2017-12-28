@@ -69,7 +69,7 @@ bool Niveau::loadLevel( unsigned int uiNumNiveau)
 
 }
 
-const Tableau2D &Niveau::getTabNiveau() const
+const Tableau2D &Niveau::getTabNiveau()
 {
 	return mtabNiveau;
 }
@@ -106,7 +106,12 @@ void Niveau::displayLevel() const
 		std::cout << "tuile x::" << i.first <<"tuile y::" << i.second <<"\n" ;
 	}
 	mtabNiveau.afficherTab();
-	std::cout << "FIN AFFICHAGE TILEMAP\n";
+    std::cout << "FIN AFFICHAGE TILEMAP\n";
+}
+
+bool Niveau::destructWall(unsigned int x, unsigned int y)
+{
+    //if(mtabNiveau.getValAt(x, y) == )
 }
 
 unsigned int Niveau::getLargeurTile() const

@@ -8,13 +8,13 @@ namespace ecs
 {
     struct PositionComponent;
 }
+class ExplosionBombermanSystem;
 
 class BombBombermanSystem : public ecs::System
 {
 private:
     unsigned int mTimeExplode;
-
-    void makeBombExplode(unsigned int numEntity);
+    ExplosionBombermanSystem *m_ptrExplosionSystem;
 public:
     BombBombermanSystem();
     virtual void execSystem();

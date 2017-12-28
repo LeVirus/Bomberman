@@ -13,12 +13,12 @@ GestionnaireECS::GestionnaireECS(Moteur &refMoteur):mRefMoteur(refMoteur)
 
 void GestionnaireECS::initECS()
 {
-    mCompMan->addEmplacementsForExternComponent( 4 );//inputComp, moveableComp, timerComp & flagComp
-	mSysMan->bAddSystem( ecs::DISPLAY_SYSTEM );
+    mCompMan->addEmplacementsForExternComponent(7);
+    mSysMan->bAddSystem(ecs::DISPLAY_SYSTEM);
 	mSysMan->bAddExternSystem(std::make_unique<InputBombermanSystem>());
 	mSysMan->bAddExternSystem(std::make_unique<CollisionBombermanSystem>());
-    mSysMan->bAddExternSystem(std::make_unique<BombBombermanSystem>());
     mSysMan->bAddExternSystem(std::make_unique<ExplosionBombermanSystem>());
+    mSysMan->bAddExternSystem(std::make_unique<BombBombermanSystem>());
 }
 
 ecs::SystemManager *GestionnaireECS::getECSSystemManager()
@@ -40,20 +40,17 @@ ecs::Engine *GestionnaireECS::getECSEngine()
  * @brief GestionnaireECS::addEntity Création d'une entité avec les composants à y inclure.
  * @param bitsetComp La table contenant les composants à inclure.
  */
-unsigned int GestionnaireECS::addEntity( const std::vector< bool > &bitsetComp )
+unsigned int GestionnaireECS::addEntity(const std::vector< bool > &bitsetComp)
 {
 	unsigned int mem = mEngineECS.AddEntity();
-	for( unsigned int i = 0; i < bitsetComp.size(); ++i )
+    for(unsigned int i = 0; i < bitsetComp.size(); ++i)
 	{
-		if( bitsetComp[ i ] )//composant
+        if(bitsetComp[i])//composant
 		{
-			mEngineECS.bAddComponentToEntity( mem, i );
+            mEngineECS.bAddComponentToEntity(mem, i);
 		}
-		//this->getECSComponentManager()->displayComponent();
 	}
 	mCompMan->updateComponentFromEntity();
-	//mEngineECS.displayVectEntity();
-
     return mem;
 }
 

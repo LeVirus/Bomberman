@@ -36,7 +36,7 @@ bool CollisionBombermanSystem::getComponentForCollision(ecs::PositionComponent *
     return true;
 }
 
-bool CollisionBombermanSystem::checkLimitCollision(ecs::PositionComponent &posA, MoveableBombermanComponent &moveableBomberComp,
+bool CollisionBombermanSystem::checkLimitCollision(MoveableBombermanComponent &moveableBomberComp,
                                                    ecs::CollRectBoxComponent &RectA, ecs::CollRectBoxComponent &RectB, bool vertical)
 {
     if(! vertical)
@@ -208,7 +208,7 @@ void CollisionBombermanSystem::treatBombermanCollisionBehavior(ecs::PositionComp
     {
         //set the new position out of the collision box ==> - 1
         //+1 quick fix
-        if(! checkLimitCollision(posA, moveableBomberComp, RectA, RectB, false))
+        if(! checkLimitCollision(moveableBomberComp, RectA, RectB, false))
         {
             float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfX -
                     RectA.mRectBox.mfGetLenghtRectBox() - RectA.mVect2dVectOrigins.mfX - 2;
@@ -220,7 +220,7 @@ void CollisionBombermanSystem::treatBombermanCollisionBehavior(ecs::PositionComp
     }
     else if(moveableBomberComp.mBitsetDirection[MOVE_LEFT])
     {
-        if(! checkLimitCollision(posA, moveableBomberComp, RectA, RectB, false))
+        if(! checkLimitCollision(moveableBomberComp, RectA, RectB, false))
         {
             float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfX + RectB.mRectBox.mfGetLenghtRectBox() -
                     RectA.mVect2dVectOrigins.mfX + 2;
@@ -233,7 +233,7 @@ void CollisionBombermanSystem::treatBombermanCollisionBehavior(ecs::PositionComp
 
     if(moveableBomberComp.mBitsetDirection[MOVE_UP])
     {
-        if(! checkLimitCollision(posA, moveableBomberComp, RectA, RectB, true))
+        if(! checkLimitCollision(moveableBomberComp, RectA, RectB, true))
         {
             float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfY +
                     RectB.mRectBox.mfGetHeightRectBox() - RectA.mVect2dVectOrigins.mfY + 2;
@@ -246,7 +246,7 @@ void CollisionBombermanSystem::treatBombermanCollisionBehavior(ecs::PositionComp
     }
     else if(moveableBomberComp.mBitsetDirection[MOVE_DOWN])
     {
-        if(! checkLimitCollision(posA, moveableBomberComp, RectA, RectB, true))
+        if(! checkLimitCollision(moveableBomberComp, RectA, RectB, true))
         {
             float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfY -
                     (RectA.mRectBox.mfGetHeightRectBox() + RectA.mVect2dVectOrigins.mfY) - 2;

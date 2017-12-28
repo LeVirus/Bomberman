@@ -6,6 +6,8 @@ namespace ecs
     struct PositionComponent;
 }
 
+struct TilemapBombermanComponent;
+
 #include "system.hpp"
 
 class ExplosionBombermanSystem : public ecs::System
@@ -14,10 +16,9 @@ public:
     ExplosionBombermanSystem();
     virtual void execSystem();
     virtual void displaySystem()const;
-    void makeBombExplode(const ecs::PositionComponent &posComp);
-    bool getLimitForExplosion(const unsigned int caseX, const unsigned int caseY,
-                              unsigned int &minX, unsigned int &maxX,
-                              unsigned int &minY, unsigned int &maxY);
+    void makeBombExplode(unsigned int numEntityBomb);
+    unsigned int createExplosionEntity();
+    bool createExplosions(unsigned int caseX, unsigned int caseY, unsigned int explosionRadius);
 };
 
 #endif // EXPLOSIONBOMBERMANSYSTEM_H

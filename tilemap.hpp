@@ -14,7 +14,7 @@ private:
 	//std::vector< std::pair< unsigned int, unsigned int > > mvectPositionTuile;
 	//Tableau2D mTab;
 	unsigned int muiLongueurTile = 0, muiLargeurTile = 0,
-	muiLongueurNiveau = 0, muiLargeurNiveau = 0, muiNumEntity = 9000;
+    muiLongueurMap = 0, muiLargeurMap = 0, muiNumEntity = 9000;
 
 	void initialiserVertexArray();
 	void setPositionPair( std::ifstream &flux );

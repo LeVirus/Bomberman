@@ -43,8 +43,8 @@ void TileMap::configTileMap(const Niveau &niveau)
 {
 	muiLongueurTile = niveau.getLongueurTile();
 	muiLargeurTile = niveau.getLargeurTile();
-	muiLongueurNiveau = niveau.getLongueurNiveau();
-	muiLargeurNiveau = niveau.getLargeurNiveau();
+    muiLongueurMap = niveau.getLongueurNiveau();
+    muiLargeurMap = niveau.getLargeurNiveau();
 }
 
 const sf::VertexArray &TileMap::getVertexArrayTileMap()const
@@ -65,11 +65,11 @@ void TileMap::initialiserVertexArray()
 
 	//détermination du type du tableau de vertex
 	mVertArrayTileMap.setPrimitiveType ( sf::Quads );
-	mVertArrayTileMap.resize ( muiLongueurNiveau * muiLargeurNiveau * 4 );
+    mVertArrayTileMap.resize ( muiLongueurMap * muiLargeurMap * 4 );
 
 	//traitement de toutes les autres cases
-	for( unsigned int i = 0 ; i < muiLongueurNiveau * muiLargeurNiveau * 4 ; i += 4 ){
-		if( uiPosCaseX == muiLongueurNiveau )
+    for( unsigned int i = 0 ; i < muiLongueurMap * muiLargeurMap * 4 ; i += 4 ){
+        if( uiPosCaseX == muiLongueurMap )
 		{
 			uiPosCaseX = 0;
 			uiPosCaseY++;
@@ -89,8 +89,8 @@ void TileMap::initialiserVertexArray()
 void TileMap::displayTileMap() const
 {
 	std::cout << "AFFICHAGE TILEMAP\n";
-	std::cout << "muiLongueurNiveau::"<< muiLongueurNiveau <<
-				 "\nmuiLargeurNiveau::"<< muiLargeurNiveau <<
+    std::cout << "muiLongueurNiveau::"<< muiLongueurMap <<
+                 "\nmuiLargeurNiveau::"<< muiLargeurMap <<
 				 "\nmuiLongueurTile::"<< muiLongueurTile <<
 				 "\nmuiLargeurTile::"<< muiLargeurTile << "\n";
 	/*for( auto i : mvectPositionTuile )
@@ -135,7 +135,7 @@ bool TileMap::bDessinerVertArrayNiveau(const Niveau &niv)
 	for( unsigned int i = 0; i < mVertArrayTileMap.getVertexCount() ; i += 4 )
 	{
 
-		if( uiCoordTabX == muiLongueurNiveau )
+        if( uiCoordTabX == muiLongueurMap )
 		{
 			uiCoordTabY++;
 			uiCoordTabX = 0;

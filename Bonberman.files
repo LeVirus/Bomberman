@@ -55,3 +55,6 @@ bombbombermansystem.hpp
 timerbombermancomponent.hpp
 explosionbombermansystem.hpp
 explosionbombermansystem.cpp
+tilemapbombermancomponent.hpp
+playerconfigbombermancomponent.hpp
+bombconfigbombermancomponent.hpp
