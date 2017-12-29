@@ -12,6 +12,8 @@ struct TilemapBombermanComponent;
 
 class ExplosionBombermanSystem : public ecs::System
 {
+private:
+    void positionTileMap(unsigned int caseX, unsigned int caseY, unsigned int numEntity);
 public:
     ExplosionBombermanSystem();
     virtual void execSystem();

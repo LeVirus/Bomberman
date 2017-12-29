@@ -11,8 +11,8 @@
 #include "niveau.hpp"
 #include "tableau2d.hpp"
 #include "engine.hpp"
+#include "vector2D.hpp"
 #include <cassert>
-
 
 ExplosionBombermanSystem::ExplosionBombermanSystem()
 {
@@ -55,8 +55,6 @@ void ExplosionBombermanSystem::makeBombExplode(unsigned int numEntityBomb)
             (numEntityBomb, BOMBER_BOMB_CONFIG_COMPONENT);
     assert(bombConfComponent && "BombBombermanSystem::lauchBomb posComponent is null\n");
 
-    std::cout << bombConfComponent->mNumPlayerEntity << "OKKKKKqsdqsdqsdKKKK\n";
-
     PlayerConfigBombermanComponent *playerConfComponent = stairwayToComponentManager().searchComponentByType<PlayerConfigBombermanComponent>
             (bombConfComponent->mNumPlayerEntity, BOMBER_PLAYER_CONFIG_COMPONENT);
     assert(playerConfComponent && "BombBombermanSystem::lauchBomb playerConfComponent is null\n");
@@ -76,7 +74,7 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
     assert(tileHorizComponent && "BombBombermanSystem::lauchBomb posComponent is null\n");
 
     unsigned int minX = caseX - 1, maxX = caseX + 1, minY = caseY - 1, maxY = caseY + 1;
-    unsigned int memMaxX, memMinX, memMaxY,  memMinY;
+    unsigned int vertSizeRight = 0, vertSizeLeft = 0, horizSizeLeft = 0, horizSizeRight = 0;
     bool maxXOk = false, minXOk = false, maxYOk = false, minYOk = false;
 
     const Tableau2D &tabNiveau = Niveau::getTabNiveau();
@@ -85,44 +83,89 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
         return false;
     }
 
-    for(unsigned int i = 0; i < explosionRadius; ++i, ++maxX, --minX, ++maxY, --minY)
+    for(unsigned int i = 0; i < explosionRadius; ++i)
     {
-        if(!maxXOk && tabNiveau.getValAt(maxX, caseY) != TILE_EMPTY)
+        if(!maxXOk)
         {
-            --maxX;
-            memMaxX = maxX;
-            maxXOk = true;
+            if(tabNiveau.getValAt(maxX, caseY) != TILE_EMPTY)
+            {
+                --maxX;
+                maxXOk = true;
+            }
+            else
+            {
+                ++vertSizeRight;
+                ++maxX;
+            }
         }
-        if(!minXOk && tabNiveau.getValAt(minX, caseY) != TILE_EMPTY)
+        if(!minXOk)
         {
-            ++minX;
-            memMinX = minX;
-            minXOk = true;
+            if(tabNiveau.getValAt(minX, caseY) != TILE_EMPTY)
+            {
+                ++minX;
+                minXOk = true;
+            }
+            else
+            {
+                ++vertSizeLeft;
+                --minX;
+            }
         }
-        if(!maxYOk && tabNiveau.getValAt(caseX, maxY) != TILE_EMPTY)
+        if(!maxYOk)
         {
-            --maxY;
-            memMaxY = maxY;
-            maxYOk = true;
+            if(tabNiveau.getValAt(caseX, maxY) != TILE_EMPTY)
+            {
+                --maxY;
+                maxYOk = true;
+            }
+            else
+            {
+                ++horizSizeLeft;
+                ++maxY;
+            }
         }
-        if(!minYOk && tabNiveau.getValAt(caseX, minY) != TILE_EMPTY)
+        if(!minYOk)
         {
-            --minY;
-            memMinY = minY;
-            minYOk = true;
+            if(tabNiveau.getValAt(caseX, minY) != TILE_EMPTY)
+            {
+                ++minY;
+                minYOk = true;
+            }
+            else
+            {
+                ++horizSizeRight;
+                --minY;
+            }
         }
     }
-    unsigned int memSize = 1;
-    if(!maxXOk)
+    tileVertComponent->mTabTilemap.resize(vertSizeLeft + 1 + vertSizeRight, 1);
+    for(unsigned int i = 0; i < tileVertComponent->mTabTilemap.getLongueur(); ++i)
     {
-        memSize += explosionRadius;
+        tileVertComponent->mTabTilemap.setValAt(i, 1, EXPLOSION_HORIZONTAL_MIDDLE);
     }
-    else
+    if(horizSizeLeft == explosionRadius)
     {
-        memSize += memMaxX - caseX;
+        tileVertComponent->mTabTilemap.setValAt(0, 1, EXPLOSION_END_LEFT);
     }
+    if(horizSizeRight == explosionRadius)
+    {
+        tileVertComponent->mTabTilemap.setValAt(tileVertComponent->mTabTilemap.getLongueur() - 1,
+                                                1, EXPLOSION_END_RIGHT);
+    }
+    tileVertComponent->mTabTilemap.setValAt(caseX, caseY, EXPLOSION_CENTER);
+    positionTileMap(minX, caseY, verticalExplosionEntity);
 
+    tileHorizComponent->mTabTilemap.resize(1, horizSizeLeft + 1 + horizSizeRight);
     return true;
+}
+
+void ExplosionBombermanSystem::positionTileMap(unsigned int caseX, unsigned int caseY,
+                                               unsigned int numEntity)
+{
+    ecs::PositionComponent *posComponent = stairwayToComponentManager().searchComponentByType < ecs::PositionComponent >
+            (numEntity, ecs::POSITION_COMPONENT);
+    assert(posComponent && "BombBombermanSystem::lauchBomb posComponent is null\n");
+    //MoteurGraphique::
 }
 
 unsigned int ExplosionBombermanSystem::createExplosionEntity()
