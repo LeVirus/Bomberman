@@ -21,7 +21,7 @@ public:
     TilemapSystem();
     virtual void execSystem();
     virtual void displaySystem()const;
-    const VectPairCompTilemap &getVectCompTilemap();
+    const VectPairCompTilemap &getVectCompTilemap()const;
 };
 
 #endif // TILEMAPSYSTEM_H

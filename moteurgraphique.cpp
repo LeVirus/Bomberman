@@ -61,9 +61,9 @@ unsigned int MoteurGraphique::loadSprite( unsigned int uiNumTexture, const sf::I
 {
 	mVectSprite.push_back( sf::Sprite() );
 	unsigned int memNumSprite = mVectSprite.size() - 1;
-	mVectSprite[ memNumSprite ].setTexture( mVectTexture[ uiNumTexture ] );
-	mVectSprite[ memNumSprite ].setTextureRect( positionSprite );
-	mVectSprite[ memNumSprite ].setScale( SIZE_SCALE, SIZE_SCALE );
+    mVectSprite[memNumSprite].setTexture(mVectTexture[ uiNumTexture]);
+    mVectSprite[memNumSprite].setTextureRect( positionSprite);
+    mVectSprite[memNumSprite].setScale(SIZE_SCALE, SIZE_SCALE);
 	return memNumSprite;
 }
 
@@ -74,53 +74,36 @@ void MoteurGraphique::displayECSTilemap()
             getGestionnaireECS().getECSSystemManager()->
             searchSystemByType<TilemapSystem> (TILEMAP_BOMBER_SYSTEM)->
             getVectCompTilemap();
-    assert(vectCompTilemap.size() <= 1 && "MoteurGraphique::displayECSTilemap bad get of vect tilemap");
-
     mVectTileMap.clear();
 
     VectPairCompTilemap::const_iterator it = vectCompTilemap.begin();
     for(unsigned int i = 0; it != vectCompTilemap.end(); ++it, ++i)
     {
         mVectTileMap.push_back(TileMap());
-        if((*it).second->vect2DPosComp.mfX)
-        (*it).second->displayComponent();
-
+//        mVectTileMap[i].setPosition(0, 0);
         mVectTileMap[i].setPosition((*it).second->vect2DPosComp.mfX, (*it).second->vect2DPosComp.mfY);
         mVectTileMap[i].setScale(SIZE_SCALE, SIZE_SCALE);
-        //mVectTileMap[i].
+        mVectTileMap[i].configureTileMap(*(*it).first);
         mFenetre.draw(mVectTileMap[i]);
-
-        //modifier le TileMap pour qu'il se charge a partir du composant
     }
 }
 
 void MoteurGraphique::displayECSSprite()
 {
-	mVectComponentDisplaySystem = mPtrMoteurPrincipal -> getGestionnaireECS().getECSSystemManager() ->
-			searchSystemByType< ecs::DisplaySystem > ( ecs::DISPLAY_SYSTEM ) ->
-			getVectComponentDisplaySystem();
-	assert( mVectComponentDisplaySystem && "mVectComponentDisplaySystem == null\n" );
-	for( unsigned int i = 0; i < mVectComponentDisplaySystem -> size() ; ++i )
-	{
-		unsigned int uiNumSprite = (* mVectComponentDisplaySystem )[ i ].first -> muiNumSprite;
-		const ecs::Vector2D vector2DPos = (* mVectComponentDisplaySystem )[ i ].second -> vect2DPosComp;
+    mVectComponentDisplaySystem = mPtrMoteurPrincipal -> getGestionnaireECS().getECSSystemManager() ->
+            searchSystemByType< ecs::DisplaySystem > ( ecs::DISPLAY_SYSTEM ) ->
+            getVectComponentDisplaySystem();
+    assert( mVectComponentDisplaySystem && "mVectComponentDisplaySystem == null\n" );
+    for( unsigned int i = 0; i < mVectComponentDisplaySystem -> size() ; ++i )
+    {
+        unsigned int uiNumSprite = (* mVectComponentDisplaySystem )[ i ].first -> muiNumSprite;
+        const ecs::Vector2D vector2DPos = (* mVectComponentDisplaySystem )[ i ].second -> vect2DPosComp;
         assert( ( ( uiNumSprite == SPRITE_TILEMAP ) || ( uiNumSprite < mVectSprite.size() ) )
                 && "mVectSprite overflow\n" );
 
-		//affichage du tilemap
-//		if( uiNumSprite == SPRITE_TILEMAP )
-//		{
-//			mTileMap.setPosition(vector2DPos.mfX, vector2DPos.mfY);
-//			mFenetre.draw(mTileMap);
-//		}
-        //affichage d'un sprite contenu dans le tableau
-//        else
-//		{
-			mVectSprite[ uiNumSprite ] . setPosition( vector2DPos . mfX, vector2DPos . mfY );
-			mFenetre.draw( mVectSprite[ uiNumSprite ] );
-//		}
-
-	}
+        mVectSprite[ uiNumSprite ] . setPosition( vector2DPos . mfX, vector2DPos . mfY );
+        mFenetre.draw( mVectSprite[ uiNumSprite ] );
+    }
 }
 
 void MoteurGraphique::positionnerCaseTileMap(unsigned int uiNumEntity, unsigned int uiPositionX, unsigned int uiPositionY )

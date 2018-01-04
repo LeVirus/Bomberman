@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "tableau2d.hpp"
 #include "niveau.hpp"
+#include "tilemapbombermancomponent.hpp"
 #include <fstream>
 
 class TileMap: public sf::Drawable, public sf::Transformable
@@ -11,29 +12,25 @@ class TileMap: public sf::Drawable, public sf::Transformable
 private:
 	sf::Texture mTexture;
 	sf::VertexArray mVertArrayTileMap;
-	//std::vector< std::pair< unsigned int, unsigned int > > mvectPositionTuile;
-	//Tableau2D mTab;
 	unsigned int muiLongueurTile = 0, muiLargeurTile = 0,
     muiLongueurMap = 0, muiLargeurMap = 0, muiNumEntity = 9000;
 
-	void initialiserVertexArray();
+    void initialiserVertexArray(const TilemapBombermanComponent &tileComp);
 	void setPositionPair( std::ifstream &flux );
 
 	virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const;
 
 public:
 	TileMap() = default;
-	bool loadTexture( const std::string &path );
+    bool loadTexture(unsigned int numTexture );
 	bool loadLevel(const Niveau &level, unsigned int uiNumEntity );
-	//void setPositionPair( const std::vector< std::pair< unsigned int, unsigned int > > &vectPosTile );
 
-	void configTileMap(const Niveau &niveau);
 	const sf::VertexArray &getVertexArrayTileMap()const;
-	//const Tableau2D &getTabLevel()const;
 	const sf::Texture &getTextureTileMap()const;
 	void displayTileMap()const;
 
-	bool bDessinerVertArrayNiveau(const Niveau &niv);
+    void configureTileMap(const TilemapBombermanComponent &tileComp);
+    bool bDessinerVertArrayNiveau(const TilemapBombermanComponent &tileComp);
 
 	void adaptToScale( float fX, float fY );
 	unsigned int getNumEntity()const{return muiNumEntity;}

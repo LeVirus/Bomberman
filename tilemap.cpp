@@ -1,10 +1,23 @@
 #include "tilemap.hpp"
 #include <iostream>
 #include <cassert>
+#include <string>
 
-bool TileMap::loadTexture( const std::string &path )
+bool TileMap::loadTexture(unsigned int numTexture)
 {
-    return mTexture.loadFromFile( path );
+    std::string path;
+    switch (numTexture)
+    {
+    case 0:
+        path = "../Bomberman/Ressources/Texture/textTileMap.png";
+        break;
+    default:
+        return false;
+        break;
+    }
+    std::cout << "text " << path << "\n";
+    return mTexture.loadFromFile(path);
+
 }
 
 /**
@@ -25,47 +38,50 @@ bool TileMap::loadTexture( const std::string &path )
  * @param path Chemin vers le fichier de configuration.
  * @return
  */
-bool TileMap::loadLevel(const Niveau &level, unsigned int uiNumEntity)
-{
-	if(! loadTexture(level.getPathToTexture()))
-	{
-		std::cout << "err TileMap::loadLevel ::" << level.getPathToTexture() <<"\n";
-		return false;
-	}
-	initialiserVertexArray();
-	muiNumEntity = uiNumEntity;
-	bDessinerVertArrayNiveau(level);
-	return true;
+//bool TileMap::loadLevel(const Niveau &level, unsigned int uiNumEntity)
+//{
+//	if(! loadTexture(level.getPathToTexture()))
+//	{
+//		std::cout << "err TileMap::loadLevel ::" << level.getPathToTexture() <<"\n";
+//		return false;
+//	}
+//	initialiserVertexArray();
+//	muiNumEntity = uiNumEntity;
+//	bDessinerVertArrayNiveau(level);
+//	return true;
 
-}
+//}
 
 const sf::VertexArray &TileMap::getVertexArrayTileMap()const
 {
 	return mVertArrayTileMap;
 }
 
-const sf::Texture &TileMap::getTextureTileMap() const
+const sf::Texture &TileMap::getTextureTileMap()const
 {
 	return mTexture;
 }
 
-void TileMap::configTileMap(const Niveau &niveau)
+void TileMap::configureTileMap(const TilemapBombermanComponent &tileComp)
 {
-    muiLongueurTile = niveau.getLongueurTile();
-    muiLargeurTile = niveau.getLargeurTile();
-    muiLongueurMap = niveau.getLongueurNiveau();
-    muiLargeurMap = niveau.getLargeurNiveau();
+    if(! loadTexture(tileComp.mNumAssociateTexture))std::cout << "Fail load text\n";
+    initialiserVertexArray(tileComp);
+    bDessinerVertArrayNiveau(tileComp);
 }
 
-void TileMap::initialiserVertexArray()
+void TileMap::initialiserVertexArray(const TilemapBombermanComponent &tileComp)
 {
 
 	unsigned int uiPosCaseX = 0, uiPosCaseY = 0;
 
+    muiLongueurTile = tileComp.mLenghtTile;
+    muiLargeurTile = tileComp.mHeightTile;
+    muiLongueurMap = tileComp.mTabTilemap.getLongueur();
+    muiLargeurMap = tileComp.mTabTilemap.getLargeur();
+
 	//détermination du type du tableau de vertex
 	mVertArrayTileMap.setPrimitiveType ( sf::Quads );
     mVertArrayTileMap.resize ( muiLongueurMap * muiLargeurMap * 4 );
-
 	//traitement de toutes les autres cases
     for( unsigned int i = 0 ; i < muiLongueurMap * muiLargeurMap * 4 ; i += 4 ){
         if( uiPosCaseX == muiLongueurMap )
@@ -93,34 +109,29 @@ void TileMap::initialiserVertexArray()
  * @return si les valeurs de tabNivEcran sont valide
  * false sinon.
  */
-bool TileMap::bDessinerVertArrayNiveau(const Niveau &niv)
+bool TileMap::bDessinerVertArrayNiveau(const TilemapBombermanComponent &tileComp)
 {
     bool retour = true;
     unsigned int uiCoordBlockX, uiCoordBlockY, uiCoordTabX = 0, uiCoordTabY = 0, uiValTile;
-    const vectPairUi_t &vectPos = niv.getVectPositionTile();
-    const Tableau2D &memTab = niv.getTabNiveau();
+    const vectPairUi_t &vectPos = tileComp.mvectPositionTile;
+    tileComp.mvectPositionTile;
+    const Tableau2D &memTab = tileComp.mTabTilemap;
     for( unsigned int i = 0; i < mVertArrayTileMap.getVertexCount() ; i += 4 )
     {
-
         if( uiCoordTabX == muiLongueurMap )
         {
             uiCoordTabY++;
             uiCoordTabX = 0;
         }
-
-        uiValTile = memTab.getValAt( uiCoordTabX, uiCoordTabY );
-        uiCoordBlockX = vectPos[ uiValTile ].first;
-        uiCoordBlockY = vectPos[ uiValTile ].second;
-
-        if( ! retour )break;
-
-        mVertArrayTileMap[ i ].texCoords = sf::Vector2f( uiCoordBlockX, uiCoordBlockY );
-        mVertArrayTileMap[ i + 1 ].texCoords = sf::Vector2f( uiCoordBlockX + muiLongueurTile, uiCoordBlockY );
-        mVertArrayTileMap[ i + 2 ].texCoords = sf::Vector2f( uiCoordBlockX + muiLongueurTile, uiCoordBlockY  + muiLargeurTile );
-        mVertArrayTileMap[ i + 3 ].texCoords = sf::Vector2f( uiCoordBlockX, uiCoordBlockY + muiLargeurTile ) ;
-
+        uiValTile = memTab.getValAt(uiCoordTabX, uiCoordTabY);
+        uiCoordBlockX = vectPos[uiValTile].first;
+        uiCoordBlockY = vectPos[uiValTile].second;
+        if(! retour)break;
+        mVertArrayTileMap[i].texCoords = sf::Vector2f( uiCoordBlockX, uiCoordBlockY );
+        mVertArrayTileMap[i + 1].texCoords = sf::Vector2f( uiCoordBlockX + muiLongueurTile, uiCoordBlockY );
+        mVertArrayTileMap[i + 2].texCoords = sf::Vector2f( uiCoordBlockX + muiLongueurTile, uiCoordBlockY  + muiLargeurTile );
+        mVertArrayTileMap[i + 3].texCoords = sf::Vector2f( uiCoordBlockX, uiCoordBlockY + muiLargeurTile ) ;
         uiCoordTabX++;
-
     }
     return retour;
 }
