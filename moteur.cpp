@@ -6,6 +6,7 @@
 #include "constants.hpp"
 #include "componentmanager.hpp"
 #include "inputbombermancomponent.hpp"
+#include "tilemapbombermancomponent.hpp"
 #include "inputbombermansystem.hpp"
 #include "collrectboxcomponent.hpp"
 #include "flagcomponent.hpp"
@@ -89,25 +90,33 @@ GestionnaireECS &Moteur::getGestionnaireECS()
 	return mGestECS;
 }
 
-void Moteur::loadTileMap(const Niveau &niv)
+void Moteur::loadTileMap(Niveau &niv, unsigned int numNiv)
 {
 	unsigned int memEntity;
 	//création de l'entité avec les composants nécessaires
-	std::vector< bool > bitsetComp;
-	bitsetComp.resize( getGestionnaireECS().getECSComponentManager()->getNumberComponent() );
-	bitsetComp[ ecs::DISPLAY_COMPONENT ] = true;
-	bitsetComp[ ecs::POSITION_COMPONENT ] = true;
-	memEntity = mGestECS.addEntity( bitsetComp );
+    std::vector<bool> bitsetComp;
+    bitsetComp.resize(getGestionnaireECS().getECSComponentManager()->getNumberComponent());
+    bitsetComp[BOMBER_TILEMAP_COMPONENT] = true;
+    bitsetComp[ecs::POSITION_COMPONENT] = true;
+    memEntity = mGestECS.addEntity(bitsetComp);
+    mGestECS.getECSComponentManager()->updateComponentFromEntity();
 
-	ecs::DisplayComponent * dc = mGestECS.getECSComponentManager() ->
-			searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT );
-	dc->muiNumSprite = SPRITE_TILEMAP;
-	ecs::PositionComponent * pc = mGestECS.getECSComponentManager() ->
-			searchComponentByType< ecs::PositionComponent >( memEntity, ecs::POSITION_COMPONENT );
-	pc->vect2DPosComp.mfX = POSITION_LEVEL_X;
-	pc->vect2DPosComp.mfY = POSITION_LEVEL_Y;
-	//récupération et modification des composants
-	mMoteurGraphique.loadTileMap( niv, memEntity );
+    mGestECS.getECSComponentManager()->instanciateExternComponent(memEntity, std::make_unique<TilemapBombermanComponent>());
+
+    ecs::PositionComponent *pc = mGestECS.getECSComponentManager() ->
+            searchComponentByType< ecs::PositionComponent >(memEntity, ecs::POSITION_COMPONENT);
+    assert(pc && "Moteur::loadTileMap PositionComponent == null\n");
+    pc->vect2DPosComp.mfX = POSITION_LEVEL_X;
+    pc->vect2DPosComp.mfY = POSITION_LEVEL_Y;
+
+    TilemapBombermanComponent *tmc = mGestECS.getECSComponentManager() ->
+            searchComponentByType<TilemapBombermanComponent>(memEntity, BOMBER_TILEMAP_COMPONENT);
+    assert(tmc && "Moteur::loadTileMap TilemapBombermanComponent == null\n");
+    niv.loadLevel(numNiv, memEntity, *tmc);
+
+    //récupération et modification des composants
+    mMoteurGraphique.memorizeSizeTile(niv.getLongueurTile(), niv.getLargeurNiveau());
+
 }
 
 bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
@@ -116,8 +125,8 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
     if(MAX_PLAYER < uiNumPlayer + uiNumBot)return false;
     memBombermanSprite = mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect(71, 45, 16, 25));
     mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect(210, 138, 10, 11));//TMP
-    unsigned int largeurTile = mMoteurGraphique.getTileMap().getLargeurTile();
-    unsigned int longueurTile = mMoteurGraphique.getTileMap().getLongueurTile();
+    unsigned int largeurTile = mPtrJeu.getNiveau().getLargeurTile();
+    unsigned int longueurTile = mPtrJeu.getNiveau().getLongueurTile();
     for(unsigned int i = 0 ; i < uiNumPlayer ; ++i)
 	{
 		std::vector< bool > bitsetComp;
@@ -140,7 +149,6 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
 				instanciateExternComponent(memEntity, std::make_unique<FlagBombermanComponent>());
         mGestECS.getECSComponentManager()->
                 instanciateExternComponent(memEntity, std::make_unique<PlayerConfigBombermanComponent>());
-            std::cout << memEntity << "  <OKKKKKKKKK\n";
 
         FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
                 searchComponentByType <FlagBombermanComponent> (memEntity, BOMBER_FLAG_COMPONENT);
@@ -148,7 +156,6 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
 
 		ecs::CollRectBoxComponent * cc = mGestECS.getECSComponentManager() ->
                 searchComponentByType< ecs::CollRectBoxComponent >(memEntity, ecs::COLL_RECTBOX_COMPONENT);
-        std::cout << "largeurTile :: " << largeurTile << "  longueurTile :: " << longueurTile << std::endl;
 
         //offset
         cc->mVect2dVectOrigins.mfX = 5;
@@ -173,8 +180,8 @@ void Moteur::loadLevelWall(const Niveau &niv)
 	unsigned int longueurNiveau = niv.getTabNiveau().getLongueur();
 	//bitsetComp.resize( getGestionnaireECS().getECSComponentManager()->getNumberComponent() );
 
-    unsigned int largeurTile = mMoteurGraphique.getTileMap().getLargeurTile();
-    unsigned int longueurTile = mMoteurGraphique.getTileMap().getLongueurTile();
+    unsigned int largeurTile = mPtrJeu.getNiveau().getLargeurTile();
+    unsigned int longueurTile = mPtrJeu.getNiveau().getLongueurTile();
     unsigned int cmptX = 0, cmptY = 0;
 	for(std::vector<unsigned char>::const_iterator it = memTabNiv.begin(); it != memTabNiv.end(); ++it)
 	{
@@ -228,8 +235,8 @@ void Moteur::loadLevelWall(const Niveau &niv)
 
 void Moteur::positionnerComponent(ecs::PositionComponent &posComp, unsigned int posX, unsigned int posY)
 {
-    posComp.vect2DPosComp.mfX = POSITION_LEVEL_X + posX * mMoteurGraphique.getTileMap().getLongueurTile();
-    posComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + posY * mMoteurGraphique.getTileMap().getLargeurTile();
+    posComp.vect2DPosComp.mfX = POSITION_LEVEL_X + posX * mPtrJeu.getNiveau().getLongueurTile();
+    posComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + posY * mPtrJeu.getNiveau().getLargeurTile();
 //	std::cout << "XX " << posX << " posComp.X " <<posComp.vect2DPosComp.mfX
 //			  << " YY " << posY << " posComp.Y " <<posComp.vect2DPosComp.mfY<< std::endl;
 }

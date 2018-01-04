@@ -19,11 +19,12 @@ struct TilemapBombermanComponent : public ecs::Component
     {}
 
     Tableau2D mTabTilemap;
-    //position of tile in the texture !!! MOVE TO graphic Motor
+    //position of tile in the texture
     VectPairUi_t mvectPositionTile;
     unsigned int mNumAssociateTexture = 0;
-    unsigned int mSizeTile;//!!! MOVE TO graphic Motor
-
+    unsigned int mLenghtTile, mHeightTile;
+    //if the tilemap have to be memorize in the graphic motor
+    bool mPersistant = false;
 };
 
 #endif // TILEMAPBOMBERMANCOMPONENT_HPP

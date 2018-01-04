@@ -5,6 +5,7 @@ class Moteur;
 
 #include "tilemap.hpp"
 #include "niveau.hpp"
+#include <vector>
 
 namespace ecs
 {
@@ -19,7 +20,7 @@ private:
 	sf::RenderWindow mFenetre;
 	std::vector< sf::Texture > mVectTexture;
 	sf::View mCamera;
-	TileMap mTileMap;
+    std::vector<TileMap> mVectTileMap;
 	Moteur* mPtrMoteurPrincipal = nullptr;
 	const std::vector< std::pair< ecs::DisplayComponent *, ecs::PositionComponent * > > *
 			mVectComponentDisplaySystem;
@@ -27,17 +28,19 @@ private:
 public:
 	MoteurGraphique();
     void getEventFromWindows(sf::Event &event);
-	const TileMap &getTileMap()const;
+    const std::vector<TileMap> &getTileMap()const;
 	void initialiserFenetre();
 	void linkMainEngine( Moteur* ptrMoteur );
-	void loadTileMap(const Niveau &level, unsigned int uiNumEntity );
+    //void loadLevelTileMap(const Niveau &level, unsigned int uiNumEntity );
 	unsigned int loadSprite(unsigned int uiNumTexture, const sf::IntRect &positionSprite );
 	void raffraichirEcran();
+    void displayECSTilemap();
 	void displayECSSprite();
 	void positionnerCaseTileMap(unsigned int uiNumEntity, unsigned int uiPositionX, unsigned int uiPositionY );
     static void static_positionComponentCenterCurrentCase(ecs::PositionComponent &positionComp);
     static void static_getPositionsCurrentCase(const ecs::PositionComponent &positionComp,
                                                unsigned int &caseX, unsigned int &caseY);
+    void memorizeSizeTile(unsigned int lenghtTile, unsigned int heightTile);
 };
 
 #endif // MOTEURGRAPHIQUE_H

@@ -1,23 +1,26 @@
 #include "niveau.hpp"
+#include "tilemapbombermancomponent.hpp"
 #include <cassert>
 #include <iostream>
 
 Tableau2D Niveau::mtabNiveau;
+unsigned int Niveau::mNumEntityLevel;
 
 Niveau::Niveau()
 {
 
 }
 
-void Niveau::setPositionPair( std::ifstream &flux )
+void Niveau::setPositionPair(std::ifstream &flux, TilemapBombermanComponent &levelTileComp)
 {
 	unsigned int uiNbrTuile;
 	flux >> uiNbrTuile;
-	mvectPositionTuile.resize( uiNbrTuile );
-	for( unsigned int i = 0; i < mvectPositionTuile.size() ; ++i )
+    levelTileComp.mvectPositionTile.resize( uiNbrTuile );
+//	mvectPositionTuile.resize( uiNbrTuile );
+    for(unsigned int i = 0; i < levelTileComp.mvectPositionTile.size() ; ++i)
 	{
-		flux >> mvectPositionTuile[ i ].first;
-		flux >> mvectPositionTuile[ i ].second;
+        flux >> levelTileComp.mvectPositionTile[i].first;
+        flux >> levelTileComp.mvectPositionTile[i].second;
 	}
 }
 
@@ -36,7 +39,7 @@ void Niveau::setPositionPair( std::ifstream &flux )
  * @param path Chemin vers le fichier de configuration.
  * @return
  */
-bool Niveau::loadLevel( unsigned int uiNumNiveau)
+bool Niveau::loadLevel(unsigned int uiNumNiveau, unsigned int numEntityLevel, TilemapBombermanComponent &levelTileComp)
 {
 	std::string path;
 	switch (uiNumNiveau) {
@@ -46,14 +49,15 @@ bool Niveau::loadLevel( unsigned int uiNumNiveau)
 	default:
 		break;
 	}
-	std::ifstream flux( path, std::ios::in );
-	assert( flux && "flux erreur" );
+    std::ifstream flux(path, std::ios::in);
+    assert(flux && "flux erreur");
 	if( !flux )
 	{
 		flux.close();
 		return false;
 	}
 
+    mNumEntityLevel = numEntityLevel;
 	flux >> mPathToTexture;
 
 	flux >> muiLongueurNiveau;
@@ -61,10 +65,14 @@ bool Niveau::loadLevel( unsigned int uiNumNiveau)
 	flux >> muiLongueurTile;
 	flux >> muiLargeurTile;
 
-	setPositionPair( flux );
+    levelTileComp.mTabTilemap.resize(muiLongueurNiveau, muiLargeurNiveau);
+    levelTileComp.mPersistant = true;
+    levelTileComp.mHeightTile = muiLargeurTile;
+    levelTileComp.mLenghtTile = muiLongueurTile;
+    setPositionPair(flux, levelTileComp);
 
 	//si tout se passe correctement le flux est fermé dans la fonction bAttribuerTab.
-	if( ! mtabNiveau.bAttribuerTab( flux, muiLongueurNiveau , muiLargeurNiveau ) )return false;
+    if(! levelTileComp.mTabTilemap.bAttribuerTab(flux, muiLongueurNiveau , muiLargeurNiveau))return false;
 	return true;
 
 }
@@ -81,7 +89,12 @@ unsigned int Niveau::getLongueurNiveau() const
 
 unsigned int Niveau::getLargeurNiveau() const
 {
-	return muiLargeurNiveau;
+    return muiLargeurNiveau;
+}
+
+unsigned int Niveau::getNumEntityLevel()
+{
+    return mNumEntityLevel;
 }
 
 const std::__cxx11::string &Niveau::getPathToTexture() const

@@ -22,7 +22,7 @@ public:
 	void lancerBoucle();
 	void earnInput();
 	GestionnaireECS &getGestionnaireECS();
-	void loadTileMap(const Niveau &niv);
+    void loadTileMap(Niveau &niv, unsigned int numNiv);
 	bool loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot );
     void loadLevelWall(const Niveau &niv);
 };

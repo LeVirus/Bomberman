@@ -39,14 +39,6 @@ bool TileMap::loadLevel(const Niveau &level, unsigned int uiNumEntity)
 
 }
 
-void TileMap::configTileMap(const Niveau &niveau)
-{
-	muiLongueurTile = niveau.getLongueurTile();
-	muiLargeurTile = niveau.getLargeurTile();
-    muiLongueurMap = niveau.getLongueurNiveau();
-    muiLargeurMap = niveau.getLargeurNiveau();
-}
-
 const sf::VertexArray &TileMap::getVertexArrayTileMap()const
 {
 	return mVertArrayTileMap;
@@ -57,6 +49,13 @@ const sf::Texture &TileMap::getTextureTileMap() const
 	return mTexture;
 }
 
+void TileMap::configTileMap(const Niveau &niveau)
+{
+    muiLongueurTile = niveau.getLongueurTile();
+    muiLargeurTile = niveau.getLargeurTile();
+    muiLongueurMap = niveau.getLongueurNiveau();
+    muiLargeurMap = niveau.getLargeurNiveau();
+}
 
 void TileMap::initialiserVertexArray()
 {
@@ -84,6 +83,46 @@ void TileMap::initialiserVertexArray()
 
 		uiPosCaseX++;
 	}
+}
+
+/**
+ * @brief Fonction qui dessine en fonction du tableau reçu de Niveau
+ * La partie du niveau à afficher.
+ * @param tabNivEcran Le tableau 2d de la partie du Niveau à
+ * afficher.
+ * @return si les valeurs de tabNivEcran sont valide
+ * false sinon.
+ */
+bool TileMap::bDessinerVertArrayNiveau(const Niveau &niv)
+{
+    bool retour = true;
+    unsigned int uiCoordBlockX, uiCoordBlockY, uiCoordTabX = 0, uiCoordTabY = 0, uiValTile;
+    const vectPairUi_t &vectPos = niv.getVectPositionTile();
+    const Tableau2D &memTab = niv.getTabNiveau();
+    for( unsigned int i = 0; i < mVertArrayTileMap.getVertexCount() ; i += 4 )
+    {
+
+        if( uiCoordTabX == muiLongueurMap )
+        {
+            uiCoordTabY++;
+            uiCoordTabX = 0;
+        }
+
+        uiValTile = memTab.getValAt( uiCoordTabX, uiCoordTabY );
+        uiCoordBlockX = vectPos[ uiValTile ].first;
+        uiCoordBlockY = vectPos[ uiValTile ].second;
+
+        if( ! retour )break;
+
+        mVertArrayTileMap[ i ].texCoords = sf::Vector2f( uiCoordBlockX, uiCoordBlockY );
+        mVertArrayTileMap[ i + 1 ].texCoords = sf::Vector2f( uiCoordBlockX + muiLongueurTile, uiCoordBlockY );
+        mVertArrayTileMap[ i + 2 ].texCoords = sf::Vector2f( uiCoordBlockX + muiLongueurTile, uiCoordBlockY  + muiLargeurTile );
+        mVertArrayTileMap[ i + 3 ].texCoords = sf::Vector2f( uiCoordBlockX, uiCoordBlockY + muiLargeurTile ) ;
+
+        uiCoordTabX++;
+
+    }
+    return retour;
 }
 
 void TileMap::displayTileMap() const
@@ -115,47 +154,6 @@ void TileMap::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 	// on dessine le tableau de vertex
 	target.draw(mVertArrayTileMap, states);
-}
-
-
-/**
- * @brief Fonction qui dessine en fonction du tableau reçu de Niveau
- * La partie du niveau à afficher.
- * @param tabNivEcran Le tableau 2d de la partie du Niveau à
- * afficher.
- * @return si les valeurs de tabNivEcran sont valide
- * false sinon.
- */
-bool TileMap::bDessinerVertArrayNiveau(const Niveau &niv)
-{
-	bool retour = true;
-	unsigned int uiCoordBlockX, uiCoordBlockY, uiCoordTabX = 0, uiCoordTabY = 0, uiValTile;
-	const vectPairUi_t &vectPos = niv.getVectPositionTile();
-	const Tableau2D &memTab = niv.getTabNiveau();
-	for( unsigned int i = 0; i < mVertArrayTileMap.getVertexCount() ; i += 4 )
-	{
-
-        if( uiCoordTabX == muiLongueurMap )
-		{
-			uiCoordTabY++;
-			uiCoordTabX = 0;
-		}
-
-		uiValTile = memTab.getValAt( uiCoordTabX, uiCoordTabY );
-		uiCoordBlockX = vectPos[ uiValTile ].first;
-		uiCoordBlockY = vectPos[ uiValTile ].second;
-
-		if( ! retour )break;
-
-		mVertArrayTileMap[ i ].texCoords = sf::Vector2f( uiCoordBlockX, uiCoordBlockY );
-		mVertArrayTileMap[ i + 1 ].texCoords = sf::Vector2f( uiCoordBlockX + muiLongueurTile, uiCoordBlockY );
-		mVertArrayTileMap[ i + 2 ].texCoords = sf::Vector2f( uiCoordBlockX + muiLongueurTile, uiCoordBlockY  + muiLargeurTile );
-		mVertArrayTileMap[ i + 3 ].texCoords = sf::Vector2f( uiCoordBlockX, uiCoordBlockY + muiLargeurTile ) ;
-
-		uiCoordTabX++;
-
-	}
-	return retour;
 }
 
 void TileMap::adaptToScale( float fX, float fY )

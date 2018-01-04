@@ -1,7 +1,9 @@
 #include "moteurgraphique.hpp"
 #include "displaysystem.hpp"
+#include "tilemapsystem.hpp"
 #include "constants.hpp"
 #include <cassert>
+#include <iostream>
 #include "moteur.hpp"
 #include "jeu.hpp"
 #include "positioncomponent.hpp"
@@ -24,9 +26,9 @@ void MoteurGraphique::getEventFromWindows(sf::Event &event)
     mFenetre.pollEvent(event);
 }
 
-const TileMap &MoteurGraphique::getTileMap()const
+const std::vector<TileMap> &MoteurGraphique::getTileMap()const
 {
-	return mTileMap;
+    return mVectTileMap;
 }
 
 void MoteurGraphique::initialiserFenetre()
@@ -45,14 +47,14 @@ void MoteurGraphique::linkMainEngine( Moteur* ptrMoteur )
 	mPtrMoteurPrincipal = ptrMoteur;
 }
 
-void MoteurGraphique::loadTileMap(const Niveau &level, unsigned int uiNumEntity )
+void MoteurGraphique::memorizeSizeTile(unsigned int lenghtTile, unsigned int heightTile)
 {
-	mTileMap.configTileMap(level);
-	mTileMap.loadLevel(level, uiNumEntity );
-	mTileMap.adaptToScale(SIZE_SCALE, SIZE_SCALE);
+//    //mVectTileMap.configTileMap(level);
+//    //mVectTileMap.loadLevel(level, uiNumEntity);
+//    //mVectTileMap.adaptToScale(SIZE_SCALE, SIZE_SCALE);
 
-    mCaseLenght = mTileMap.getLongueurTile();
-    mCaseHeight = mTileMap.getLargeurTile();
+    mCaseLenght = lenghtTile;
+    mCaseHeight = heightTile;
 }
 
 unsigned int MoteurGraphique::loadSprite( unsigned int uiNumTexture, const sf::IntRect &positionSprite )
@@ -63,6 +65,33 @@ unsigned int MoteurGraphique::loadSprite( unsigned int uiNumTexture, const sf::I
 	mVectSprite[ memNumSprite ].setTextureRect( positionSprite );
 	mVectSprite[ memNumSprite ].setScale( SIZE_SCALE, SIZE_SCALE );
 	return memNumSprite;
+}
+
+//Waring some tilemap have to be display BEFORE sprites and other AFTER
+void MoteurGraphique::displayECSTilemap()
+{
+    const VectPairCompTilemap &vectCompTilemap = mPtrMoteurPrincipal->
+            getGestionnaireECS().getECSSystemManager()->
+            searchSystemByType<TilemapSystem> (TILEMAP_BOMBER_SYSTEM)->
+            getVectCompTilemap();
+    assert(vectCompTilemap.size() <= 1 && "MoteurGraphique::displayECSTilemap bad get of vect tilemap");
+
+    mVectTileMap.clear();
+
+    VectPairCompTilemap::const_iterator it = vectCompTilemap.begin();
+    for(unsigned int i = 0; it != vectCompTilemap.end(); ++it, ++i)
+    {
+        mVectTileMap.push_back(TileMap());
+        if((*it).second->vect2DPosComp.mfX)
+        (*it).second->displayComponent();
+
+        mVectTileMap[i].setPosition((*it).second->vect2DPosComp.mfX, (*it).second->vect2DPosComp.mfY);
+        mVectTileMap[i].setScale(SIZE_SCALE, SIZE_SCALE);
+        //mVectTileMap[i].
+        mFenetre.draw(mVectTileMap[i]);
+
+        //modifier le TileMap pour qu'il se charge a partir du composant
+    }
 }
 
 void MoteurGraphique::displayECSSprite()
@@ -79,16 +108,17 @@ void MoteurGraphique::displayECSSprite()
                 && "mVectSprite overflow\n" );
 
 		//affichage du tilemap
-		if( uiNumSprite == SPRITE_TILEMAP )
-		{
-			mTileMap.setPosition(vector2DPos.mfX, vector2DPos.mfY);
-			mFenetre.draw( mTileMap );
-		}
-		else//affichage d'un sprite contenu dans le tableau
-		{
+//		if( uiNumSprite == SPRITE_TILEMAP )
+//		{
+//			mTileMap.setPosition(vector2DPos.mfX, vector2DPos.mfY);
+//			mFenetre.draw(mTileMap);
+//		}
+        //affichage d'un sprite contenu dans le tableau
+//        else
+//		{
 			mVectSprite[ uiNumSprite ] . setPosition( vector2DPos . mfX, vector2DPos . mfY );
 			mFenetre.draw( mVectSprite[ uiNumSprite ] );
-		}
+//		}
 
 	}
 }
@@ -99,8 +129,8 @@ void MoteurGraphique::positionnerCaseTileMap(unsigned int uiNumEntity, unsigned 
 			searchComponentByType< ecs::PositionComponent >( uiNumEntity, ecs::POSITION_COMPONENT );
 
 	assert( pc && "pc == null\n");
-    pc->vect2DPosComp.mfX = POSITION_LEVEL_X + uiPositionX * mTileMap.getLongueurTile();
-    pc->vect2DPosComp.mfY = POSITION_LEVEL_Y + uiPositionY * mTileMap.getLargeurTile();
+    pc->vect2DPosComp.mfX = POSITION_LEVEL_X + uiPositionX * mCaseLenght;
+    pc->vect2DPosComp.mfY = POSITION_LEVEL_Y + uiPositionY * mCaseHeight;
 
 }
 
@@ -140,8 +170,8 @@ void MoteurGraphique::static_getPositionsCurrentCase(const ecs::PositionComponen
 
 void MoteurGraphique::raffraichirEcran()
 {
-	mFenetre.clear( sf::Color::Black );
-	mTileMap.setScale( SIZE_SCALE, SIZE_SCALE );
+    mFenetre.clear(sf::Color::Black);
+    displayECSTilemap();
 	displayECSSprite();
-	mFenetre.display();
+    mFenetre.display();
 }

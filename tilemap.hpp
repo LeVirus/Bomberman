@@ -39,8 +39,6 @@ public:
 	unsigned int getNumEntity()const{return muiNumEntity;}
     unsigned int getLongueurTile()const{return muiLongueurTile;}
 	unsigned int getLargeurTile()const{return muiLargeurTile;}
-/*	unsigned int getLongueurNiveau()const{return muiLongueurNiveau;}
-	unsigned int getLargeurNiveau()const{return muiLargeurNiveau;}*/
 };
 
 #endif // TILEMAP_H

@@ -21,6 +21,7 @@ SOURCES += main.cpp \
     inputbombermansystem.cpp \
     explosionbombermansystem.cpp \
     collisionbombermansystem.cpp \
+    tilemapsystem.cpp \
     bombbombermansystem.cpp
 
 HEADERS += \
@@ -39,4 +40,5 @@ HEADERS += \
     collisionbombermansystem.hpp \
     flagcomponent.hpp \
     bombbombermansystem.hpp \
+    tilemapsystem.hpp \
     timerbombermancomponent.hpp
