@@ -7,6 +7,7 @@
 #include "componentmanager.hpp"
 #include "inputbombermancomponent.hpp"
 #include "tilemapbombermancomponent.hpp"
+#include "tilemapsystem.hpp"
 #include "inputbombermansystem.hpp"
 #include "collrectboxcomponent.hpp"
 #include "flagcomponent.hpp"
@@ -43,6 +44,13 @@ void Moteur::lancerBoucle()
 //        clock.restart();
         //mGestECS.getECSSystemManager()->bExecAllSystem();
         mGestECS.getECSEngine()->execIteration();
+
+        const VectPairCompTilemap &vectCompTilemap =
+                getGestionnaireECS().getECSSystemManager()->
+                searchSystemByType<TilemapSystem> (TILEMAP_BOMBER_SYSTEM)->
+                getVectCompTilemap();
+        std::cout <<vectCompTilemap.size();
+
 		earnInput();
 		mMoteurGraphique.raffraichirEcran();
 		if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )break;
@@ -90,7 +98,7 @@ GestionnaireECS &Moteur::getGestionnaireECS()
 	return mGestECS;
 }
 
-void Moteur::loadTileMap(Niveau &niv, unsigned int numNiv)
+void Moteur::loadLevelTileMap(Niveau &niv, unsigned int numNiv)
 {
 	unsigned int memEntity;
 	//création de l'entité avec les composants nécessaires

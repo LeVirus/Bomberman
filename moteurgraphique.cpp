@@ -75,7 +75,6 @@ void MoteurGraphique::displayECSTilemap()
             searchSystemByType<TilemapSystem> (TILEMAP_BOMBER_SYSTEM)->
             getVectCompTilemap();
     mVectTileMap.clear();
-
     VectPairCompTilemap::const_iterator it = vectCompTilemap.begin();
     for(unsigned int i = 0; it != vectCompTilemap.end(); ++it, ++i)
     {
@@ -98,8 +97,7 @@ void MoteurGraphique::displayECSSprite()
     {
         unsigned int uiNumSprite = (* mVectComponentDisplaySystem )[ i ].first -> muiNumSprite;
         const ecs::Vector2D vector2DPos = (* mVectComponentDisplaySystem )[ i ].second -> vect2DPosComp;
-        assert( ( ( uiNumSprite == SPRITE_TILEMAP ) || ( uiNumSprite < mVectSprite.size() ) )
-                && "mVectSprite overflow\n" );
+        assert( ( uiNumSprite < mVectSprite.size() ) && "mVectSprite overflow\n");
 
         mVectSprite[ uiNumSprite ] . setPosition( vector2DPos . mfX, vector2DPos . mfY );
         mFenetre.draw( mVectSprite[ uiNumSprite ] );
@@ -154,7 +152,7 @@ void MoteurGraphique::static_getPositionsCurrentCase(const ecs::PositionComponen
 void MoteurGraphique::raffraichirEcran()
 {
     mFenetre.clear(sf::Color::Black);
-    displayECSTilemap();
+    //displayECSTilemap();
 	displayECSSprite();
     mFenetre.display();
 }
