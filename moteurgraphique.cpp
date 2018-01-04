@@ -152,7 +152,7 @@ void MoteurGraphique::static_getPositionsCurrentCase(const ecs::PositionComponen
 void MoteurGraphique::raffraichirEcran()
 {
     mFenetre.clear(sf::Color::Black);
-    //displayECSTilemap();
+    displayECSTilemap();
 	displayECSSprite();
     mFenetre.display();
 }
