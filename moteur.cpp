@@ -35,27 +35,14 @@ const Jeu &Moteur::getJeu() const
 
 void Moteur::lancerBoucle()
 {
-//    sf::Clock clock;
 	mMoteurGraphique.initialiserFenetre();
 
 	do
 	{
-        //mGestECS.getECSSystemManager()->updateComponentFromEntity();
-//        clock.restart();
-        //mGestECS.getECSSystemManager()->bExecAllSystem();
         mGestECS.getECSEngine()->execIteration();
-
-        const VectPairCompTilemap &vectCompTilemap =
-                getGestionnaireECS().getECSSystemManager()->
-                searchSystemByType<TilemapSystem> (TILEMAP_BOMBER_SYSTEM)->
-                getVectCompTilemap();
-        std::cout <<vectCompTilemap.size();
-
 		earnInput();
 		mMoteurGraphique.raffraichirEcran();
 		if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )break;
-//       float time = clock.getElapsedTime().asMilliseconds ();
-//       std::cout << "Time elapsed :: " << time << "\n";
 	}while( true );
 }
 

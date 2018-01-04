@@ -15,42 +15,9 @@ bool TileMap::loadTexture(unsigned int numTexture)
         return false;
         break;
     }
-    std::cout << "text " << path << "\n";
     return mTexture.loadFromFile(path);
 
 }
-
-/**
- * @brief TileMap::loadLevel Chargement du niveau à partir du fichier texte de la classe Niveau.
- * structure du fichier::
- *
- * chemin vers la texture du TileMap
- * muiLongueurNiveau
- * muiLargeurNiveau
- * muiLongueurTile
- * muiLargeurTile
- * nombre de tuile différentes
- * tableau de positions des tuiles dans la texture
- *
- * tableau tilemap(Suite de nombre représentant le type de tuile pour chaque case)
- *
- * fin fichier::
- * @param path Chemin vers le fichier de configuration.
- * @return
- */
-//bool TileMap::loadLevel(const Niveau &level, unsigned int uiNumEntity)
-//{
-//	if(! loadTexture(level.getPathToTexture()))
-//	{
-//		std::cout << "err TileMap::loadLevel ::" << level.getPathToTexture() <<"\n";
-//		return false;
-//	}
-//	initialiserVertexArray();
-//	muiNumEntity = uiNumEntity;
-//	bDessinerVertArrayNiveau(level);
-//	return true;
-
-//}
 
 const sf::VertexArray &TileMap::getVertexArrayTileMap()const
 {
