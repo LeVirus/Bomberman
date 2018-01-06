@@ -110,8 +110,9 @@ void Moteur::loadLevelTileMap(Niveau &niv, unsigned int numNiv)
     assert(tmc && "Moteur::loadTileMap TilemapBombermanComponent == null\n");
     niv.loadLevel(numNiv, memEntity, *tmc);
 
+    niv.adaptToScale(SIZE_SCALE, SIZE_SCALE);
     //récupération et modification des composants
-    mMoteurGraphique.memorizeSizeTile(niv.getLongueurTile() * 4, niv.getLargeurNiveau()*4);
+    mMoteurGraphique.memorizeSizeTile(niv.getLongueurTile(), niv.getLargeurNiveau());
 
 }
 
