@@ -48,21 +48,21 @@ void TileMap::initialiserVertexArray(const TilemapBombermanComponent &tileComp)
 
 	//détermination du type du tableau de vertex
 	mVertArrayTileMap.setPrimitiveType ( sf::Quads );
-    mVertArrayTileMap.resize ( muiLongueurMap * muiLargeurMap * 4 );
+    mVertArrayTileMap.resize(muiLongueurMap * muiLargeurMap * 4);
 	//traitement de toutes les autres cases
-    for( unsigned int i = 0 ; i < muiLongueurMap * muiLargeurMap * 4 ; i += 4 ){
-        if( uiPosCaseX == muiLongueurMap )
+    for(unsigned int i = 0 ; i < muiLongueurMap * muiLargeurMap * 4 ; i += 4){
+        if(uiPosCaseX == muiLongueurMap)
 		{
 			uiPosCaseX = 0;
 			uiPosCaseY++;
 		}
-		mVertArrayTileMap[ i ].position = sf::Vector2f( uiPosCaseX * muiLongueurTile, uiPosCaseY * muiLargeurTile );
-		mVertArrayTileMap[ i + 1 ].position = sf::Vector2f( mVertArrayTileMap[ i ].position.x + muiLongueurTile,
-															mVertArrayTileMap[ i ].position.y );
-		mVertArrayTileMap[ i + 2 ].position = sf::Vector2f(
-					mVertArrayTileMap[ i ].position.x + muiLongueurTile, mVertArrayTileMap[ i ].position.y + muiLargeurTile );
-		mVertArrayTileMap[ i + 3 ].position = sf::Vector2f( mVertArrayTileMap[ i ].position.x,
-															mVertArrayTileMap[ i ].position.y + muiLargeurTile );
+        mVertArrayTileMap[i].position = sf::Vector2f(uiPosCaseX * muiLongueurTile, uiPosCaseY * muiLargeurTile);
+        mVertArrayTileMap[i + 1].position = sf::Vector2f(mVertArrayTileMap[i].position.x + muiLongueurTile,
+                                                            mVertArrayTileMap[i].position.y);
+        mVertArrayTileMap[i + 2].position = sf::Vector2f(
+                    mVertArrayTileMap[i].position.x + muiLongueurTile, mVertArrayTileMap[i].position.y + muiLargeurTile);
+        mVertArrayTileMap[i + 3].position = sf::Vector2f(mVertArrayTileMap[i].position.x,
+                                                            mVertArrayTileMap[i].position.y + muiLargeurTile);
 
 		uiPosCaseX++;
 	}
@@ -110,11 +110,6 @@ void TileMap::displayTileMap() const
                  "\nmuiLargeurNiveau::"<< muiLargeurMap <<
 				 "\nmuiLongueurTile::"<< muiLongueurTile <<
 				 "\nmuiLargeurTile::"<< muiLargeurTile << "\n";
-	/*for( auto i : mvectPositionTuile )
-	{
-		std::cout << "tuile x::" << i.first <<"tuile y::" << i.second <<"\n" ;
-	}
-	mTab.afficherTab();*/
 	std::cout << "FIN AFFICHAGE TILEMAP\n";
 
 

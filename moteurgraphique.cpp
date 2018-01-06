@@ -79,9 +79,9 @@ void MoteurGraphique::displayECSTilemap()
     for(unsigned int i = 0; it != vectCompTilemap.end(); ++it, ++i)
     {
         mVectTileMap.push_back(TileMap());
-//        mVectTileMap[i].setPosition(0, 0);
         mVectTileMap[i].setPosition((*it).second->vect2DPosComp.mfX, (*it).second->vect2DPosComp.mfY);
         mVectTileMap[i].setScale(SIZE_SCALE, SIZE_SCALE);
+
         mVectTileMap[i].configureTileMap(*(*it).first);
         mFenetre.draw(mVectTileMap[i]);
     }

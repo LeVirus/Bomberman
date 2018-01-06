@@ -144,12 +144,13 @@ void CollisionBombermanSystem::execSystem()
         FlagBombermanComponent *flagBombermanComponent;
         MoveableBombermanComponent *moveableBomberComp;
         if(! getComponentForCollision(positionComponent, collRectBoxComponent, flagBombermanComponent,
-                                      moveableBomberComp, mVectNumEntity[i])){
+                                      moveableBomberComp, mVectNumEntity[i]))
+        {
             continue;
         }
-        //modifier la position uniquement pour bomberman
 
-        if(i == 0 && moveableBomberComp)
+        //modifier la position uniquement pour bomberman
+        if(moveableBomberComp)
         {
             collRectBoxComponent->mRectBox.mSetOriginsRectBox(positionComponent->vect2DPosComp +
                                                               collRectBoxComponent->mVect2dVectOrigins);
@@ -170,6 +171,17 @@ void CollisionBombermanSystem::execSystem()
             {
                 continue;
             }
+
+            if(i == 0)
+            {
+
+
+//            std::cout << collRectBoxComponent->mRectBox.mGetOriginsRectBox().mfX <<" aa\n"
+//                      << collRectBoxComponent->mRectBox.mGetOriginsRectBox().mfY << " aa\n";
+//            std::cout << j << "   "<< collRectBoxComponentB->mRectBox.mGetOriginsRectBox().mfX <<" bb\n"
+//                      << collRectBoxComponentB->mRectBox.mGetOriginsRectBox().mfY << " bb\n";
+ }
+
             if(bIsInCollision( collRectBoxComponent->mRectBox, collRectBoxComponentB->mRectBox ))
 			{
 				mTabInColl.setValAt(  j ,  i , 1 );

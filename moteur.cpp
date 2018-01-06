@@ -21,6 +21,7 @@
 #include <bitset>
 #include <cassert>
 #include <SFML/System/Clock.hpp>
+#include <iostream>
 
 
 Moteur::Moteur(const Jeu &jeu): mPtrJeu(jeu), mGestECS(*this)
@@ -124,8 +125,8 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
     unsigned int longueurTile = mPtrJeu.getNiveau().getLongueurTile();
     for(unsigned int i = 0 ; i < uiNumPlayer ; ++i)
 	{
-		std::vector< bool > bitsetComp;
-		bitsetComp.resize( getGestionnaireECS().getECSComponentManager()->getNumberComponent() );
+        std::vector<bool> bitsetComp;
+        bitsetComp.resize(getGestionnaireECS().getECSComponentManager()->getNumberComponent());
         bitsetComp[ecs::DISPLAY_COMPONENT]          = true;
         bitsetComp[ecs::POSITION_COMPONENT]         = true;
         bitsetComp[BOMBER_MOVEABLE_COMPONENT]       = true;
@@ -171,8 +172,13 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
 void Moteur::loadLevelWall(const Niveau &niv)
 {
 	std::vector< bool > bitsetComp(getGestionnaireECS().getECSComponentManager()->getNumberComponent());
-	const std::vector<unsigned char> &memTabNiv = niv.getTabNiveau().getTab();
-	unsigned int longueurNiveau = niv.getTabNiveau().getLongueur();
+    TilemapBombermanComponent *tmc = mGestECS.getECSComponentManager() ->
+            searchComponentByType<TilemapBombermanComponent>(niv.getNumEntityLevel(), BOMBER_TILEMAP_COMPONENT);
+
+    assert(tmc && "level TilemapBombermanComponent is null");
+
+    const std::vector<unsigned char> &memTabNiv = tmc->mTabTilemap.getTab();
+    unsigned int longueurNiveau = niv.getLongueurNiveau();
 	//bitsetComp.resize( getGestionnaireECS().getECSComponentManager()->getNumberComponent() );
 
     unsigned int largeurTile = mPtrJeu.getNiveau().getLargeurTile();
@@ -206,9 +212,9 @@ void Moteur::loadLevelWall(const Niveau &niv)
 		fc->muiNumFlag = *it;
 
 		ecs::PositionComponent * pc = mGestECS.getECSComponentManager() ->
-				searchComponentByType< ecs::PositionComponent >( memEntity, ecs::POSITION_COMPONENT );
-
+				searchComponentByType< ecs::PositionComponent >( memEntity, ecs::POSITION_COMPONENT );        
 		assert(pc && "Moteur::loadLevelWall positionComp == null\n");
+
 		ecs::CollRectBoxComponent * cc = mGestECS.getECSComponentManager() ->
 				searchComponentByType< ecs::CollRectBoxComponent >( memEntity, ecs::COLL_RECTBOX_COMPONENT );
         cc->mRectBox.mSetHeightRectBox(largeurTile);
@@ -216,12 +222,16 @@ void Moteur::loadLevelWall(const Niveau &niv)
 		//positionner le décallage
         cc->mVect2dVectOrigins.mfX = 0;
         cc->mVect2dVectOrigins.mfY = 0;
+        std::cout << cmptX << "  " << cmptY << "\n";
         positionnerComponent(*pc, cmptX, cmptY);
 
         cc->mRectBox.mSetOriginsRectBox(pc->vect2DPosComp + cc->mVect2dVectOrigins);
+
 		++cmptX;
 		if(cmptX >= longueurNiveau)
 		{
+            std::cout << cmptX << " sss " << longueurNiveau << "\n";
+
 			cmptX = 0;
 			++cmptY;
 		}

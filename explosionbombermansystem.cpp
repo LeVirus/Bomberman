@@ -77,67 +77,67 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
     unsigned int vertSizeRight = 0, vertSizeLeft = 0, horizSizeLeft = 0, horizSizeRight = 0;
     bool maxXOk = false, minXOk = false, maxYOk = false, minYOk = false;
 
-    const Tableau2D &tabNiveau = Niveau::getTabNiveau();
-    if(tabNiveau.getLargeur() >= caseY || tabNiveau.getLongueur() >= caseX)
-    {
-        return false;
-    }
+//    const Tableau2D &tabNiveau = Niveau::getTabNiveau();
+//    if(tabNiveau.getLargeur() >= caseY || tabNiveau.getLongueur() >= caseX)
+//    {
+//        return false;
+//    }
 
-    for(unsigned int i = 0; i < explosionRadius; ++i)
-    {
-        if(!maxXOk)
-        {
-            if(tabNiveau.getValAt(maxX, caseY) != TILE_EMPTY)
-            {
-                --maxX;
-                maxXOk = true;
-            }
-            else
-            {
-                ++vertSizeRight;
-                ++maxX;
-            }
-        }
-        if(!minXOk)
-        {
-            if(tabNiveau.getValAt(minX, caseY) != TILE_EMPTY)
-            {
-                ++minX;
-                minXOk = true;
-            }
-            else
-            {
-                ++vertSizeLeft;
-                --minX;
-            }
-        }
-        if(!maxYOk)
-        {
-            if(tabNiveau.getValAt(caseX, maxY) != TILE_EMPTY)
-            {
-                --maxY;
-                maxYOk = true;
-            }
-            else
-            {
-                ++horizSizeLeft;
-                ++maxY;
-            }
-        }
-        if(!minYOk)
-        {
-            if(tabNiveau.getValAt(caseX, minY) != TILE_EMPTY)
-            {
-                ++minY;
-                minYOk = true;
-            }
-            else
-            {
-                ++horizSizeRight;
-                --minY;
-            }
-        }
-    }
+//    for(unsigned int i = 0; i < explosionRadius; ++i)
+//    {
+//        if(!maxXOk)
+//        {
+//            if(tabNiveau.getValAt(maxX, caseY) != TILE_EMPTY)
+//            {
+//                --maxX;
+//                maxXOk = true;
+//            }
+//            else
+//            {
+//                ++vertSizeRight;
+//                ++maxX;
+//            }
+//        }
+//        if(!minXOk)
+//        {
+//            if(tabNiveau.getValAt(minX, caseY) != TILE_EMPTY)
+//            {
+//                ++minX;
+//                minXOk = true;
+//            }
+//            else
+//            {
+//                ++vertSizeLeft;
+//                --minX;
+//            }
+//        }
+//        if(!maxYOk)
+//        {
+//            if(tabNiveau.getValAt(caseX, maxY) != TILE_EMPTY)
+//            {
+//                --maxY;
+//                maxYOk = true;
+//            }
+//            else
+//            {
+//                ++horizSizeLeft;
+//                ++maxY;
+//            }
+//        }
+//        if(!minYOk)
+//        {
+//            if(tabNiveau.getValAt(caseX, minY) != TILE_EMPTY)
+//            {
+//                ++minY;
+//                minYOk = true;
+//            }
+//            else
+//            {
+//                ++horizSizeRight;
+//                --minY;
+//            }
+//        }
+//    }
     tileVertComponent->mTabTilemap.resize(vertSizeLeft + 1 + vertSizeRight, 1);
     for(unsigned int i = 0; i < tileVertComponent->mTabTilemap.getLongueur(); ++i)
     {

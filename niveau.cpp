@@ -3,12 +3,17 @@
 #include <cassert>
 #include <iostream>
 
-Tableau2D Niveau::mtabNiveau;
 unsigned int Niveau::mNumEntityLevel;
 
 Niveau::Niveau()
 {
 
+}
+
+void Niveau::adaptToScale(float fX, float fY)
+{
+    muiLargeurTile *= fY;
+    muiLongueurTile *= fX;
 }
 
 void Niveau::setPositionPair(std::ifstream &flux, TilemapBombermanComponent &levelTileComp)
@@ -65,6 +70,7 @@ bool Niveau::loadLevel(unsigned int uiNumNiveau, unsigned int numEntityLevel, Ti
 	flux >> muiLongueurTile;
 	flux >> muiLargeurTile;
 
+
     levelTileComp.mTabTilemap.resize(muiLongueurNiveau, muiLargeurNiveau);
     levelTileComp.mPersistant = true;
     levelTileComp.mHeightTile = muiLargeurTile;
@@ -75,11 +81,6 @@ bool Niveau::loadLevel(unsigned int uiNumNiveau, unsigned int numEntityLevel, Ti
     if(! levelTileComp.mTabTilemap.bAttribuerTab(flux, muiLongueurNiveau , muiLargeurNiveau))return false;
 	return true;
 
-}
-
-const Tableau2D &Niveau::getTabNiveau()
-{
-	return mtabNiveau;
 }
 
 unsigned int Niveau::getLongueurNiveau() const
@@ -118,7 +119,6 @@ void Niveau::displayLevel() const
 	{
 		std::cout << "tuile x::" << i.first <<"tuile y::" << i.second <<"\n" ;
 	}
-	mtabNiveau.afficherTab();
     std::cout << "FIN AFFICHAGE TILEMAP\n";
 }
 
