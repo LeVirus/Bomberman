@@ -83,9 +83,9 @@ bool TileMap::bDessinerVertArrayNiveau(const TilemapBombermanComponent &tileComp
     const vectPairUi_t &vectPos = tileComp.mvectPositionTile;
     tileComp.mvectPositionTile;
     const Tableau2D &memTab = tileComp.mTabTilemap;
-    for( unsigned int i = 0; i < mVertArrayTileMap.getVertexCount() ; i += 4 )
+    for(unsigned int i = 0; i < mVertArrayTileMap.getVertexCount() ; i += 4)
     {
-        if( uiCoordTabX == muiLongueurMap )
+        if(uiCoordTabX == muiLongueurMap)
         {
             uiCoordTabY++;
             uiCoordTabX = 0;

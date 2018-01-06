@@ -4,7 +4,6 @@
 class Moteur;
 
 #include "tilemap.hpp"
-#include "niveau.hpp"
 #include <vector>
 
 namespace ecs
