@@ -227,7 +227,6 @@ void Moteur::loadLevelWall(const Niveau &niv)
 		//positionner le décallage
         cc->mVect2dVectOrigins.mfX = 0;
         cc->mVect2dVectOrigins.mfY = 0;
-        std::cout << cmptX << "  " << cmptY << "\n";
         positionnerComponent(*pc, cmptX, cmptY);
 
         cc->mRectBox.mSetOriginsRectBox(pc->vect2DPosComp + cc->mVect2dVectOrigins);
@@ -235,8 +234,6 @@ void Moteur::loadLevelWall(const Niveau &niv)
 		++cmptX;
 		if(cmptX >= longueurNiveau)
 		{
-            std::cout << cmptX << " sss " << longueurNiveau << "\n";
-
 			cmptX = 0;
 			++cmptY;
 		}

@@ -38,7 +38,7 @@ public:
     static void static_positionnerCaseTileMap(ecs::PositionComponent &posComp, unsigned int uiPositionX, unsigned int uiPositionY );
     static void static_positionComponentCenterCurrentCase(ecs::PositionComponent &positionComp);
     static void static_getPositionsCurrentCase(const ecs::PositionComponent &positionComp,
-                                               unsigned int &caseX, unsigned int &caseY);
+                                               unsigned int &caseX, unsigned int &caseY, bool launchBomb = true);
     void memorizeSizeTile(unsigned int lenghtTile, unsigned int heightTile);
 };
 

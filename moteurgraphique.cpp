@@ -79,8 +79,6 @@ void MoteurGraphique::displayECSTilemap()
         mVectTileMap[i].setScale(SIZE_SCALE, SIZE_SCALE);
 
         mVectTileMap[i].configureTileMap(*(*it).first);
-        //if(i == 0)continue;
-        //else std::cout << "sdddd" << i <<"\n";
 
         mFenetre.draw(mVectTileMap[i]);
     }
@@ -126,22 +124,25 @@ void MoteurGraphique::static_positionComponentCenterCurrentCase(ecs::PositionCom
 }
 
 void MoteurGraphique::static_getPositionsCurrentCase(const ecs::PositionComponent &positionComp,
-                                                     unsigned int &caseX, unsigned int &caseY)
+                                                     unsigned int &caseX, unsigned int &caseY, bool launchBomb)
 {
-    float thirdCaseLenght = mCaseLenght / 3;
-    float thirdCaseHeight = mCaseHeight / 3;
-    caseX = /*(unsigned int)*/(positionComp.vect2DPosComp.mfX - POSITION_LEVEL_X) / mCaseLenght;
-    caseY = /*(unsigned int)*/(positionComp.vect2DPosComp.mfY - POSITION_LEVEL_Y) / mCaseHeight;
-//    if(caseX % (unsigned int)mCaseLenght > (unsigned int)thirdCaseLenght)
-////        if((unsigned int)(positionComp.vect2DPosComp.mfX - POSITION_LEVEL_X) % (unsigned int)mCaseLenght > (unsigned int)thirdCaseLenght)
-//    {
-//        ++caseX;
-//    }
+    float fCaseX = (positionComp.vect2DPosComp.mfX - POSITION_LEVEL_X) / mCaseLenght;
+    float fCaseY = (positionComp.vect2DPosComp.mfY - POSITION_LEVEL_Y) / mCaseHeight;
+    caseX = fCaseX;
+    caseY = fCaseY;
+    if(! launchBomb)return;
 
-//    if((unsigned int)(positionComp.vect2DPosComp.mfY - POSITION_LEVEL_Y) % (unsigned int)mCaseHeight > (unsigned int)thirdCaseHeight)
-//    {
-//        ++caseY;
-//    }
+    fCaseY -= caseY;
+    fCaseX -= caseX;
+    if(fCaseX > 0.30)
+    {
+        ++caseX;
+    }
+
+    if(fCaseY > 0.30)
+    {
+        ++caseY;
+    }
 }
 
 void MoteurGraphique::raffraichirEcran()

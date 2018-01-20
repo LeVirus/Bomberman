@@ -36,13 +36,11 @@ void TileMap::configureTileMap(const TilemapBombermanComponent &tileComp)
 {
     if(! loadTexture(tileComp.mNumAssociateTexture))std::cout << "Fail load text\n";
     initialiserVertexArray(tileComp);
-    std::cout << tileComp.mHeightTile << "   qsd  " << tileComp.mTabTilemap.getLargeur() << "\n";
     bDessinerVertArrayNiveau(tileComp);
 }
 
 void TileMap::initialiserVertexArray(const TilemapBombermanComponent &tileComp)
 {
-
 	unsigned int uiPosCaseX = 0, uiPosCaseY = 0;
 
     muiLongueurTile = tileComp.mLenghtTile;
