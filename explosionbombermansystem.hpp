@@ -17,6 +17,7 @@ private:
     bool createExplosions(unsigned int caseX, unsigned int caseY, unsigned int explosionRadius);
     void createEntityExplosion(unsigned int positionCaseX, unsigned int positionCaseY, unsigned int explosionRadius,
                                unsigned int firstSize, unsigned int secondSize, bool vertical);
+    void loadTilePosition(TilemapBombermanComponent &tileComp);
 public:
     ExplosionBombermanSystem();
     virtual void execSystem();

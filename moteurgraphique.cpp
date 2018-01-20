@@ -49,10 +49,6 @@ void MoteurGraphique::linkMainEngine( Moteur* ptrMoteur )
 
 void MoteurGraphique::memorizeSizeTile(unsigned int lenghtTile, unsigned int heightTile)
 {
-//    //mVectTileMap.configTileMap(level);
-//    //mVectTileMap.loadLevel(level, uiNumEntity);
-//    //mVectTileMap.adaptToScale(SIZE_SCALE, SIZE_SCALE);
-
     mCaseLenght = lenghtTile;
     mCaseHeight = heightTile;
 }
@@ -83,6 +79,9 @@ void MoteurGraphique::displayECSTilemap()
         mVectTileMap[i].setScale(SIZE_SCALE, SIZE_SCALE);
 
         mVectTileMap[i].configureTileMap(*(*it).first);
+        //if(i == 0)continue;
+        //else std::cout << "sdddd" << i <<"\n";
+
         mFenetre.draw(mVectTileMap[i]);
     }
 }
@@ -131,18 +130,18 @@ void MoteurGraphique::static_getPositionsCurrentCase(const ecs::PositionComponen
 {
     float thirdCaseLenght = mCaseLenght / 3;
     float thirdCaseHeight = mCaseHeight / 3;
-    caseX = (unsigned int)(positionComp.vect2DPosComp.mfX - POSITION_LEVEL_X) / mCaseLenght;
-    caseY = (unsigned int)(positionComp.vect2DPosComp.mfY - POSITION_LEVEL_Y) / mCaseHeight;
+    caseX = /*(unsigned int)*/(positionComp.vect2DPosComp.mfX - POSITION_LEVEL_X) / mCaseLenght;
+    caseY = /*(unsigned int)*/(positionComp.vect2DPosComp.mfY - POSITION_LEVEL_Y) / mCaseHeight;
+//    if(caseX % (unsigned int)mCaseLenght > (unsigned int)thirdCaseLenght)
+////        if((unsigned int)(positionComp.vect2DPosComp.mfX - POSITION_LEVEL_X) % (unsigned int)mCaseLenght > (unsigned int)thirdCaseLenght)
+//    {
+//        ++caseX;
+//    }
 
-    if((unsigned int)(positionComp.vect2DPosComp.mfX - POSITION_LEVEL_X) % (unsigned int)mCaseLenght > (unsigned int)thirdCaseLenght)
-    {
-        ++caseX;
-    }
-
-    if((unsigned int)(positionComp.vect2DPosComp.mfY - POSITION_LEVEL_Y) % (unsigned int)mCaseHeight > (unsigned int)thirdCaseHeight)
-    {
-        ++caseY;
-    }
+//    if((unsigned int)(positionComp.vect2DPosComp.mfY - POSITION_LEVEL_Y) % (unsigned int)mCaseHeight > (unsigned int)thirdCaseHeight)
+//    {
+//        ++caseY;
+//    }
 }
 
 void MoteurGraphique::raffraichirEcran()

@@ -11,7 +11,7 @@ TilemapSystem::TilemapSystem()
     }
     if(! bAddComponentToSystem(BOMBER_TILEMAP_COMPONENT))
     {
-        std::cout << "Erreur BombBombermanSystem ajout BOMBER_FLAG_COMPONENT.\n";
+        std::cout << "Erreur BombBombermanSystem ajout BOMBER_TILEMAP_COMPONENT.\n";
     }
 }
 

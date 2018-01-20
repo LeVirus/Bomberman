@@ -112,7 +112,7 @@ void Moteur::loadLevelTileMap(Niveau &niv, unsigned int numNiv)
 
     niv.adaptToScale(SIZE_SCALE, SIZE_SCALE);
     //récupération et modification des composants
-    mMoteurGraphique.memorizeSizeTile(niv.getLongueurTile(), niv.getLargeurNiveau());
+    mMoteurGraphique.memorizeSizeTile(niv.getLongueurTile(), niv.getLargeurTile());
 
 }
 

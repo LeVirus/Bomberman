@@ -56,7 +56,6 @@ void BombBombermanSystem::execSystem()
 
                 if(! m_ptrExplosionSystem)
                 {
-                    std::cout << "dsfsdf!!!!\n";
                     m_ptrExplosionSystem = mptrSystemManager->searchSystemByType<ExplosionBombermanSystem>(EXPLOSION_BOMBER_SYSTEM);
                     assert(m_ptrExplosionSystem && "BombBombermanSystem::BombBombermanSystem explosionSystem is null\n");
                 }

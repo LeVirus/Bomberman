@@ -63,15 +63,16 @@ void ExplosionBombermanSystem::makeBombExplode(unsigned int numEntityBomb)
 
 bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int caseY, unsigned int explosionRadius)
 {
+
     unsigned int minX = caseX - 1, maxX = caseX + 1, minY = caseY - 1, maxY = caseY + 1;
     unsigned int vertSizeUp = 0, vertSizeDown = 0, horizSizeLeft = 0, horizSizeRight = 0;
     bool maxXOk = false, minXOk = false, maxYOk = false, minYOk = false;
 
     unsigned int entityLevel = Niveau::getNumEntityLevel();
-
     TilemapBombermanComponent *levelTileComponent = stairwayToComponentManager().searchComponentByType <TilemapBombermanComponent>
             (entityLevel, BOMBER_TILEMAP_COMPONENT);
     assert(levelTileComponent && "tileComponent is null\n");
+
     const Tableau2D &tabNiveau = levelTileComponent->mTabTilemap;
 
     if(tabNiveau.getLargeur() <= caseY || tabNiveau.getLongueur() <= caseX)
@@ -134,6 +135,7 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
             }
         }
     }
+
     ////////////////////////////////////////////////////////
     //Create Explosions component
 
@@ -148,9 +150,15 @@ void ExplosionBombermanSystem::createEntityExplosion(unsigned int positionCaseX,
                                                      unsigned int firstSize, unsigned int secondSize, bool vertical)
 {
     unsigned int explosionEntity = createExplosionEntity();
+
     TilemapBombermanComponent *tileComponent = stairwayToComponentManager().searchComponentByType <TilemapBombermanComponent>
             (explosionEntity, BOMBER_TILEMAP_COMPONENT);
     assert(tileComponent && "tileComponent is null\n");
+
+    tileComponent->mHeightTile = 17;
+    tileComponent->mLenghtTile = 17;
+    tileComponent->mNumAssociateTexture = 1;
+
     unsigned int totalSize = firstSize + 1 + secondSize;
 
     if(vertical)
@@ -189,12 +197,24 @@ void ExplosionBombermanSystem::createEntityExplosion(unsigned int positionCaseX,
                 tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_HORIZONTAL_MIDDLE);
         }
     }
+    loadTilePosition(*tileComponent);
     //position the tilemap
     ecs::PositionComponent *posComponent = stairwayToComponentManager().searchComponentByType <ecs::PositionComponent>
             (explosionEntity, ecs::POSITION_COMPONENT);
     assert(posComponent && "posComponent is null\n");
-
     MoteurGraphique::static_positionnerCaseTileMap(*posComponent, positionCaseX, positionCaseY);
+
+}
+
+void ExplosionBombermanSystem::loadTilePosition(TilemapBombermanComponent &tileComp)
+{
+    tileComp.mvectPositionTile.push_back({102, 85});//end left
+    tileComp.mvectPositionTile.push_back({34, 85});//end right
+    tileComp.mvectPositionTile.push_back({85, 85});//EXPLOSION_CENTER
+    tileComp.mvectPositionTile.push_back({51, 85});//EXPLOSION_VERTICAL_MIDDLE
+    tileComp.mvectPositionTile.push_back({0, 85});//EXPLOSION_END_UP
+    tileComp.mvectPositionTile.push_back({102, 85});//EXPLOSION_END_DOWN//NOTTT
+    tileComp.mvectPositionTile.push_back({68, 85});//EXPLOSION_HORIZONTAL_MIDDLE
 }
 
 unsigned int ExplosionBombermanSystem::createExplosionEntity()
