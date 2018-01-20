@@ -11,7 +11,7 @@ private:
 	Niveau mNiveau;
 public:
 	Jeu();
-	bool chargerNiveau( unsigned int numNiv );
+    bool chargerNiveau(unsigned int numNiv);
 	const Niveau &getNiveau()const;
 	void lancerJeu();
 };

@@ -25,11 +25,6 @@ BombBombermanSystem::BombBombermanSystem() : mTimeExplode(500)
 void BombBombermanSystem::execSystem()
 {
     System::execSystem();
-    if(! m_ptrExplosionSystem)
-    {
-        m_ptrExplosionSystem = mptrSystemManager->searchSystemByType<ExplosionBombermanSystem>(EXPLOSION_BOMBER_SYSTEM);
-        assert(m_ptrExplosionSystem && "BombBombermanSystem::BombBombermanSystem explosionSystem is null\n");
-    }
     std::vector< unsigned int >::iterator it = mVectNumEntity.begin();
     TimerBombermanComponent* timerComp;
     for(; it != mVectNumEntity.end() ; ++it)
@@ -58,6 +53,13 @@ void BombBombermanSystem::execSystem()
             unsigned int timeElapsed = timerComp->mBombClock.getElapsedTime().asMilliseconds();
             if(timeElapsed >= mTimeExplode)
             {
+
+                if(! m_ptrExplosionSystem)
+                {
+                    std::cout << "dsfsdf!!!!\n";
+                    m_ptrExplosionSystem = mptrSystemManager->searchSystemByType<ExplosionBombermanSystem>(EXPLOSION_BOMBER_SYSTEM);
+                    assert(m_ptrExplosionSystem && "BombBombermanSystem::BombBombermanSystem explosionSystem is null\n");
+                }
                 m_ptrExplosionSystem->makeBombExplode(*it);
                 mptrSystemManager->getptrEngine()->bRmEntity(*it);
                 std::cout << *it << "EXPLOOOODE!!!!\n";

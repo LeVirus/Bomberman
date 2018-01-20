@@ -14,7 +14,7 @@ class BombBombermanSystem : public ecs::System
 {
 private:
     unsigned int mTimeExplode;
-    ExplosionBombermanSystem *m_ptrExplosionSystem;
+    ExplosionBombermanSystem *m_ptrExplosionSystem = nullptr;
 public:
     BombBombermanSystem();
     virtual void execSystem();

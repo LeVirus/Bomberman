@@ -104,14 +104,10 @@ void MoteurGraphique::displayECSSprite()
     }
 }
 
-void MoteurGraphique::positionnerCaseTileMap(unsigned int uiNumEntity, unsigned int uiPositionX, unsigned int uiPositionY )
+void MoteurGraphique::static_positionnerCaseTileMap(ecs::PositionComponent &posComp, unsigned int uiPositionX, unsigned int uiPositionY)
 {
-	ecs::PositionComponent * pc = mPtrMoteurPrincipal->getGestionnaireECS().getECSComponentManager() ->
-			searchComponentByType< ecs::PositionComponent >( uiNumEntity, ecs::POSITION_COMPONENT );
-
-	assert( pc && "pc == null\n");
-    pc->vect2DPosComp.mfX = POSITION_LEVEL_X + uiPositionX * mCaseLenght;
-    pc->vect2DPosComp.mfY = POSITION_LEVEL_Y + uiPositionY * mCaseHeight;
+    posComp.vect2DPosComp.mfX = POSITION_LEVEL_X + uiPositionX * mCaseLenght;
+    posComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + uiPositionY * mCaseHeight;
 
 }
 

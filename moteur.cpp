@@ -163,7 +163,11 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
                 searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT );
         dc->muiNumSprite = memBombermanSprite;
 
-        mMoteurGraphique.positionnerCaseTileMap(memEntity, 1, 1);
+        ecs::PositionComponent * pc = mGestECS.getECSComponentManager() ->
+                searchComponentByType< ecs::PositionComponent >(memEntity, ecs::POSITION_COMPONENT);
+        assert( pc && "pc == null\n");
+
+        mMoteurGraphique.static_positionnerCaseTileMap(*pc, 1, 1);
 
 	}
 	return true;

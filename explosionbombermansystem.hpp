@@ -13,14 +13,15 @@ struct TilemapBombermanComponent;
 class ExplosionBombermanSystem : public ecs::System
 {
 private:
-    void positionTileMap(unsigned int caseX, unsigned int caseY, unsigned int numEntity);
+    unsigned int createExplosionEntity();
+    bool createExplosions(unsigned int caseX, unsigned int caseY, unsigned int explosionRadius);
+    void createEntityExplosion(unsigned int positionCaseX, unsigned int positionCaseY, unsigned int explosionRadius,
+                               unsigned int firstSize, unsigned int secondSize, bool vertical);
 public:
     ExplosionBombermanSystem();
     virtual void execSystem();
     virtual void displaySystem()const;
     void makeBombExplode(unsigned int numEntityBomb);
-    unsigned int createExplosionEntity();
-    bool createExplosions(unsigned int caseX, unsigned int caseY, unsigned int explosionRadius);
 };
 
 #endif // EXPLOSIONBOMBERMANSYSTEM_H
