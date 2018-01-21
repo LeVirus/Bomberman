@@ -61,7 +61,6 @@ void BombBombermanSystem::execSystem()
                 }
                 m_ptrExplosionSystem->makeBombExplode(*it);
                 mptrSystemManager->getptrEngine()->bRmEntity(*it);
-                std::cout << *it << "EXPLOOOODE!!!!\n";
             }
         }
     }

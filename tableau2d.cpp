@@ -81,8 +81,8 @@ const std::vector< unsigned char > &Tableau2D::getTab()const
  */
 void Tableau2D::resize( unsigned int longueur, unsigned int largeur )
 {
-	muiLargeurTab = longueur;
-	muiLongueurTab = largeur;
+    muiLargeurTab = largeur;
+    muiLongueurTab = longueur;
 	mVectChar.resize( longueur * largeur  );
 }
 

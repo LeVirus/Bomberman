@@ -122,11 +122,6 @@ void Niveau::displayLevel() const
     std::cout << "FIN AFFICHAGE TILEMAP\n";
 }
 
-bool Niveau::destructWall(unsigned int x, unsigned int y)
-{
-    //if(mtabNiveau.getValAt(x, y) == )
-}
-
 unsigned int Niveau::getLargeurTile() const
 {
 	return muiLargeurTile;

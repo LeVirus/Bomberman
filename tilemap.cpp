@@ -52,7 +52,8 @@ void TileMap::initialiserVertexArray(const TilemapBombermanComponent &tileComp)
 	mVertArrayTileMap.setPrimitiveType ( sf::Quads );
     mVertArrayTileMap.resize(muiLongueurMap * muiLargeurMap * 4);
 	//traitement de toutes les autres cases
-    for(unsigned int i = 0 ; i < muiLongueurMap * muiLargeurMap * 4 ; i += 4){
+    for(unsigned int i = 0 ; i < muiLongueurMap * muiLargeurMap * 4 ; i += 4)
+    {
         if(uiPosCaseX == muiLongueurMap)
 		{
 			uiPosCaseX = 0;
@@ -83,7 +84,6 @@ bool TileMap::bDessinerVertArrayNiveau(const TilemapBombermanComponent &tileComp
     bool retour = true;
     unsigned int uiCoordBlockX, uiCoordBlockY, uiCoordTabX = 0, uiCoordTabY = 0, uiValTile;
     const vectPairUi_t &vectPos = tileComp.mvectPositionTile;
-    tileComp.mvectPositionTile;
     const Tableau2D &memTab = tileComp.mTabTilemap;
     for(unsigned int i = 0; i < mVertArrayTileMap.getVertexCount() ; i += 4)
     {
@@ -92,9 +92,11 @@ bool TileMap::bDessinerVertArrayNiveau(const TilemapBombermanComponent &tileComp
             uiCoordTabY++;
             uiCoordTabX = 0;
         }
+
         uiValTile = memTab.getValAt(uiCoordTabX, uiCoordTabY);
         uiCoordBlockX = vectPos[uiValTile].first;
         uiCoordBlockY = vectPos[uiValTile].second;
+
         if(! retour)break;
         mVertArrayTileMap[i].texCoords = sf::Vector2f( uiCoordBlockX, uiCoordBlockY );
         mVertArrayTileMap[i + 1].texCoords = sf::Vector2f( uiCoordBlockX + muiLongueurTile, uiCoordBlockY );

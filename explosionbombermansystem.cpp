@@ -32,12 +32,38 @@ ExplosionBombermanSystem::ExplosionBombermanSystem()
 
 void ExplosionBombermanSystem::execSystem()
 {
-//    System::execSystem();
-//    std::vector< unsigned int >::iterator it = mVectNumEntity.begin();
-//    for(; it != mVectNumEntity.end() ; ++it)
-//    {
+    System::execSystem();
+    std::vector< unsigned int >::iterator it = mVectNumEntity.begin();
+    for(; it != mVectNumEntity.end() ; ++it)
+    {
+        FlagBombermanComponent *flagComponent = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
+                (*it, BOMBER_FLAG_COMPONENT);
 
-//    }
+        assert(flagComponent && "flagComponent is null\n");
+        if(flagComponent->muiNumFlag != FLAG_EXPLOSION)
+        {
+            continue;
+        }
+
+        TimerBombermanComponent* timerComp = stairwayToComponentManager() .
+                    searchComponentByType <TimerBombermanComponent> (*it, BOMBER_TIMER_COMPONENT);
+        assert(timerComp && "timerComp == NULL\n");
+
+        if(! timerComp->mLaunched)
+        {
+            timerComp->mBombClock.restart();
+            timerComp->mLaunched = true;
+        }
+        else
+        {
+            unsigned int timeElapsed = timerComp->mBombClock.getElapsedTime().asMilliseconds();
+            if(timeElapsed >= mTimeExplosion)
+            {
+                mptrSystemManager->getptrEngine()->bRmEntity(*it);
+//                std::cout << *it << "End explode!!!\n";
+            }
+        }
+    }
 }
 
 void ExplosionBombermanSystem::displaySystem() const
@@ -78,8 +104,6 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
     {
         return false;
     }
-    std::cout << caseX << " bb  " << caseY << "\n";
-
     for(unsigned int i = 0; i < explosionRadius; ++i)
     {
         if(!maxXOk)
@@ -97,8 +121,6 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
         }
         if(!minXOk)
         {
-            std::cout << (unsigned short)tabNiveau.getValAt(maxX, caseY)<<"  minX\n";
-
             if(tabNiveau.getValAt(minX, caseY) != TILE_EMPTY)
             {
                 ++minX;
@@ -142,17 +164,22 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
     //Create Explosions component
 
     //create horizontal explosion
-    createEntityExplosion(minX, caseY, explosionRadius, horizSizeLeft, horizSizeRight, true);
+    createEntityExplosion(minX, caseY, explosionRadius, horizSizeLeft, horizSizeRight, false);
     //create vertical explosion
-    createEntityExplosion(caseX, minY, explosionRadius, vertSizeUp, vertSizeDown, false);
+    createEntityExplosion(caseX, minY, explosionRadius, vertSizeUp, vertSizeDown, true);
     //WTF??
     return true;
 }
 
 void ExplosionBombermanSystem::createEntityExplosion(unsigned int positionCaseX, unsigned int positionCaseY, unsigned int explosionRadius,
-                                                     unsigned int firstSize, unsigned int secondSize, bool horizontal)
+                                                     unsigned int firstSize, unsigned int secondSize, bool vertical)
 {
     unsigned int explosionEntity = createExplosionEntity();
+
+    FlagBombermanComponent *flagComponent = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
+            (explosionEntity, BOMBER_FLAG_COMPONENT);
+    assert(flagComponent && "flagComponent is null\n");
+    flagComponent->muiNumFlag = FLAG_EXPLOSION;
 
     TilemapBombermanComponent *tileComponent = stairwayToComponentManager().searchComponentByType <TilemapBombermanComponent>
             (explosionEntity, BOMBER_TILEMAP_COMPONENT);
@@ -164,7 +191,7 @@ void ExplosionBombermanSystem::createEntityExplosion(unsigned int positionCaseX,
 
     unsigned int totalSize = firstSize + 1 + secondSize;
 
-    if(horizontal)
+    if(vertical)
         tileComponent->mTabTilemap.resize(1, totalSize);
     else
         tileComponent->mTabTilemap.resize(totalSize, 1);
@@ -174,20 +201,15 @@ void ExplosionBombermanSystem::createEntityExplosion(unsigned int positionCaseX,
         //check if the radius explosion is the longuest it could be in the first part
         if(i == 0 && firstSize == explosionRadius)
         {
-            if(horizontal)
-            std::cout << "EXPLOSION_END_UP\n";
-            if(horizontal)
-                tileComponent->mTabTilemap.setValAt(0, i, EXPLOSION_END_LEFT);
+            if(vertical)
+                tileComponent->mTabTilemap.setValAt(0, i, EXPLOSION_END_UP);
             else
-                tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_END_UP);
+                tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_END_LEFT);
         }
         //check the middle of explosion
         else if(i == firstSize)
         {
-            if(horizontal)
-            std::cout << "EXPLOSION_CENTER\n";
-
-            if(horizontal)
+            if(vertical)
                 tileComponent->mTabTilemap.setValAt(0, i, EXPLOSION_CENTER);
             else
                 tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_CENTER);
@@ -195,23 +217,17 @@ void ExplosionBombermanSystem::createEntityExplosion(unsigned int positionCaseX,
         //check if the radius explosion is the longuest it could be in the second part
         else if(i == totalSize - 1 && secondSize == explosionRadius)
         {
-            if(horizontal)
-            std::cout << "EXPLOSION_END_DOWN\n";
-
-            if(horizontal)
-                tileComponent->mTabTilemap.setValAt(0, i, EXPLOSION_END_RIGHT);
+            if(vertical)
+                tileComponent->mTabTilemap.setValAt(0, i, EXPLOSION_END_DOWN );
             else
-                tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_END_DOWN);
+                tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_END_RIGHT);
         }
         else
         {
-            if(horizontal)
-            std::cout << "EXPLOSION_VERTICAL_MIDDLE\n";
-
-            if(horizontal)
-                tileComponent->mTabTilemap.setValAt(0, i, EXPLOSION_HORIZONTAL_MIDDLE);
+            if(vertical)
+                tileComponent->mTabTilemap.setValAt(0, i, EXPLOSION_VERTICAL_MIDDLE);
             else
-                tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_VERTICAL_MIDDLE);
+                tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_HORIZONTAL_MIDDLE);
         }
     }
     loadTilePosition(*tileComponent);
@@ -225,13 +241,13 @@ void ExplosionBombermanSystem::createEntityExplosion(unsigned int positionCaseX,
 
 void ExplosionBombermanSystem::loadTilePosition(TilemapBombermanComponent &tileComp)
 {
-    tileComp.mvectPositionTile.push_back({102, 5});//end left
-    tileComp.mvectPositionTile.push_back({34, 85});//end right
-    tileComp.mvectPositionTile.push_back({85, 85});//EXPLOSION_CENTER
-    tileComp.mvectPositionTile.push_back({51, 85});//EXPLOSION_VERTICAL_MIDDLE
-    tileComp.mvectPositionTile.push_back({0, 85});//EXPLOSION_END_UP
-    tileComp.mvectPositionTile.push_back({102, 5});//EXPLOSION_END_DOWN//NOTTT
-    tileComp.mvectPositionTile.push_back({68, 85});//EXPLOSION_HORIZONTAL_MIDDLE
+    tileComp.mvectPositionTile.push_back({50, 5});//0 end left
+    tileComp.mvectPositionTile.push_back({34, 85});//1 end right
+    tileComp.mvectPositionTile.push_back({85, 85});//2 EXPLOSION_CENTER
+    tileComp.mvectPositionTile.push_back({51, 85});//3 EXPLOSION_VERTICAL_MIDDLE
+    tileComp.mvectPositionTile.push_back({0, 85});// 4 EXPLOSION_END_UP
+    tileComp.mvectPositionTile.push_back({10, 5});//5 EXPLOSION_END_DOWN//NOTTT
+    tileComp.mvectPositionTile.push_back({68, 85});//6 EXPLOSION_HORIZONTAL_MIDDLE
 }
 
 unsigned int ExplosionBombermanSystem::createExplosionEntity()

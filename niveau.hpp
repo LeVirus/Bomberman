@@ -28,7 +28,6 @@ public:
     const std::string &getPathToTexture()const;
 	const vectPairUi_t &getVectPositionTile()const;
 	void displayLevel()const;
-    bool destructWall(unsigned int x, unsigned int y);
     static unsigned int getNumEntityLevel();
 };
 

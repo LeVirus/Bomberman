@@ -24,7 +24,7 @@
 #include <iostream>
 
 
-Moteur::Moteur(const Jeu &jeu): mPtrJeu(jeu), mGestECS(*this)
+Moteur::Moteur(const Jeu &jeu):  mGestECS(*this), mPtrJeu(jeu)
 {
 	mMoteurGraphique.linkMainEngine( this );
 }

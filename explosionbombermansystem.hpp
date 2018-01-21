@@ -13,6 +13,7 @@ struct TilemapBombermanComponent;
 class ExplosionBombermanSystem : public ecs::System
 {
 private:
+    unsigned int mTimeExplosion = 1500;
     unsigned int createExplosionEntity();
     bool createExplosions(unsigned int caseX, unsigned int caseY, unsigned int explosionRadius);
     void createEntityExplosion(unsigned int positionCaseX, unsigned int positionCaseY, unsigned int explosionRadius,
