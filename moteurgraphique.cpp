@@ -16,9 +16,10 @@ std::vector<sf::Texture> MoteurGraphique::mVectTexture;
 
 MoteurGraphique::MoteurGraphique()
 {
-    mVectTexture.resize(2);
+    mVectTexture.resize(3);
     mVectTexture[0].loadFromFile("../Bomberman/Ressources/Texture/textBomberman.png");
     mVectTexture[1].loadFromFile("../Bomberman/Ressources/Texture/textExplode.png");
+    mVectTexture[2].loadFromFile("../Bomberman/Ressources/Texture/textTileMap.png");
 }
 
 void MoteurGraphique::getEventFromWindows(sf::Event &event)
@@ -72,6 +73,8 @@ void MoteurGraphique::displayECSTilemap()
     VectPairCompTilemap::const_iterator it = vectCompTilemap.begin();
     for(unsigned int i = 0; it != vectCompTilemap.end(); ++it, ++i)
     {
+        if(/*(*it).first->mNumAssociateTexture*/i == 0){
+            std::cout << (*it).first->mvectPositionTile[0].first << "  " << (*it).first->mvectPositionTile[0].second <<  "\n";}
         mVectTileMap.push_back(TileMap());
         mVectTileMap[i].setPosition((*it).second->vect2DPosComp.mfX, (*it).second->vect2DPosComp.mfY);
         mVectTileMap[i].setScale(SIZE_SCALE, SIZE_SCALE);

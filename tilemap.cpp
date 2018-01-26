@@ -31,8 +31,7 @@ void TileMap::initialiserVertexArray(const TilemapBombermanComponent &tileComp)
     muiHauteurTile = tileComp.mHeightTile;
     muiLongueurMap = tileComp.mTabTilemap.getLargeur();
     muiLargeurMap = tileComp.mTabTilemap.getHauteur();
-if(tileComp.mNumAssociateTexture == 1)std::cout << muiLongueurMap << "   " << muiLargeurMap << "\n";
-	//détermination du type du tableau de vertex
+    //détermination du type du tableau de vertex
 	mVertArrayTileMap.setPrimitiveType ( sf::Quads );
     mVertArrayTileMap.resize(muiLongueurMap * muiLargeurMap * 4);
 	//traitement de toutes les autres cases

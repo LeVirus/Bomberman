@@ -136,5 +136,5 @@ unsigned char Tableau2D::getValAt(unsigned int uiCaseX, unsigned int uiCaseY)con
     if(uiCaseX >= muiLargeurTab || uiCaseY >= muiHauteurTab){
 		return 254;
 	}
-    return mVectChar[uiCaseX + uiCaseY * muiHauteurTab];
+    return mVectChar[uiCaseX + uiCaseY * muiLargeurTab];
 }
