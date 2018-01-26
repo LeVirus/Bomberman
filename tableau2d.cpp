@@ -83,7 +83,7 @@ void Tableau2D::resize(unsigned int largeur, unsigned int hauteur)
 {
     muiHauteurTab = hauteur;
     muiLargeurTab = largeur;
-    mVectChar.resize( largeur * hauteur  );
+    mVectChar.resize(largeur * hauteur);
 }
 
 /**

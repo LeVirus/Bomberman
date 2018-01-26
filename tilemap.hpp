@@ -12,7 +12,7 @@ class TileMap: public sf::Drawable, public sf::Transformable
 private:
     const sf::Texture *mTexture;
 	sf::VertexArray mVertArrayTileMap;
-	unsigned int muiLongueurTile = 0, muiLargeurTile = 0,
+    unsigned int muiLargeurTile = 0, muiHauteurTile = 0,
     muiLongueurMap = 0, muiLargeurMap = 0, muiNumEntity = 9000;
 
     void initialiserVertexArray(const TilemapBombermanComponent &tileComp);
@@ -33,8 +33,8 @@ public:
 
 	void adaptToScale( float fX, float fY );
 	unsigned int getNumEntity()const{return muiNumEntity;}
-    unsigned int getLongueurTile()const{return muiLongueurTile;}
-	unsigned int getLargeurTile()const{return muiLargeurTile;}
+    unsigned int getLargeurTile()const{return muiLargeurTile;}
+    unsigned int getHauteurTile()const{return muiHauteurTile;}
 };
 
 #endif // TILEMAP_H
