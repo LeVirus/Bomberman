@@ -26,7 +26,7 @@
 
 Moteur::Moteur(const Jeu &jeu):  mGestECS(*this), mPtrJeu(jeu)
 {
-	mMoteurGraphique.linkMainEngine( this );
+    mMoteurGraphique.linkMainEngine(this);
 }
 
 const Jeu &Moteur::getJeu() const
@@ -41,13 +41,13 @@ void Moteur::lancerBoucle()
 	do
 	{
         mGestECS.getECSEngine()->execIteration();
-		earnInput();
+        getInput();
 		mMoteurGraphique.raffraichirEcran();
-		if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )break;
-	}while( true );
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))break;
+    }while(true);
 }
 
-void Moteur::earnInput()
+void Moteur::getInput()
 {
 	const std::vector< unsigned int > &vectNumEntitySystem = mGestECS.getECSSystemManager() ->
 			searchSystemByType< InputBombermanSystem > ( INPUT_BOMBER_SYSTEM )->getVectNumEntity();
@@ -72,7 +72,7 @@ sf::Event event;
         if(mLockLaunchBomb)
         {
             mMoteurGraphique.getEventFromWindows(event);
-            if(sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space)
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
             {
                 mMoteurGraphique.getEventFromWindows(event);
                 mLockLaunchBomb = false;

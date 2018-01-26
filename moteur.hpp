@@ -20,7 +20,7 @@ public:
 	Moteur(const Jeu &jeu);
 	const Jeu &getJeu()const;
 	void lancerBoucle();
-	void earnInput();
+	void getInput();
 	GestionnaireECS &getGestionnaireECS();
     void loadLevelTileMap(Niveau &niv, unsigned int numNiv);
 	bool loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot );

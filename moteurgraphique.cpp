@@ -12,13 +12,13 @@
 
 float MoteurGraphique::mCaseLenght;
 float MoteurGraphique::mCaseHeight;
+std::vector<sf::Texture> MoteurGraphique::mVectTexture;
 
 MoteurGraphique::MoteurGraphique()
 {
-
-	mVectTexture.push_back( sf::Texture() );
-    assert( mVectTexture[0].loadFromFile( "../Bomberman/Ressources/Texture/textBomberman.png" )
-            && "error while loading texture\n" );
+    mVectTexture.resize(2);
+    mVectTexture[0].loadFromFile("../Bomberman/Ressources/Texture/textBomberman.png");
+    mVectTexture[1].loadFromFile("../Bomberman/Ressources/Texture/textExplode.png");
 }
 
 void MoteurGraphique::getEventFromWindows(sf::Event &event)
@@ -34,11 +34,9 @@ const std::vector<TileMap> &MoteurGraphique::getTileMap()const
 void MoteurGraphique::initialiserFenetre()
 {
     mFenetre.create( sf::VideoMode( 1040, 640 ), "Bomber", sf::Style::/*Fullscreen*/Default );
-
 	mCamera.reset( sf::FloatRect( 0, 0, WIDTH_SCREEN , HEIGHT_SCREEN ) );
 	mFenetre.setView( mCamera );
 	mFenetre.setFramerateLimit(60);
-
 }
 
 void MoteurGraphique::linkMainEngine( Moteur* ptrMoteur )
@@ -99,6 +97,11 @@ void MoteurGraphique::displayECSSprite()
         mVectSprite[ uiNumSprite ] . setPosition( vector2DPos . mfX, vector2DPos . mfY );
         mFenetre.draw( mVectSprite[ uiNumSprite ] );
     }
+}
+
+const std::vector<sf::Texture> &MoteurGraphique::static_getTabTexture()
+{
+    return mVectTexture;
 }
 
 void MoteurGraphique::static_positionnerCaseTileMap(ecs::PositionComponent &posComp, unsigned int uiPositionX, unsigned int uiPositionY)

@@ -1,26 +1,8 @@
 #include "tilemap.hpp"
+#include "moteurgraphique.hpp"
 #include <iostream>
 #include <cassert>
 #include <string>
-
-bool TileMap::loadTexture(unsigned int numTexture)
-{
-    std::string path;
-    switch (numTexture)
-    {
-    case 0:
-        path = "../Bomberman/Ressources/Texture/textTileMap.png";
-        break;
-    case 1:
-        path = "../Bomberman/Ressources/Texture/textExplode.png";
-        break;
-    default:
-        return false;
-        break;
-    }
-    return mTexture.loadFromFile(path);
-
-}
 
 const sf::VertexArray &TileMap::getVertexArrayTileMap()const
 {
@@ -29,12 +11,14 @@ const sf::VertexArray &TileMap::getVertexArrayTileMap()const
 
 const sf::Texture &TileMap::getTextureTileMap()const
 {
-	return mTexture;
+    return *mTexture;
 }
 
 void TileMap::configureTileMap(const TilemapBombermanComponent &tileComp)
 {
-    if(! loadTexture(tileComp.mNumAssociateTexture))std::cout << "Fail load text\n";
+    const std::vector<sf::Texture> &tabText = MoteurGraphique::static_getTabTexture();
+    assert(tileComp.mNumAssociateTexture < tabText.size() && "bad texture number");
+    mTexture = &tabText[tileComp.mNumAssociateTexture];
     initialiserVertexArray(tileComp);
     bDessinerVertArrayNiveau(tileComp);
 }
@@ -45,9 +29,9 @@ void TileMap::initialiserVertexArray(const TilemapBombermanComponent &tileComp)
 
     muiLongueurTile = tileComp.mLenghtTile;
     muiLargeurTile = tileComp.mHeightTile;
-    muiLongueurMap = tileComp.mTabTilemap.getLongueur();
-    muiLargeurMap = tileComp.mTabTilemap.getLargeur();
-
+    muiLongueurMap = tileComp.mTabTilemap.getHauteur();
+    muiLargeurMap = tileComp.mTabTilemap.getHauteur();
+if(tileComp.mNumAssociateTexture == 1)std::cout << muiLongueurMap << "   " << muiLargeurMap << "\n";
 	//détermination du type du tableau de vertex
 	mVertArrayTileMap.setPrimitiveType ( sf::Quads );
     mVertArrayTileMap.resize(muiLongueurMap * muiLargeurMap * 4);
@@ -125,12 +109,11 @@ void TileMap::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	states.transform *= getTransform(); // getTransform() est définie par sf::Transformable
 
 	// on applique la texture
-	states.texture = &mTexture;
-
+    states.texture = mTexture;
 	// on peut aussi surcharger states.shader ou states.blendMode si nécessaire
 
 	// on dessine le tableau de vertex
-	target.draw(mVertArrayTileMap, states);
+    target.draw(mVertArrayTileMap, states);
 }
 
 void TileMap::adaptToScale( float fX, float fY )

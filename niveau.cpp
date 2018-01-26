@@ -20,8 +20,7 @@ void Niveau::setPositionPair(std::ifstream &flux, TilemapBombermanComponent &lev
 {
 	unsigned int uiNbrTuile;
 	flux >> uiNbrTuile;
-    levelTileComp.mvectPositionTile.resize( uiNbrTuile );
-//	mvectPositionTuile.resize( uiNbrTuile );
+    levelTileComp.mvectPositionTile.resize(uiNbrTuile);
     for(unsigned int i = 0; i < levelTileComp.mvectPositionTile.size() ; ++i)
 	{
         flux >> levelTileComp.mvectPositionTile[i].first;
@@ -70,6 +69,7 @@ bool Niveau::loadLevel(unsigned int uiNumNiveau, unsigned int numEntityLevel, Ti
 	flux >> muiLongueurTile;
 	flux >> muiLargeurTile;
 
+    levelTileComp.mNumAssociateTexture = 0;
 
     levelTileComp.mTabTilemap.resize(muiLongueurNiveau, muiLargeurNiveau);
     levelTileComp.mPersistant = true;
@@ -103,11 +103,6 @@ const std::__cxx11::string &Niveau::getPathToTexture() const
 	return mPathToTexture;
 }
 
-const vectPairUi_t &Niveau::getVectPositionTile() const
-{
-	return mvectPositionTuile;
-}
-
 void Niveau::displayLevel() const
 {
 	std::cout << "AFFICHAGE TILEMAP\n";
@@ -115,10 +110,6 @@ void Niveau::displayLevel() const
 				 "\nmuiLargeurNiveau::"<< muiLargeurNiveau <<
 				 "\nmuiLongueurTile::"<< muiLongueurTile <<
 				 "\nmuiLargeurTile::"<< muiLargeurTile << "\n";
-	for( auto i : mvectPositionTuile )
-	{
-		std::cout << "tuile x::" << i.first <<"tuile y::" << i.second <<"\n" ;
-	}
     std::cout << "FIN AFFICHAGE TILEMAP\n";
 }
 

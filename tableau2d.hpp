@@ -14,26 +14,25 @@
  */
 class Tableau2D{
 private:
-	std::vector< unsigned char > mVectChar;
-	std::pair< unsigned int, unsigned int > mPairCase;
-	unsigned int muiLongueurTab, muiLargeurTab;
+    std::vector<unsigned char> mVectChar;
+    std::pair<unsigned int, unsigned int> mPairCase;
+    unsigned int muiLargeurTab, muiHauteurTab;
 public:
 	Tableau2D() = default;
-	Tableau2D( unsigned int longueur,
-			   unsigned int largeur );
+    Tableau2D(unsigned int largeur,
+               unsigned int hauteur);
 	void reset();
-	bool bAttribuerTab( const std::vector< unsigned char > &vect, unsigned int uiLongueurTab, unsigned int uiLargeurTab );
-	bool bAttribuerTab(std::ifstream &flux, unsigned int uiLongueurTab, unsigned int uiLargeurTab );
+    bool bAttribuerTab(const std::vector<unsigned char> &vect, unsigned int uiLargeurTab, unsigned int uiHauteurTab);
+    bool bAttribuerTab(std::ifstream &flux, unsigned int uiLargeurTab, unsigned int uiHauteurTab);
 
-	unsigned char getValAt( unsigned int uiCaseX, unsigned int uiCaseY )const;
-	bool setValAt( unsigned int uiCaseX, unsigned int uiCaseY, unsigned char value );
+    unsigned char getValAt(unsigned int uiCaseX, unsigned int uiCaseY)const;
+    bool setValAt(unsigned int uiCaseX, unsigned int uiCaseY, unsigned char value);
 
 	const std::vector< unsigned char > &getTab()const;
-	void resize( unsigned int longueur, unsigned int largeur );
+    void resize(unsigned int largeur , unsigned int hauteur);
 
-	inline unsigned int getLongueur()const{return muiLongueurTab;}
-	inline unsigned int getLargeur()const{return muiLargeurTab;}
-	inline unsigned int getTailleTotale()const{return muiLongueurTab * muiLargeurTab;}
+    inline unsigned int getLargeur()const{return muiLargeurTab;}
+    inline unsigned int getHauteur()const{return muiHauteurTab;}
 
 	void afficherTab()const;
 };

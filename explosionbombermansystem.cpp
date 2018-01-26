@@ -100,7 +100,7 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
 
     const Tableau2D &tabNiveau = levelTileComponent->mTabTilemap;
 
-    if(tabNiveau.getLargeur() <= caseY || tabNiveau.getLongueur() <= caseX)
+    if(tabNiveau.getHauteur() <= caseY || tabNiveau.getHauteur() <= caseX)
     {
         return false;
     }

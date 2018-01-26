@@ -13,7 +13,6 @@ class Niveau
 {
 private:
 	unsigned int muiLongueurTile, muiLargeurTile, muiLongueurNiveau, muiLargeurNiveau;
-	vectPairUi_t mvectPositionTuile;
 	std::string mPathToTexture;
     static unsigned int mNumEntityLevel;
 public:
@@ -26,7 +25,6 @@ public:
 	unsigned int getLongueurNiveau()const;
 	unsigned int getLargeurNiveau()const;
     const std::string &getPathToTexture()const;
-	const vectPairUi_t &getVectPositionTile()const;
 	void displayLevel()const;
     static unsigned int getNumEntityLevel();
 };

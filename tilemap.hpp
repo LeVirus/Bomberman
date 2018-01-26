@@ -10,7 +10,7 @@
 class TileMap: public sf::Drawable, public sf::Transformable
 {
 private:
-	sf::Texture mTexture;
+    const sf::Texture *mTexture;
 	sf::VertexArray mVertArrayTileMap;
 	unsigned int muiLongueurTile = 0, muiLargeurTile = 0,
     muiLongueurMap = 0, muiLargeurMap = 0, muiNumEntity = 9000;
@@ -18,11 +18,10 @@ private:
     void initialiserVertexArray(const TilemapBombermanComponent &tileComp);
 	void setPositionPair( std::ifstream &flux );
 
-	virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const;
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 public:
-	TileMap() = default;
-    bool loadTexture(unsigned int numTexture );
+    TileMap() = default;
 	bool loadLevel(const Niveau &level, unsigned int uiNumEntity );
 
 	const sf::VertexArray &getVertexArrayTileMap()const;
