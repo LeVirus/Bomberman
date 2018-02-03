@@ -15,7 +15,7 @@
 class Tableau2D{
 private:
     std::vector<unsigned char> mVectChar;
-    std::pair<unsigned int, unsigned int> mPairCase;
+//    std::pair<unsigned int, unsigned int> mPairCase;
     unsigned int muiLargeurTab, muiHauteurTab;
 public:
 	Tableau2D() = default;

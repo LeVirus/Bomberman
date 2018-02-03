@@ -85,39 +85,33 @@ bool CollisionBombermanSystem::checkLimitCollision(MoveableBombermanComponent &m
 }
 
 CollisionBombermanSystem::CollisionBombermanSystem()
-{//FLAG_DESTRUCTIBLE_WALL, FLAG_SOLID_WALL, FLAG_BOMBERMAN, FLAG_EXPLOSION, FLAG_OBJECT, FLAG_BOMB
-	std::vector<unsigned char> vect;
-	vect.resize(NUMBR_MAX_FLAG * NUMBR_MAX_FLAG);
+{
+    mTabFlag.resize(NUMBR_MAX_FLAG, NUMBR_MAX_FLAG);
 
-	vect[NUMBR_MAX_FLAG * 2] = 1;//FLAG_DESTRUCTIBLE_WALL
-	vect[NUMBR_MAX_FLAG * 3] = 1;
-	vect[NUMBR_MAX_FLAG * 5] = 1;
+    mTabFlag.setValAt(FLAG_DESTRUCTIBLE_WALL, FLAG_BOMBERMAN, 1);
+//    mTabFlag.setValAt(FLAG_DESTRUCTIBLE_WALL, FLAG_BOMB, 1);
 
-	vect[NUMBR_MAX_FLAG * 2 + FLAG_SOLID_WALL] = 1;
-	vect[NUMBR_MAX_FLAG * 3 + FLAG_SOLID_WALL] = 1;
-	vect[NUMBR_MAX_FLAG * 5 + FLAG_SOLID_WALL] = 1;
+    mTabFlag.setValAt(FLAG_SOLID_WALL, FLAG_BOMBERMAN, 1);
+//    mTabFlag.setValAt(FLAG_SOLID_WALL, FLAG_BOMB, 1);
 
-	vect[FLAG_BOMBERMAN] = 1;
-	vect[NUMBR_MAX_FLAG + FLAG_BOMBERMAN] = 1;
-	vect[NUMBR_MAX_FLAG * 3 + FLAG_BOMBERMAN] = 1;
-	vect[NUMBR_MAX_FLAG * 4 + FLAG_BOMBERMAN] = 1;
-	vect[NUMBR_MAX_FLAG * 5 + FLAG_BOMBERMAN] = 1;
+    mTabFlag.setValAt(FLAG_BOMBERMAN, FLAG_DESTRUCTIBLE_WALL, 1);
+    mTabFlag.setValAt(FLAG_BOMBERMAN, FLAG_SOLID_WALL, 1);
+    mTabFlag.setValAt(FLAG_BOMBERMAN, FLAG_EXPLOSION, 1);
+    mTabFlag.setValAt(FLAG_BOMBERMAN, FLAG_OBJECT, 1);
+//    mTabFlag.setValAt(FLAG_BOMBERMAN, FLAG_BOMB, 1);
 
-	vect[FLAG_EXPLOSION] = 1;
-	vect[NUMBR_MAX_FLAG + FLAG_EXPLOSION] = 1;
-	vect[NUMBR_MAX_FLAG * 2 + FLAG_EXPLOSION] = 1;
-	vect[NUMBR_MAX_FLAG * 5 + FLAG_EXPLOSION] = 1;
+    mTabFlag.setValAt(FLAG_EXPLOSION, FLAG_BOMBERMAN, 1);
+//    mTabFlag.setValAt(FLAG_EXPLOSION, FLAG_BOMB, 1);
 
-	vect[NUMBR_MAX_FLAG * 2 + FLAG_OBJECT] = 1;
+    mTabFlag.setValAt(FLAG_OBJECT, FLAG_BOMBERMAN, 1);
 
-	vect[FLAG_BOMB] = 1;
-	vect[NUMBR_MAX_FLAG + FLAG_BOMB] = 1;
-	vect[NUMBR_MAX_FLAG * 2 + FLAG_BOMB] = 1;
-	vect[NUMBR_MAX_FLAG * 3 + FLAG_BOMB] = 1;
+//    mTabFlag.setValAt(FLAG_BOMB, FLAG_DESTRUCTIBLE_WALL, 1);
+//    mTabFlag.setValAt(FLAG_BOMB, FLAG_SOLID_WALL, 1);
+//    mTabFlag.setValAt(FLAG_BOMB, FLAG_BOMBERMAN, 1);
+//    mTabFlag.setValAt(FLAG_BOMB, FLAG_EXPLOSION, 1);
 
     //FLAG_DESTRUCTIBLE_WALL, FLAG_SOLID_WALL, FLAG_BOMBERMAN,
     //FLAG_EXPLOSION, FLAG_OBJECT, FLAG_BOMB
-	mTabFlag.bAttribuerTab(vect, NUMBR_MAX_FLAG, NUMBR_MAX_FLAG);
 
 	if( ! bAddComponentToSystem( ecs::POSITION_COMPONENT ) )
 	{
