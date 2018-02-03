@@ -24,6 +24,7 @@ public:
     virtual void execSystem();
     virtual void displaySystem()const;
     void makeBombExplode(unsigned int numEntityBomb);
+    void destructWall(unsigned int x, unsigned int y, TilemapBombermanComponent &tilemapComp);
 };
 
 #endif // EXPLOSIONBOMBERMANSYSTEM_H

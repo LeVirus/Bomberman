@@ -98,9 +98,11 @@ CollisionBombermanSystem::CollisionBombermanSystem()
     mTabFlag.setValAt(FLAG_BOMBERMAN, FLAG_SOLID_WALL, 1);
     mTabFlag.setValAt(FLAG_BOMBERMAN, FLAG_EXPLOSION, 1);
     mTabFlag.setValAt(FLAG_BOMBERMAN, FLAG_OBJECT, 1);
+    //see if bomberman will can throw bomb
 //    mTabFlag.setValAt(FLAG_BOMBERMAN, FLAG_BOMB, 1);
 
     mTabFlag.setValAt(FLAG_EXPLOSION, FLAG_BOMBERMAN, 1);
+    //see if explosion make bomb explode in case of collisions
 //    mTabFlag.setValAt(FLAG_EXPLOSION, FLAG_BOMB, 1);
 
     mTabFlag.setValAt(FLAG_OBJECT, FLAG_BOMBERMAN, 1);

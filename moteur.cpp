@@ -184,12 +184,11 @@ void Moteur::loadLevelWall(const Niveau &niv)
 
     const std::vector<unsigned char> &memTabNiv = tmc->mTabTilemap.getTab();
     unsigned int longueurNiveau = niv.getLongueurNiveau();
-	//bitsetComp.resize( getGestionnaireECS().getECSComponentManager()->getNumberComponent() );
-
     unsigned int largeurTile = mPtrJeu.getNiveau().getLargeurTile();
     unsigned int longueurTile = mPtrJeu.getNiveau().getLongueurTile();
     unsigned int cmptX = 0, cmptY = 0;
-	for(std::vector<unsigned char>::const_iterator it = memTabNiv.begin(); it != memTabNiv.end(); ++it)
+    std::vector<unsigned char>::const_iterator it = memTabNiv.begin();
+    for(; it != memTabNiv.end(); ++it)
 	{
         if(*it != TILE_SOLID_WALL && *it != TILE_DESTRUCTIBLE_WALL)
 		{
@@ -208,7 +207,11 @@ void Moteur::loadLevelWall(const Niveau &niv)
 		bitsetComp[ BOMBER_FLAG_COMPONENT ] = true;
 
 		unsigned int memEntity = mGestECS.addEntity( bitsetComp );
+        //memorize entity number for destructible wall
 
+        if(*it == TILE_DESTRUCTIBLE_WALL)
+            if(! Niveau::static_setNumWallEntityOnPosition(cmptX, cmptY, memEntity))
+                assert(false && "Value destruct wall position is out of bound.");
 		mGestECS.getECSComponentManager()->
 				instanciateExternComponent(memEntity, std::make_unique<FlagBombermanComponent>());
 

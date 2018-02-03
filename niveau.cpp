@@ -4,6 +4,7 @@
 #include <iostream>
 
 unsigned int Niveau::mNumEntityLevel;
+Tableau2D Niveau::mTabPositionDestructWall;
 
 Niveau::Niveau()
 {
@@ -71,6 +72,8 @@ bool Niveau::loadLevel(unsigned int uiNumNiveau, unsigned int numEntityLevel, Ti
 
     levelTileComp.mNumAssociateTexture = TEXTURE_LEVEL;
 
+    mTabPositionDestructWall.resize(muiLongueurNiveau, muiLargeurNiveau);
+
     levelTileComp.mTabTilemap.resize(muiLongueurNiveau, muiLargeurNiveau);
     levelTileComp.mPersistant = true;
     levelTileComp.mHeightTile = muiLargeurTile;
@@ -96,6 +99,16 @@ unsigned int Niveau::getLargeurNiveau() const
 unsigned int Niveau::getNumEntityLevel()
 {
     return mNumEntityLevel;
+}
+
+unsigned char Niveau::static_getNumWallEntityOnPosition(unsigned int x, unsigned int y)
+{
+    return mTabPositionDestructWall.getValAt(x, y);
+}
+
+bool Niveau::static_setNumWallEntityOnPosition(unsigned int x, unsigned int y, unsigned char val)
+{
+    return mTabPositionDestructWall.setValAt(x, y, val);
 }
 
 const std::__cxx11::string &Niveau::getPathToTexture() const

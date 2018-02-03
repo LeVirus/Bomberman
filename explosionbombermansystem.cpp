@@ -87,6 +87,14 @@ void ExplosionBombermanSystem::makeBombExplode(unsigned int numEntityBomb)
     createExplosions(caseX, caseY,  playerConfComponent->mRadiusExplosion);
 }
 
+void ExplosionBombermanSystem::destructWall(unsigned int x, unsigned int y,
+                                            TilemapBombermanComponent &tilemapComp)
+{
+    tilemapComp.mTabTilemap.setValAt(x, y, TILE_EMPTY);
+    unsigned int numEntityWall = Niveau::static_getNumWallEntityOnPosition(x, y);
+    mptrSystemManager->getptrEngine()->bRmEntity(numEntityWall);
+}
+
 bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int caseY, unsigned int explosionRadius)
 {
     unsigned int minX = caseX - 1, maxX = caseX + 1, minY = caseY - 1, maxY = caseY + 1;
@@ -106,10 +114,16 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
     }
     for(unsigned int i = 0; i < explosionRadius; ++i)
     {
+        unsigned char memValue;
         if(!maxXOk)
         {
-            if(tabNiveau.getValAt(maxX, caseY) != TILE_EMPTY)
+            memValue = tabNiveau.getValAt(maxX, caseY);
+            if(memValue != TILE_EMPTY)
             {
+                if(memValue == TILE_DESTRUCTIBLE_WALL)
+                {
+                    destructWall(maxX, caseY, *levelTileComponent);
+                }
                 --maxX;
                 maxXOk = true;
             }
@@ -121,8 +135,11 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
         }
         if(!minXOk)
         {
-            if(tabNiveau.getValAt(minX, caseY) != TILE_EMPTY)
+            memValue = tabNiveau.getValAt(minX, caseY);
+            if(memValue != TILE_EMPTY)
             {
+                if(memValue == TILE_DESTRUCTIBLE_WALL)destructWall(minX, caseY,
+                                                                   *levelTileComponent);
                 ++minX;
                 minXOk = true;
             }
@@ -134,8 +151,11 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
         }
         if(!maxYOk)
         {
-            if(tabNiveau.getValAt(caseX, maxY) != TILE_EMPTY)
+            memValue = tabNiveau.getValAt(caseX, maxY);
+            if(memValue != TILE_EMPTY)
             {
+                if(memValue == TILE_DESTRUCTIBLE_WALL)destructWall(caseX, maxY,
+                                                                   *levelTileComponent);
                 --maxY;
                 maxYOk = true;
             }
@@ -147,8 +167,11 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
         }
         if(!minYOk)
         {
+            memValue = tabNiveau.getValAt(caseX, minY);
             if(tabNiveau.getValAt(caseX, minY) != TILE_EMPTY)
             {
+                if(memValue == TILE_DESTRUCTIBLE_WALL)destructWall(caseX, minY,
+                                                                   *levelTileComponent);
                 ++minY;
                 minYOk = true;
             }

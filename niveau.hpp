@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include "tableau2d.hpp"
 
 typedef std::vector<std::pair<unsigned int, unsigned int>> vectPairUi_t;
 
@@ -15,6 +16,7 @@ private:
 	unsigned int muiLongueurTile, muiLargeurTile, muiLongueurNiveau, muiLargeurNiveau;
 	std::string mPathToTexture;
     static unsigned int mNumEntityLevel;
+    static Tableau2D mTabPositionDestructWall;
 public:
 	Niveau();
 	void adaptToScale( float fX, float fY );
@@ -27,6 +29,8 @@ public:
     const std::string &getPathToTexture()const;
 	void displayLevel()const;
     static unsigned int getNumEntityLevel();
+    static unsigned char static_getNumWallEntityOnPosition(unsigned int x, unsigned int y);
+    static bool static_setNumWallEntityOnPosition(unsigned int x, unsigned int y, unsigned char val);
 };
 
 #endif // NIVEAU_HPP
