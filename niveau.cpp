@@ -69,7 +69,7 @@ bool Niveau::loadLevel(unsigned int uiNumNiveau, unsigned int numEntityLevel, Ti
 	flux >> muiLongueurTile;
 	flux >> muiLargeurTile;
 
-    levelTileComp.mNumAssociateTexture = 2;
+    levelTileComp.mNumAssociateTexture = TEXTURE_LEVEL;
 
     levelTileComp.mTabTilemap.resize(muiLongueurNiveau, muiLargeurNiveau);
     levelTileComp.mPersistant = true;

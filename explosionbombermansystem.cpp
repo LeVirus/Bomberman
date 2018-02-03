@@ -159,6 +159,7 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
             }
         }
     }
+    //fix offset in case of full explosion
     if(!maxXOk)--maxX;
     if(!minXOk)++minX;
     if(!maxYOk)--maxY;
@@ -190,7 +191,7 @@ void ExplosionBombermanSystem::createEntityExplosion(unsigned int positionCaseX,
 
     tileComponent->mHeightTile = 16;
     tileComponent->mLenghtTile = 16;
-    tileComponent->mNumAssociateTexture = 1;
+    tileComponent->mNumAssociateTexture = TEXTURE_EXPLOSION;
 
     unsigned int totalSize = firstSize + 1 + secondSize;
 
