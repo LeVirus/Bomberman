@@ -56,8 +56,8 @@ unsigned int MoteurGraphique::loadSprite( unsigned int uiNumTexture, const sf::I
 {
 	mVectSprite.push_back( sf::Sprite() );
 	unsigned int memNumSprite = mVectSprite.size() - 1;
-    mVectSprite[memNumSprite].setTexture(mVectTexture[ uiNumTexture]);
-    mVectSprite[memNumSprite].setTextureRect( positionSprite);
+    mVectSprite[memNumSprite].setTexture(mVectTexture[uiNumTexture]);
+    mVectSprite[memNumSprite].setTextureRect(positionSprite);
     mVectSprite[memNumSprite].setScale(SIZE_SCALE, SIZE_SCALE);
 	return memNumSprite;
 }
@@ -73,8 +73,6 @@ void MoteurGraphique::displayECSTilemap()
     VectPairCompTilemap::const_iterator it = vectCompTilemap.begin();
     for(unsigned int i = 0; it != vectCompTilemap.end(); ++it, ++i)
     {
-        if(/*(*it).first->mNumAssociateTexture*/i == 0){
-            std::cout << (*it).first->mvectPositionTile[0].first << "  " << (*it).first->mvectPositionTile[0].second <<  "\n";}
         mVectTileMap.push_back(TileMap());
         mVectTileMap[i].setPosition((*it).second->vect2DPosComp.mfX, (*it).second->vect2DPosComp.mfY);
         mVectTileMap[i].setScale(SIZE_SCALE, SIZE_SCALE);
