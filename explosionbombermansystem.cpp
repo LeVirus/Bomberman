@@ -159,6 +159,10 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
             }
         }
     }
+    if(!maxXOk)--maxX;
+    if(!minXOk)++minX;
+    if(!maxYOk)--maxY;
+    if(!minYOk)++minY;
 
     ////////////////////////////////////////////////////////
     //Create Explosions component
@@ -167,7 +171,6 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
     createEntityExplosion(minX, caseY, explosionRadius, horizSizeLeft, horizSizeRight, false);
     //create vertical explosion
     createEntityExplosion(caseX, minY, explosionRadius, vertSizeUp, vertSizeDown, true);
-    //WTF??
     return true;
 }
 
