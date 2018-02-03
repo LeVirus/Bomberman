@@ -3,6 +3,7 @@
 #include "positioncomponent.hpp"
 #include "playerconfigbombermancomponent.hpp"
 #include "inputbombermancomponent.hpp"
+#include "timerbombermancomponent.hpp"
 #include "moveablebombermancomponent.hpp"
 #include "constants.hpp"
 #include "flagcomponent.hpp"
@@ -83,6 +84,15 @@ void InputBombermanSystem::execSystem()
                 continue;
             }
 
+            TimerBombermanComponent *timerComp = stairwayToComponentManager() .
+                    searchComponentByType<TimerBombermanComponent>(mVectNumEntity[i],
+                                                                       BOMBER_TIMER_COMPONENT);
+            if(! timerComp)
+            {
+                std::cout << " TimerBombermanComponent pointeur NULL playerConfigComp \n";
+                continue;
+            }
+
 			//si aucune entré utilisateur entité suivante
             if(inputComponent -> mBitsetInput.none())continue;
 
@@ -105,12 +115,19 @@ void InputBombermanSystem::execSystem()
             {
                 positionComp->vect2DPosComp.mfY +=  moveableComponent->mfVelocite;
             }
-            if(inputComponent->mBitsetInput[LAUNCH_BOMB])
+            if(timerComp->mLaunched && timerComp->mBombClock.getElapsedTime().asMilliseconds() > playerConfigComp->mLatenceBetweenBomb)
+            {
+                timerComp->mLaunched = false;
+            }
+            if(inputComponent->mBitsetInput[LAUNCH_BOMB] && ! timerComp->mLaunched)
             {
                 BombBombermanSystem *bombSystem = mptrSystemManager->searchSystemByType
                                                   <BombBombermanSystem>( BOMB_BOMBER_SYSTEM );
                 //send notification to bomb system
                 bombSystem->lauchBomb(mVectNumEntity[i], *positionComp);
+                timerComp->mBombClock.restart();
+                timerComp->mLaunched = true;
+
             }
             inputComponent->mBitsetInput.reset();
 		}

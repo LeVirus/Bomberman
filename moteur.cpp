@@ -16,6 +16,7 @@
 
 #include "displaysystem.hpp"
 #include "positioncomponent.hpp"
+#include "timerbombermancomponent.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <bitset>
@@ -135,6 +136,7 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
         bitsetComp[BOMBER_INPUT_COMPONENT]          = true;
         bitsetComp[BOMBER_FLAG_COMPONENT]           = true;
         bitsetComp[BOMBER_PLAYER_CONFIG_COMPONENT]  = true;
+        bitsetComp[BOMBER_TIMER_COMPONENT]  = true;
 
         unsigned int memEntity = mGestECS.addEntity(bitsetComp);
 		mGestECS.getECSComponentManager()->
@@ -146,6 +148,8 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
 				instanciateExternComponent(memEntity, std::make_unique<FlagBombermanComponent>());
         mGestECS.getECSComponentManager()->
                 instanciateExternComponent(memEntity, std::make_unique<PlayerConfigBombermanComponent>());
+        mGestECS.getECSComponentManager()->
+                instanciateExternComponent(memEntity, std::make_unique<TimerBombermanComponent>());
 
         FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
                 searchComponentByType <FlagBombermanComponent> (memEntity, BOMBER_FLAG_COMPONENT);

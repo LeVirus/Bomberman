@@ -16,6 +16,7 @@ struct PlayerConfigBombermanComponent : public ecs::Component
     {}
 
     unsigned int mRadiusExplosion = 4;
+    unsigned int mLatenceBetweenBomb = 2000;
 };
 
 #endif // CONFIGPLAYERBOMBERMANCOMPONENT_HPP
