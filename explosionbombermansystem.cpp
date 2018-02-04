@@ -67,20 +67,23 @@ void ExplosionBombermanSystem::execSystem()
             {
                 //remove explosion entity
                 vectTupleTriUI::iterator itt = mVectTupleMemWallDestroy.begin();
-                for(; itt != mVectTupleMemWallDestroy.end(); ++itt)
+                while(itt != mVectTupleMemWallDestroy.end())
                 {
                     if(std::get<0>(*itt) == ((*it)))
                     {
+                        //first entity explosion num, others position of wall to destroy
+
                         destructWall(std::get<1>(*itt), std::get<2>(*itt), *mLevelTilemapComp);
-//                        itt = mVectTupleMemWallDestroy.erase(itt);
+                        itt = mVectTupleMemWallDestroy.erase(itt);
                         if(itt == mVectTupleMemWallDestroy.end())break;
-                        std::cout << std::get<0>(*itt) << "  wall\n" <<
-                                     mVectTupleMemWallDestroy.size() << "\n";
+                    }
+                    else
+                    {
+                        ++itt;
                     }
                 }
                 //remove entity
                 mptrSystemManager->getptrEngine()->bRmEntity(*it);
-                std::cout << *it << "End explode!!!\n";
             }
         }
     }
@@ -112,11 +115,6 @@ void ExplosionBombermanSystem::destructWall(unsigned int x, unsigned int y,
 {
     tilemapComp.mTabTilemap.setValAt(x, y, TILE_EMPTY);
     unsigned int numEntityWall = Niveau::static_getNumWallEntityOnPosition(x, y);
-//    if(numEntityWall == 254)
-//    {
-        std::cout << x << "   " << y << " bad value\n";
-//    }
-    std::cout << numEntityWall << "  deletedd wall\n";
     mptrSystemManager->getptrEngine()->bRmEntity(numEntityWall);
 }
 

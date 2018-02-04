@@ -103,7 +103,9 @@ unsigned int Niveau::getNumEntityLevel()
 
 unsigned char Niveau::static_getNumWallEntityOnPosition(unsigned int x, unsigned int y)
 {
-    return mTabPositionDestructWall.getValAt(x, y);
+    unsigned char res = mTabPositionDestructWall.getValAt(x, y);
+    assert(res != 254 && "Bad value for tableau2d level");
+    return res;
 }
 
 bool Niveau::static_setNumWallEntityOnPosition(unsigned int x, unsigned int y, unsigned char val)

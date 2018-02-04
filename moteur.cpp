@@ -214,8 +214,12 @@ void Moteur::loadLevelWall(const Niveau &niv)
         //memorize entity number for destructible wall
 
         if(*it == TILE_DESTRUCTIBLE_WALL)
+        {
             if(! Niveau::static_setNumWallEntityOnPosition(cmptX, cmptY, memEntity))
+            {
                 assert(false && "Value destruct wall position is out of bound.");
+            }
+        }
 		mGestECS.getECSComponentManager()->
 				instanciateExternComponent(memEntity, std::make_unique<FlagBombermanComponent>());
 
