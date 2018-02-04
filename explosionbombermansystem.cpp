@@ -15,6 +15,7 @@
 #include <cassert>
 
 ExplosionBombermanSystem::ExplosionBombermanSystem()
+
 {
         if(! bAddComponentToSystem(ecs::POSITION_COMPONENT))
         {
@@ -32,6 +33,11 @@ ExplosionBombermanSystem::ExplosionBombermanSystem()
 
 void ExplosionBombermanSystem::execSystem()
 {
+    if(! mLevelTilemapComp)
+    {
+        mLevelTilemapComp = stairwayToComponentManager().searchComponentByType <TilemapBombermanComponent>(
+                    Niveau::getNumEntityLevel(), BOMBER_TILEMAP_COMPONENT);
+    }
     System::execSystem();
     std::vector< unsigned int >::iterator it = mVectNumEntity.begin();
     for(; it != mVectNumEntity.end() ; ++it)
@@ -59,8 +65,22 @@ void ExplosionBombermanSystem::execSystem()
             unsigned int timeElapsed = timerComp->mBombClock.getElapsedTime().asMilliseconds();
             if(timeElapsed >= mTimeExplosion)
             {
+                //remove explosion entity
+                vectTupleTriUI::iterator itt = mVectTupleMemWallDestroy.begin();
+                for(; itt != mVectTupleMemWallDestroy.end(); ++itt)
+                {
+                    if(std::get<0>(*itt) == ((*it)))
+                    {
+                        destructWall(std::get<1>(*itt), std::get<2>(*itt), *mLevelTilemapComp);
+//                        itt = mVectTupleMemWallDestroy.erase(itt);
+                        if(itt == mVectTupleMemWallDestroy.end())break;
+                        std::cout << std::get<0>(*itt) << "  wall\n" <<
+                                     mVectTupleMemWallDestroy.size() << "\n";
+                    }
+                }
+                //remove entity
                 mptrSystemManager->getptrEngine()->bRmEntity(*it);
-//                std::cout << *it << "End explode!!!\n";
+                std::cout << *it << "End explode!!!\n";
             }
         }
     }
@@ -92,6 +112,11 @@ void ExplosionBombermanSystem::destructWall(unsigned int x, unsigned int y,
 {
     tilemapComp.mTabTilemap.setValAt(x, y, TILE_EMPTY);
     unsigned int numEntityWall = Niveau::static_getNumWallEntityOnPosition(x, y);
+//    if(numEntityWall == 254)
+//    {
+        std::cout << x << "   " << y << " bad value\n";
+//    }
+    std::cout << numEntityWall << "  deletedd wall\n";
     mptrSystemManager->getptrEngine()->bRmEntity(numEntityWall);
 }
 
@@ -100,7 +125,7 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
     unsigned int minX = caseX - 1, maxX = caseX + 1, minY = caseY - 1, maxY = caseY + 1;
     unsigned int vertSizeUp = 0, vertSizeDown = 0, horizSizeLeft = 0, horizSizeRight = 0;
     bool maxXOk = false, minXOk = false, maxYOk = false, minYOk = false;
-
+    vectTupleTriUI vectMemWallToDestroy;
     unsigned int entityLevel = Niveau::getNumEntityLevel();
     TilemapBombermanComponent *levelTileComponent = stairwayToComponentManager().searchComponentByType <TilemapBombermanComponent>
             (entityLevel, BOMBER_TILEMAP_COMPONENT);
@@ -122,7 +147,8 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
             {
                 if(memValue == TILE_DESTRUCTIBLE_WALL)
                 {
-                    destructWall(maxX, caseY, *levelTileComponent);
+                    //0 for horizontal
+                    vectMemWallToDestroy.push_back(tupleTriUi(0, maxX, caseY));
                 }
                 --maxX;
                 maxXOk = true;
@@ -138,8 +164,11 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
             memValue = tabNiveau.getValAt(minX, caseY);
             if(memValue != TILE_EMPTY)
             {
-                if(memValue == TILE_DESTRUCTIBLE_WALL)destructWall(minX, caseY,
-                                                                   *levelTileComponent);
+                if(memValue == TILE_DESTRUCTIBLE_WALL)
+                {
+                    vectMemWallToDestroy.push_back(tupleTriUi(0, minX, caseY));
+                }
+
                 ++minX;
                 minXOk = true;
             }
@@ -154,8 +183,11 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
             memValue = tabNiveau.getValAt(caseX, maxY);
             if(memValue != TILE_EMPTY)
             {
-                if(memValue == TILE_DESTRUCTIBLE_WALL)destructWall(caseX, maxY,
-                                                                   *levelTileComponent);
+                if(memValue == TILE_DESTRUCTIBLE_WALL)
+                {
+                    //1 for vertical
+                    vectMemWallToDestroy.push_back(tupleTriUi(1, caseX, maxY));
+                }
                 --maxY;
                 maxYOk = true;
             }
@@ -170,8 +202,11 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
             memValue = tabNiveau.getValAt(caseX, minY);
             if(tabNiveau.getValAt(caseX, minY) != TILE_EMPTY)
             {
-                if(memValue == TILE_DESTRUCTIBLE_WALL)destructWall(caseX, minY,
-                                                                   *levelTileComponent);
+                if(memValue == TILE_DESTRUCTIBLE_WALL)
+                {
+                    vectMemWallToDestroy.push_back(tupleTriUi(1, caseX, minY));
+                }
+
                 ++minY;
                 minYOk = true;
             }
@@ -183,22 +218,23 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
         }
     }
     //fix offset in case of full explosion
-    if(!maxXOk)--maxX;
-    if(!minXOk)++minX;
-    if(!maxYOk)--maxY;
-    if(!minYOk)++minY;
+    if(! maxXOk)--maxX;
+    if(! minXOk)++minX;
+    if(! maxYOk)--maxY;
+    if(! minYOk)++minY;
 
     ////////////////////////////////////////////////////////
     //Create Explosions component
 
     //create horizontal explosion
-    createEntityExplosion(minX, caseY, explosionRadius, horizSizeLeft, horizSizeRight, false);
+    unsigned int horizExplosionEntity = createEntityExplosion(minX, caseY, explosionRadius, horizSizeLeft, horizSizeRight, false);
     //create vertical explosion
-    createEntityExplosion(caseX, minY, explosionRadius, vertSizeUp, vertSizeDown, true);
+    unsigned int vertExplosionEntity = createEntityExplosion(caseX, minY, explosionRadius, vertSizeUp, vertSizeDown, true);
+    memorizeWallToDestroy(vectMemWallToDestroy, vertExplosionEntity, horizExplosionEntity);
     return true;
 }
 
-void ExplosionBombermanSystem::createEntityExplosion(unsigned int positionCaseX, unsigned int positionCaseY, unsigned int explosionRadius,
+unsigned int ExplosionBombermanSystem::createEntityExplosion(unsigned int positionCaseX, unsigned int positionCaseY, unsigned int explosionRadius,
                                                      unsigned int firstSize, unsigned int secondSize, bool vertical)
 {
     unsigned int explosionEntity = createExplosionEntity();
@@ -263,7 +299,7 @@ void ExplosionBombermanSystem::createEntityExplosion(unsigned int positionCaseX,
             (explosionEntity, ecs::POSITION_COMPONENT);
     assert(posComponent && "posComponent is null\n");
     MoteurGraphique::static_positionnerCaseTileMap(*posComponent, positionCaseX, positionCaseY);
-
+    return explosionEntity;
 }
 
 void ExplosionBombermanSystem::loadTilePosition(TilemapBombermanComponent &tileComp)
@@ -275,6 +311,23 @@ void ExplosionBombermanSystem::loadTilePosition(TilemapBombermanComponent &tileC
     tileComp.mvectPositionTile.push_back({0, 85});// 4 EXPLOSION_END_UP
     tileComp.mvectPositionTile.push_back({10, 5});//5 EXPLOSION_END_DOWN//NOTTT
     tileComp.mvectPositionTile.push_back({68, 85});//6 EXPLOSION_HORIZONTAL_MIDDLE
+}
+
+void ExplosionBombermanSystem::memorizeWallToDestroy(const vectTupleTriUI &vectWallToDestroy,
+                                                     unsigned int vertEntity, unsigned int horizEntity)
+{
+    vectTupleTriUI::const_iterator it = vectWallToDestroy.begin();
+    for(; it != vectWallToDestroy.end();++it)
+    {
+        if(std::get<0>(*it) == 0)
+        {
+            mVectTupleMemWallDestroy.push_back(tupleTriUi(horizEntity, std::get<1>(*it), std::get<2>(*it)));
+        }
+        else if(std::get<0>(*it) == 1)
+        {
+            mVectTupleMemWallDestroy.push_back(tupleTriUi(vertEntity, std::get<1>(*it), std::get<2>(*it)));
+        }
+    }
 }
 
 unsigned int ExplosionBombermanSystem::createExplosionEntity()
