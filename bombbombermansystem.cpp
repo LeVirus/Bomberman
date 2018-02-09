@@ -10,6 +10,7 @@
 #include "explosionbombermansystem.hpp"
 
 
+
 BombBombermanSystem::BombBombermanSystem() : mTimeExplode(500)
 {
     if(! bAddComponentToSystem(BOMBER_FLAG_COMPONENT))
@@ -69,7 +70,7 @@ void BombBombermanSystem::execSystem()
 void BombBombermanSystem::displaySystem() const
 {}
 
-void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionComponent &posA)
+unsigned int BombBombermanSystem::createBombEntity()
 {
     //create entity
     unsigned int numCreatedEntity = mptrSystemManager->getptrEngine()->AddEntity();
@@ -83,6 +84,12 @@ void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionC
     stairwayToComponentManager().instanciateExternComponent(numCreatedEntity, std::make_unique<FlagBombermanComponent>());
     stairwayToComponentManager().instanciateExternComponent(numCreatedEntity, std::make_unique<TimerBombermanComponent>());
     stairwayToComponentManager().instanciateExternComponent(numCreatedEntity, std::make_unique<BombConfigBombermanComponent>());
+    return numCreatedEntity;
+}
+
+void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionComponent &posA)
+{
+    unsigned int numCreatedEntity = createBombEntity();
     //position entity
     ecs::PositionComponent *posComponent = stairwayToComponentManager().searchComponentByType < ecs::PositionComponent >
             (numCreatedEntity, ecs::POSITION_COMPONENT);

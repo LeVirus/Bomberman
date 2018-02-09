@@ -7,6 +7,7 @@
 #include "timerbombermancomponent.hpp"
 #include "tilemapbombermancomponent.hpp"
 #include "playerconfigbombermancomponent.hpp"
+#include "collrectboxcomponent.hpp"
 #include "moteurgraphique.hpp"
 #include "niveau.hpp"
 #include "tableau2d.hpp"
@@ -95,7 +96,7 @@ void ExplosionBombermanSystem::displaySystem() const
 void ExplosionBombermanSystem::makeBombExplode(unsigned int numEntityBomb)
 {
     unsigned int caseX, caseY;
-    ecs::PositionComponent *posComponent = stairwayToComponentManager().searchComponentByType < ecs::PositionComponent >
+    ecs::PositionComponent *posComponent = stairwayToComponentManager().searchComponentByType <ecs::PositionComponent>
             (numEntityBomb, ecs::POSITION_COMPONENT);
     assert(posComponent && "BombBombermanSystem::lauchBomb posComponent is null\n");
     MoteurGraphique::static_getPositionsCurrentCase(*posComponent, caseX, caseY, false);
@@ -297,6 +298,25 @@ unsigned int ExplosionBombermanSystem::createEntityExplosion(unsigned int positi
             (explosionEntity, ecs::POSITION_COMPONENT);
     assert(posComponent && "posComponent is null\n");
     MoteurGraphique::static_positionnerCaseTileMap(*posComponent, positionCaseX, positionCaseY);
+
+    ecs::CollRectBoxComponent *collComponent = stairwayToComponentManager().searchComponentByType <ecs::CollRectBoxComponent>
+            (explosionEntity, ecs::COLL_RECTBOX_COMPONENT);
+    assert(collComponent && "collComponent is null\n");
+    if(vertical)
+    {
+        collComponent->mRectBox.mSetHeightRectBox(totalSize * MoteurGraphique::getCaseHeight());
+        collComponent->mRectBox.mSetLenghtRectBox(MoteurGraphique::getCaseLenght());
+    }
+    else
+    {
+        collComponent->mRectBox.mSetHeightRectBox(MoteurGraphique::getCaseLenght());
+        collComponent->mRectBox.mSetLenghtRectBox(totalSize * MoteurGraphique::getCaseHeight());
+    }
+    //positionner le décallage
+    collComponent->mVect2dVectOrigins.mfX = 0;
+    collComponent->mVect2dVectOrigins.mfY = 0;
+    collComponent->mRectBox.mSetOriginsRectBox(posComponent->vect2DPosComp);
+
     return explosionEntity;
 }
 

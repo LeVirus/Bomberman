@@ -41,4 +41,8 @@ HEADERS += \
     flagcomponent.hpp \
     bombbombermansystem.hpp \
     tilemapsystem.hpp \
-    timerbombermancomponent.hpp
+    timerbombermancomponent.hpp \
+    bombbombermansystem.hpp \
+    playerconfigbombermancomponent.hpp \
+    tilemapbombermancomponent.hpp \
+    bombconfigbombermancomponent.hpp

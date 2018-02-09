@@ -15,11 +15,13 @@ class BombBombermanSystem : public ecs::System
 private:
     unsigned int mTimeExplode;
     ExplosionBombermanSystem *m_ptrExplosionSystem = nullptr;
+    unsigned int createBombEntity();
 public:
     BombBombermanSystem();
     virtual void execSystem();
     virtual void displaySystem()const;
     void lauchBomb(unsigned int numEntity, const ecs::PositionComponent &posA);
+
 };
 
 #endif // BOMBBOMBERMANSYSTEM_HPP

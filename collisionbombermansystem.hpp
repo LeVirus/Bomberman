@@ -31,8 +31,9 @@ public:
 	virtual void execSystem();
 	virtual void displaySystem()const;
 	bool bCheckFlag(unsigned int flagA, unsigned int flagB);
-    void treatBombermanCollisionBehavior(ecs::PositionComponent &posA, MoveableBombermanComponent &moveableBomberComp,
+    void treatBombermanCollisionBehaviorWall(ecs::PositionComponent &posA, MoveableBombermanComponent &moveableBomberComp,
                                          ecs::CollRectBoxComponent &RectA, ecs::CollRectBoxComponent &RectB);
+    void treatBombermanCollExplosion(ecs::PositionComponent &pos, unsigned int numBombermanEntity);
 };
 
 #endif // COLLISIONBOMBERMANSYSTEM_HPP

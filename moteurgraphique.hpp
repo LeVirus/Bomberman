@@ -40,6 +40,9 @@ public:
     static void static_positionComponentCenterCurrentCase(ecs::PositionComponent &positionComp);
     static void static_getPositionsCurrentCase(const ecs::PositionComponent &positionComp,
                                                unsigned int &caseX, unsigned int &caseY, bool launchBomb = true);
+    static float getCaseLenght(){return mCaseLenght;}
+    static float getCaseHeight(){return mCaseHeight;}
+
     void memorizeSizeTile(unsigned int lenghtTile, unsigned int heightTile);
 };
 

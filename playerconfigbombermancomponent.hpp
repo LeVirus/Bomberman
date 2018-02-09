@@ -15,6 +15,10 @@ struct PlayerConfigBombermanComponent : public ecs::Component
     void displayComponent()const override
     {}
 
+    unsigned int mNumberLife = 2;
+    unsigned int mInitX = 1;
+    unsigned int mInitY = 1;
+
     unsigned int mRadiusExplosion = 4;
     int mLatenceBetweenBomb = 2000;//set signed to avoid a warning with sfml clock
 };
