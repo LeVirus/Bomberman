@@ -27,7 +27,6 @@ void BombBombermanSystem::execSystem()
 {
     System::execSystem();
     std::vector< unsigned int >::iterator it = mVectNumEntity.begin();
-    TimerBombermanComponent* timerComp;
     for(; it != mVectNumEntity.end() ; ++it)
     {
 
@@ -40,7 +39,7 @@ void BombBombermanSystem::execSystem()
             continue;
         }
 
-        timerComp = stairwayToComponentManager() .
+         TimerBombermanComponent* timerComp = stairwayToComponentManager() .
                     searchComponentByType <TimerBombermanComponent> (*it, BOMBER_TIMER_COMPONENT);
         assert(timerComp && "BombBombermanSystem::execSystem :: timerComp == NULL\n");
 

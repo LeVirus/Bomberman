@@ -51,6 +51,13 @@ void InputBombermanSystem::execSystem()
 	System::execSystem();
         for(unsigned int i = 0 ; i < mVectNumEntity.size() ; ++i)
         {
+            PlayerConfigBombermanComponent *playerConfigComp = stairwayToComponentManager() .
+                    searchComponentByType<PlayerConfigBombermanComponent>(mVectNumEntity[i],
+                                                                       BOMBER_PLAYER_CONFIG_COMPONENT);
+            if(! playerConfigComp || playerConfigComp->mMode == MODE_PLAYER_DEAD_TRANSITION)
+            {
+                continue;
+            }
             InputBombermanComponent *inputComponent = stairwayToComponentManager() .
                     searchComponentByType<InputBombermanComponent>(mVectNumEntity[i],
                                                                     BOMBER_INPUT_COMPONENT);
@@ -75,14 +82,6 @@ void InputBombermanSystem::execSystem()
 				std::cout << " InputBombermanSystem pointeur NULL moveableComponent \n";
 				continue;
 			}
-            PlayerConfigBombermanComponent *playerConfigComp = stairwayToComponentManager() .
-                    searchComponentByType<PlayerConfigBombermanComponent>(mVectNumEntity[i],
-                                                                       BOMBER_PLAYER_CONFIG_COMPONENT);
-            if(! playerConfigComp)
-            {
-                std::cout << " InputBombermanSystem pointeur NULL playerConfigComp \n";
-                continue;
-            }
 
             TimerBombermanComponent *timerComp = stairwayToComponentManager() .
                     searchComponentByType<TimerBombermanComponent>(mVectNumEntity[i],

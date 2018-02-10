@@ -4,6 +4,7 @@
 #include "bombbombermansystem.hpp"
 #include "explosionbombermansystem.hpp"
 #include "tilemapsystem.hpp"
+#include "playersystem.hpp"
 #include "moteur.hpp"
 
 GestionnaireECS::GestionnaireECS(Moteur &refMoteur):mRefMoteur(refMoteur)
@@ -21,6 +22,7 @@ void GestionnaireECS::initECS()
     mSysMan->bAddExternSystem(std::make_unique<ExplosionBombermanSystem>());
     mSysMan->bAddExternSystem(std::make_unique<BombBombermanSystem>());
     mSysMan->bAddExternSystem(std::make_unique<TilemapSystem>());
+    mSysMan->bAddExternSystem(std::make_unique<PlayerBomberSystem>());
 }
 
 ecs::SystemManager *GestionnaireECS::getECSSystemManager()

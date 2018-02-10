@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     explosionbombermansystem.cpp \
     collisionbombermansystem.cpp \
     tilemapsystem.cpp \
-    bombbombermansystem.cpp
+    bombbombermansystem.cpp \
+    playerbombersystem.cpp
 
 HEADERS += \
     jeu.hpp \
@@ -45,4 +46,5 @@ HEADERS += \
     bombbombermansystem.hpp \
     playerconfigbombermancomponent.hpp \
     tilemapbombermancomponent.hpp \
-    bombconfigbombermancomponent.hpp
+    bombconfigbombermancomponent.hpp \
+    playersystem.hpp

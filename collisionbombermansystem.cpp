@@ -7,8 +7,10 @@
 #include "vector2D.hpp"
 #include "geometriefreefunctions.hpp"
 #include "playerconfigbombermancomponent.hpp"
+#include "playersystem.hpp"
 #include "moteurgraphique.hpp"
 #include "engine.hpp"
+#include <cassert>
 
 bool CollisionBombermanSystem::getComponentForCollision(ecs::PositionComponent *&positionComponent, ecs::CollRectBoxComponent *&collRectBoxComponent,
                                                         FlagBombermanComponent *&flagBombermanComponent,
@@ -137,7 +139,8 @@ void CollisionBombermanSystem::execSystem()
 	System::execSystem();
 	mTabInColl.resize(mVectNumEntity.size(), mVectNumEntity.size());
 	mTabInColl.reset();
-    for(unsigned int i = 0 ; i < mVectNumEntity.size() ; ++i){
+    for(unsigned int i = 0 ; i < mVectNumEntity.size() ; ++i)
+    {
         ecs::PositionComponent *positionComponent;
         ecs::CollRectBoxComponent *collRectBoxComponent;
         FlagBombermanComponent *flagBombermanComponent;
@@ -147,7 +150,16 @@ void CollisionBombermanSystem::execSystem()
         {
             continue;
         }
-
+        if(flagBombermanComponent->muiNumFlag == FLAG_BOMBERMAN)
+        {
+            PlayerConfigBombermanComponent *playerConf = stairwayToComponentManager() .
+                    searchComponentByType <PlayerConfigBombermanComponent> (mVectNumEntity[i], BOMBER_PLAYER_CONFIG_COMPONENT);
+            assert(playerConf && "playerConf null");
+            if(playerConf->mMode == MODE_PLAYER_DEAD_TRANSITION)
+            {
+                continue;
+            }
+        }
         //modifier la position uniquement pour bomberman
         if(moveableBomberComp)
         {
@@ -165,27 +177,14 @@ void CollisionBombermanSystem::execSystem()
             {
                 continue;
             }
-
             if(! bCheckFlag(flagBombermanComponent->muiNumFlag, flagBombermanComponentB->muiNumFlag))
             {
                 continue;
             }
-
-//            if(i == 0)
-//            {
-
-
-//                //            std::cout << collRectBoxComponent->mRectBox.mGetOriginsRectBox().mfX <<" aa\n"
-//                //                      << collRectBoxComponent->mRectBox.mGetOriginsRectBox().mfY << " aa\n";
-//                //            std::cout << j << "   "<< collRectBoxComponentB->mRectBox.mGetOriginsRectBox().mfX <<" bb\n"
-//                //                      << collRectBoxComponentB->mRectBox.mGetOriginsRectBox().mfY << " bb\n";
-//            }
-
             if(bIsInCollision(collRectBoxComponent->mRectBox, collRectBoxComponentB->mRectBox))
 			{
                 mTabInColl.setValAt(j,  i, 1);
                 mTabInColl.setValAt(i,  j, 1);
-                std::cout << "coll " << i << "  "<< j <<"\n";
                 if(moveableBomberComp)
                 {
                     //définis les flags non traversable (inferieur à FLAG_BOMBERMAN (2))
@@ -197,7 +196,20 @@ void CollisionBombermanSystem::execSystem()
                 //!!!Check if bomberman entities are at the beginning on the array!!!
                 if(flagBombermanComponent->muiNumFlag == FLAG_BOMBERMAN && flagBombermanComponentB->muiNumFlag == FLAG_EXPLOSION)
                 {
-                    treatBombermanCollExplosion(*positionComponent, mVectNumEntity[i]);
+                    PlayerConfigBombermanComponent *playerConf = stairwayToComponentManager() .
+                            searchComponentByType <PlayerConfigBombermanComponent> (mVectNumEntity[i], BOMBER_PLAYER_CONFIG_COMPONENT);
+                    assert(playerConf && "playerConf null");
+                    if(playerConf->mMode == MODE_PLAYER_AFTER_REPOP)
+                    {
+                        continue;
+                    }
+                    if(! mptrPlayerBomberSystem)
+                    {
+                        mptrPlayerBomberSystem = mptrSystemManager->searchSystemByType<PlayerBomberSystem>(PLAYER_BOMBER_SYSTEM);
+                        assert(mptrPlayerBomberSystem && "PlayerBomberSystem is null\n");
+                    }
+                    mptrPlayerBomberSystem->setBombermanDeath(mVectNumEntity[i]);
+                    break;
                 }
 			}
 		}
@@ -270,24 +282,5 @@ void CollisionBombermanSystem::treatBombermanCollisionBehaviorWall(ecs::Position
                 posA.vect2DPosComp.mfY = newTheoricalPosition;
             }
         }
-    }
-}
-
-void CollisionBombermanSystem::treatBombermanCollExplosion(ecs::PositionComponent &pos, unsigned int numBombermanEntity)
-{
-    PlayerConfigBombermanComponent *playerConfComponent = stairwayToComponentManager() .
-            searchComponentByType <PlayerConfigBombermanComponent> (numBombermanEntity, BOMBER_PLAYER_CONFIG_COMPONENT);
-    if(! playerConfComponent)
-    {
-        return;
-    }
-    --playerConfComponent->mNumberLife;
-    if(playerConfComponent->mNumberLife)
-    {
-        MoteurGraphique::static_positionnerCaseTileMap(pos, playerConfComponent->mInitX, playerConfComponent->mInitY);
-    }
-    else
-    {
-        mptrSystemManager->getptrEngine()->bRmEntity(numBombermanEntity);
     }
 }

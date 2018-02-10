@@ -12,6 +12,7 @@ namespace ecs
 
 struct FlagBombermanComponent;
 struct MoveableBombermanComponent;
+class PlayerBomberSystem;
 
 class CollisionBombermanSystem: public ecs::System
 {
@@ -20,6 +21,8 @@ private:
     bool getComponentForCollision(ecs::PositionComponent *&positionComponent, ecs::CollRectBoxComponent *&collRectBoxComponent,
                                   FlagBombermanComponent *&flagBombermanComponent, MoveableBombermanComponent *&moveableBomberComp,
                                   unsigned int uiNumEntity);
+
+    PlayerBomberSystem *mptrPlayerBomberSystem = nullptr;
     /**
      * @brief checkLimitCollision Vérifie si les collisions sont à une certaine limite.
      * Pour les cas ou l'objet mouvant puisse "glisser" sur l'entité en question.
@@ -33,7 +36,6 @@ public:
 	bool bCheckFlag(unsigned int flagA, unsigned int flagB);
     void treatBombermanCollisionBehaviorWall(ecs::PositionComponent &posA, MoveableBombermanComponent &moveableBomberComp,
                                          ecs::CollRectBoxComponent &RectA, ecs::CollRectBoxComponent &RectB);
-    void treatBombermanCollExplosion(ecs::PositionComponent &pos, unsigned int numBombermanEntity);
 };
 
 #endif // COLLISIONBOMBERMANSYSTEM_HPP
