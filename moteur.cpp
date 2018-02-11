@@ -44,40 +44,43 @@ void Moteur::lancerBoucle()
         mGestECS.getECSEngine()->execIteration();
         getInput();
 		mMoteurGraphique.raffraichirEcran();
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))break;
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+        {
+            mLetMeOut = true;
+            break;
+        }
+        if(Niveau::getNumCurrentNumberPlayer() <= 1)
+        {
+            mGestECS.getECSEngine()->RmAllEntity();
+            break;
+        }
     }while(true);
+
 }
 
 void Moteur::getInput()
 {
+    InputBombermanSystem * ss = mGestECS.getECSSystemManager() ->
+                searchSystemByType< InputBombermanSystem > ( INPUT_BOMBER_SYSTEM );
+    assert(ss && "sdfs");
 	const std::vector< unsigned int > &vectNumEntitySystem = mGestECS.getECSSystemManager() ->
 			searchSystemByType< InputBombermanSystem > ( INPUT_BOMBER_SYSTEM )->getVectNumEntity();
 
-sf::Event event;
 	for( unsigned int i = 0 ; i < vectNumEntitySystem.size() ; ++i )
 	{
 
 		InputBombermanComponent *ic = mGestECS.getECSComponentManager() ->
 				searchComponentByType< InputBombermanComponent >(
                     vectNumEntitySystem[i], INPUT_BOMBER_COMPONENT );
+        if(! ic)continue;
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z))ic->mBitsetInput[MOVE_UP] = true;
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))ic->mBitsetInput[MOVE_DOWN] = true;
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))ic->mBitsetInput[MOVE_LEFT] = true;
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))ic->mBitsetInput[MOVE_RIGHT] = true;
-        if(! mLockLaunchBomb && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
         {
             ic->mBitsetInput[LAUNCH_BOMB] = true;
-            mLockLaunchBomb = true;
-        }
-
-        if(mLockLaunchBomb)
-        {
-            mMoteurGraphique.getEventFromWindows(event);
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-            {
-                mMoteurGraphique.getEventFromWindows(event);
-                mLockLaunchBomb = false;
-            }
         }
 	}
 }
@@ -122,7 +125,7 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
     unsigned int memBombermanSprite;
     if(MAX_PLAYER < uiNumPlayer + uiNumBot)return false;
     memBombermanSprite = mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect(71, 45, 16, 25));
-    mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect(210, 138, 10, 11));//TMP
+    mMoteurGraphique.loadSprite(TEXTURE_EXPLOSION, sf::IntRect(51, 0, 15, 15));
     unsigned int largeurTile = mPtrJeu.getNiveau().getLargeurTile();
     unsigned int longueurTile = mPtrJeu.getNiveau().getLongueurTile();
     for(unsigned int i = 0 ; i < uiNumPlayer ; ++i)
@@ -264,7 +267,12 @@ void Moteur::loadLevelWall(const Niveau &niv)
 			cmptX = 0;
 			++cmptY;
 		}
-	}
+    }
+}
+
+bool Moteur::stopGame() const
+{
+    return mLetMeOut;
 }
 
 void Moteur::positionnerComponent(ecs::PositionComponent &posComp, unsigned int posX, unsigned int posY)

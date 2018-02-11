@@ -7,6 +7,7 @@ unsigned int Niveau::mNumEntityLevel;
 Tableau2D Niveau::mTabPositionDestructWall;
 vectPairUi_t Niveau::mInitBombermanPosition;
 unsigned int Niveau::mMaxPlayer;
+unsigned int Niveau::mCurrentNumberPlayer;
 
 Niveau::Niveau()
 {
@@ -34,6 +35,7 @@ void Niveau::setPositionPair(std::ifstream &flux, TilemapBombermanComponent &lev
 bool Niveau::setInitPositionBomberman(std::ifstream &flux)
 {
     flux >> mMaxPlayer;
+    mCurrentNumberPlayer = mMaxPlayer;
     if(! mMaxPlayer || mMaxPlayer > 6)
     {
         flux.close();
@@ -141,6 +143,11 @@ const vectPairUi_t &Niveau::static_getVectInitPositionBomberman()
     return mInitBombermanPosition;
 }
 
+void Niveau::decrementCurrentNumberPlayers()
+{
+    --mCurrentNumberPlayer;
+}
+
 const std::__cxx11::string &Niveau::getPathToTexture() const
 {
 	return mPathToTexture;
@@ -154,6 +161,11 @@ void Niveau::displayLevel() const
 				 "\nmuiLongueurTile::"<< muiLongueurTile <<
 				 "\nmuiLargeurTile::"<< muiLargeurTile << "\n";
     std::cout << "FIN AFFICHAGE TILEMAP\n";
+}
+
+unsigned int Niveau::getNumCurrentNumberPlayer()
+{
+    return mCurrentNumberPlayer;
 }
 
 unsigned int Niveau::getLargeurTile() const

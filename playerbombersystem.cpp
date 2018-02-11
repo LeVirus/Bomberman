@@ -68,7 +68,9 @@ void PlayerBomberSystem::execSystem()
             //Definitive death
             else
             {
+                Niveau::decrementCurrentNumberPlayers();
                 mptrSystemManager->getptrEngine()->bRmEntity(*it);
+
             }
         }
         else if(playerConfComponent->mMode == MODE_PLAYER_AFTER_REPOP &&

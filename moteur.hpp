@@ -15,7 +15,7 @@ private:
 	MoteurGraphique mMoteurGraphique;
 	void positionnerComponent(ecs::PositionComponent &posComp, unsigned int posX, unsigned int posY);
 	const Jeu &mPtrJeu;
-    bool mLockLaunchBomb = false;
+    bool mLetMeOut = false;
 public:
 	Moteur(const Jeu &jeu);
 	const Jeu &getJeu()const;
@@ -25,6 +25,7 @@ public:
     void loadLevelTileMap(Niveau &niv, unsigned int numNiv);
 	bool loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot );
     void loadLevelWall(const Niveau &niv);
+    bool stopGame()const;
 };
 
 #endif // MOTEUR_H
