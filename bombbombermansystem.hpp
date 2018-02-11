@@ -13,7 +13,6 @@ class ExplosionBombermanSystem;
 class BombBombermanSystem : public ecs::System
 {
 private:
-    unsigned int mTimeExplode;
     ExplosionBombermanSystem *m_ptrExplosionSystem = nullptr;
     unsigned int createBombEntity();
 public:

@@ -87,6 +87,15 @@ void Tableau2D::resize(unsigned int largeur, unsigned int hauteur)
     mVectChar.resize(largeur * hauteur);
 }
 
+void Tableau2D::addToAllCase(unsigned char val)
+{
+    std::vector<unsigned char>::iterator ittt = mVectChar.begin();
+    for(;ittt != mVectChar.end();++ittt)
+    {
+        *ittt += val;
+    }
+}
+
 /**
  * @brief Fonction d'affichage console du tableau.
  * L'affichage sera effectué en fonction des propriétés

@@ -57,6 +57,7 @@ void ExplosionBombermanSystem::execSystem()
         if(! timerComp->mLaunched)
         {
             timerComp->mBombClock.restart();
+            timerComp->mBombClockB.restart();
             timerComp->mLaunched = true;
         }
         else
@@ -83,6 +84,16 @@ void ExplosionBombermanSystem::execSystem()
                 }
                 //remove entity
                 mptrSystemManager->getptrEngine()->bRmEntity(*it);
+            }
+            float fifthExplosionTime = mTimeExplosion / 5;
+            TilemapBombermanComponent *tilemapComp = stairwayToComponentManager().searchComponentByType <TilemapBombermanComponent>(
+                           *it, TILEMAP_BOMBER_COMPONENT);
+            assert(tilemapComp && "levelTilemapComp null");
+
+            if(timerComp->mBombClockB.getElapsedTime().asMilliseconds() >= fifthExplosionTime)
+            {
+                tilemapComp->mTabTilemap.addToAllCase(7);
+                timerComp->mBombClockB.restart();
             }
         }
     }
@@ -320,13 +331,45 @@ unsigned int ExplosionBombermanSystem::createEntityExplosion(unsigned int positi
 
 void ExplosionBombermanSystem::loadTilePosition(TilemapBombermanComponent &tileComp)
 {
-    tileComp.mvectPositionTile.push_back({50, 5});//0 end left
+    tileComp.mvectPositionTile.push_back({119, 85});//0 end left
     tileComp.mvectPositionTile.push_back({34, 85});//1 end right
     tileComp.mvectPositionTile.push_back({85, 85});//2 EXPLOSION_CENTER
     tileComp.mvectPositionTile.push_back({51, 85});//3 EXPLOSION_VERTICAL_MIDDLE
     tileComp.mvectPositionTile.push_back({0, 85});// 4 EXPLOSION_END_UP
-    tileComp.mvectPositionTile.push_back({10, 5});//5 EXPLOSION_END_DOWN//NOTTT
+    tileComp.mvectPositionTile.push_back({136, 17});//5 EXPLOSION_END_DOWN
     tileComp.mvectPositionTile.push_back({68, 85});//6 EXPLOSION_HORIZONTAL_MIDDLE
+
+    tileComp.mvectPositionTile.push_back({119, 68});//0 end left
+    tileComp.mvectPositionTile.push_back({34, 68});//1 end right
+    tileComp.mvectPositionTile.push_back({85, 68});//2 EXPLOSION_CENTER
+    tileComp.mvectPositionTile.push_back({51, 68});//3 EXPLOSION_VERTICAL_MIDDLE
+    tileComp.mvectPositionTile.push_back({0, 68});// 4 EXPLOSION_END_UP
+    tileComp.mvectPositionTile.push_back({136, 34});//5 EXPLOSION_END_DOWN
+    tileComp.mvectPositionTile.push_back({68, 68});//6 EXPLOSION_HORIZONTAL_MIDDLE
+
+    tileComp.mvectPositionTile.push_back({119, 51});//0 end left
+    tileComp.mvectPositionTile.push_back({34, 51});//1 end right
+    tileComp.mvectPositionTile.push_back({85, 51});//2 EXPLOSION_CENTER
+    tileComp.mvectPositionTile.push_back({51, 51});//3 EXPLOSION_VERTICAL_MIDDLE
+    tileComp.mvectPositionTile.push_back({0, 51});// 4 EXPLOSION_END_UP
+    tileComp.mvectPositionTile.push_back({136, 51});//5 EXPLOSION_END_DOWN
+    tileComp.mvectPositionTile.push_back({68, 51});//6 EXPLOSION_HORIZONTAL_MIDDLE
+
+    tileComp.mvectPositionTile.push_back({119, 34});//0 end left
+    tileComp.mvectPositionTile.push_back({34, 34});//1 end right
+    tileComp.mvectPositionTile.push_back({85, 34});//2 EXPLOSION_CENTER
+    tileComp.mvectPositionTile.push_back({51, 34});//3 EXPLOSION_VERTICAL_MIDDLE
+    tileComp.mvectPositionTile.push_back({0, 34});// 4 EXPLOSION_END_UP
+    tileComp.mvectPositionTile.push_back({136, 68});//5 EXPLOSION_END_DOWN
+    tileComp.mvectPositionTile.push_back({68, 34});//6 EXPLOSION_HORIZONTAL_MIDDLE
+
+    tileComp.mvectPositionTile.push_back({119, 17});//0 end left
+    tileComp.mvectPositionTile.push_back({34, 17});//1 end right
+    tileComp.mvectPositionTile.push_back({85, 17});//2 EXPLOSION_CENTER
+    tileComp.mvectPositionTile.push_back({51, 17});//3 EXPLOSION_VERTICAL_MIDDLE
+    tileComp.mvectPositionTile.push_back({0, 17});// 4 EXPLOSION_END_UP
+    tileComp.mvectPositionTile.push_back({136, 85});//5 EXPLOSION_END_DOWN
+    tileComp.mvectPositionTile.push_back({68, 17});//6 EXPLOSION_HORIZONTAL_MIDDLE
 }
 
 void ExplosionBombermanSystem::memorizeWallToDestroy(const vectTupleTriUI &vectWallToDestroy,

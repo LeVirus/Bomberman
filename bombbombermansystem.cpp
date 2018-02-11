@@ -11,7 +11,7 @@
 
 
 
-BombBombermanSystem::BombBombermanSystem() : mTimeExplode(500)
+BombBombermanSystem::BombBombermanSystem()
 {
     if(! bAddComponentToSystem(FLAG_BOMBER_COMPONENT))
     {
@@ -20,6 +20,10 @@ BombBombermanSystem::BombBombermanSystem() : mTimeExplode(500)
     if(! bAddComponentToSystem(TIMER_BOMBER_COMPONENT))
     {
         std::cout << "Erreur BombBombermanSystem ajout BOMBER_TIMER_COMPONENT.\n";
+    }
+    if(! bAddComponentToSystem(BOMB_CONFIG_BOMBER_COMPONENT))
+    {
+        std::cout << "Erreur BombBombermanSystem ajout BOMB_CONFIG_BOMBER_COMPONENT.\n";
     }
 }
 
@@ -39,9 +43,13 @@ void BombBombermanSystem::execSystem()
             continue;
         }
 
-         TimerBombermanComponent* timerComp = stairwayToComponentManager() .
+        TimerBombermanComponent* timerComp = stairwayToComponentManager() .
                     searchComponentByType <TimerBombermanComponent> (*it, TIMER_BOMBER_COMPONENT);
         assert(timerComp && "BombBombermanSystem::execSystem :: timerComp == NULL\n");
+
+        BombConfigBombermanComponent* bombConfComp = stairwayToComponentManager() .
+                    searchComponentByType <BombConfigBombermanComponent> (*it, BOMB_CONFIG_BOMBER_COMPONENT);
+        assert(bombConfComp && "bombConfComp == NULL\n");
 
         if(! timerComp->mLaunched)
         {
@@ -51,7 +59,7 @@ void BombBombermanSystem::execSystem()
         else
         {
             unsigned int timeElapsed = timerComp->mBombClock.getElapsedTime().asMilliseconds();
-            if(timeElapsed >= mTimeExplode)
+            if(timeElapsed >= bombConfComp->mTimeBeforeExplosion)
             {
 
                 if(! m_ptrExplosionSystem)

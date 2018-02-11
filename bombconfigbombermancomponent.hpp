@@ -15,6 +15,7 @@ struct BombConfigBombermanComponent : public ecs::Component
     void displayComponent()const override
     {}
     unsigned int mNumPlayerEntity;
+    unsigned int mTimeBeforeExplosion = 2000;
 };
 
 #endif // BOMBCONFIGBOMBERMANCOMPONENT_HPP

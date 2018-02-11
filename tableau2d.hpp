@@ -30,6 +30,7 @@ public:
 	const std::vector< unsigned char > &getTab()const;
     void resize(unsigned int largeur , unsigned int hauteur);
 
+    void addToAllCase(unsigned char val);
     inline unsigned int getLargeur()const{return muiLargeurTab;}
     inline unsigned int getHauteur()const{return muiHauteurTab;}
 
