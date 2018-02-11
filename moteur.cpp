@@ -73,14 +73,23 @@ void Moteur::getInput()
 				searchComponentByType< InputBombermanComponent >(
                     vectNumEntitySystem[i], INPUT_BOMBER_COMPONENT );
         if(! ic)continue;
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z))ic->mBitsetInput[MOVE_UP] = true;
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))ic->mBitsetInput[MOVE_DOWN] = true;
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))ic->mBitsetInput[MOVE_LEFT] = true;
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))ic->mBitsetInput[MOVE_RIGHT] = true;
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        sf::Keyboard::Key up = sf::Keyboard::Z, down = sf::Keyboard::S, left = sf::Keyboard::Q,
+                right = sf::Keyboard::D, launchBomb = sf::Keyboard::Space;
+        switch(ic->mNumInput)
         {
-            ic->mBitsetInput[LAUNCH_BOMB] = true;
+            case INPUT_PLAYER_B:
+            up = sf::Keyboard::Up;
+            down = sf::Keyboard::Down;
+            left = sf::Keyboard::Left;
+            right = sf::Keyboard::Right;
+            launchBomb = sf::Keyboard::RControl;
+            break;
         }
+        if(sf::Keyboard::isKeyPressed(up))ic->mBitsetInput[MOVE_UP] = true;
+        if(sf::Keyboard::isKeyPressed(down))ic->mBitsetInput[MOVE_DOWN] = true;
+        if(sf::Keyboard::isKeyPressed(left))ic->mBitsetInput[MOVE_LEFT] = true;
+        if(sf::Keyboard::isKeyPressed(right))ic->mBitsetInput[MOVE_RIGHT] = true;
+        if(sf::Keyboard::isKeyPressed(launchBomb))ic->mBitsetInput[LAUNCH_BOMB] = true;
 	}
 }
 
@@ -182,13 +191,18 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
         playerConfig->mInitX = memInitPosition[i].first;
         playerConfig->mInitY = memInitPosition[i].second;
 
+        InputBombermanComponent * inputComp = mGestECS.getECSComponentManager() ->
+                searchComponentByType<InputBombermanComponent>(memEntity, INPUT_BOMBER_COMPONENT);
+        assert(inputComp && "inputComp == null\n");
         switch(i)
         {
         case 0:
             mMoteurGraphique.static_positionnerCaseTileMap(*pc, 1, 1);
+            inputComp->mNumInput = INPUT_PLAYER_A;
             break;
         case 1:
             mMoteurGraphique.static_positionnerCaseTileMap(*pc, 9, 1);
+            inputComp->mNumInput = INPUT_PLAYER_B;
             break;
         }
 	}

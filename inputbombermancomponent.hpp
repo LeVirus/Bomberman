@@ -14,11 +14,8 @@ struct InputBombermanComponent : public ecs::Component
 	}
 
 	void displayComponent()const override
-	{
-		//Component::displayComponent();
-		std::cout << "muiNumSprite" << muiNumSprite << "\n";
-	}
+    {}
 	std::bitset<NUMBR_INPUT> mBitsetInput;
-	unsigned int muiNumSprite;
+    unsigned int mNumInput = INPUT_PLAYER_A;
 };
 #endif // INPUTBOMBERMANCOMPONENT_HPP
