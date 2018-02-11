@@ -22,11 +22,11 @@ ExplosionBombermanSystem::ExplosionBombermanSystem()
         {
             std::cout << "Erreur BombBombermanSystem ajout POSITION_COMPONENT.\n";
         }
-        if(! bAddComponentToSystem(BOMBER_FLAG_COMPONENT))
+        if(! bAddComponentToSystem(FLAG_BOMBER_COMPONENT))
         {
             std::cout << "Erreur BombBombermanSystem ajout BOMBER_FLAG_COMPONENT.\n";
         }
-        if(! bAddComponentToSystem(BOMBER_TIMER_COMPONENT))
+        if(! bAddComponentToSystem(TIMER_BOMBER_COMPONENT))
         {
             std::cout << "Erreur BombBombermanSystem ajout BOMBER_TIMER_COMPONENT.\n";
         }
@@ -37,14 +37,14 @@ void ExplosionBombermanSystem::execSystem()
     if(! mLevelTilemapComp)
     {
         mLevelTilemapComp = stairwayToComponentManager().searchComponentByType <TilemapBombermanComponent>(
-                    Niveau::getNumEntityLevel(), BOMBER_TILEMAP_COMPONENT);
+                    Niveau::getNumEntityLevel(), TILEMAP_BOMBER_COMPONENT);
     }
     System::execSystem();
     std::vector< unsigned int >::iterator it = mVectNumEntity.begin();
     for(; it != mVectNumEntity.end() ; ++it)
     {
         FlagBombermanComponent *flagComponent = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
-                (*it, BOMBER_FLAG_COMPONENT);
+                (*it, FLAG_BOMBER_COMPONENT);
 
         assert(flagComponent && "flagComponent is null\n");
         if(flagComponent->muiNumFlag != FLAG_EXPLOSION)
@@ -53,7 +53,7 @@ void ExplosionBombermanSystem::execSystem()
         }
 
         TimerBombermanComponent* timerComp = stairwayToComponentManager() .
-                    searchComponentByType <TimerBombermanComponent> (*it, BOMBER_TIMER_COMPONENT);
+                    searchComponentByType <TimerBombermanComponent> (*it, TIMER_BOMBER_COMPONENT);
         assert(timerComp && "timerComp == NULL\n");
 
         if(! timerComp->mLaunched)
@@ -102,11 +102,11 @@ void ExplosionBombermanSystem::makeBombExplode(unsigned int numEntityBomb)
     MoteurGraphique::static_getPositionsCurrentCase(*posComponent, caseX, caseY, false);
 
     BombConfigBombermanComponent *bombConfComponent = stairwayToComponentManager().searchComponentByType <BombConfigBombermanComponent>
-            (numEntityBomb, BOMBER_BOMB_CONFIG_COMPONENT);
+            (numEntityBomb, BOMB_CONFIG_BOMBER_COMPONENT);
     assert(bombConfComponent && "BombBombermanSystem::lauchBomb posComponent is null\n");
 
     PlayerConfigBombermanComponent *playerConfComponent = stairwayToComponentManager().searchComponentByType<PlayerConfigBombermanComponent>
-            (bombConfComponent->mNumPlayerEntity, BOMBER_PLAYER_CONFIG_COMPONENT);
+            (bombConfComponent->mNumPlayerEntity, PLAYER_CONFIG_BOMBER_COMPONENT);
     assert(playerConfComponent && "BombBombermanSystem::lauchBomb playerConfComponent is null\n");
     createExplosions(caseX, caseY,  playerConfComponent->mRadiusExplosion);
 }
@@ -127,7 +127,7 @@ bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int
     vectTupleTriUI vectMemWallToDestroy;
     unsigned int entityLevel = Niveau::getNumEntityLevel();
     TilemapBombermanComponent *levelTileComponent = stairwayToComponentManager().searchComponentByType <TilemapBombermanComponent>
-            (entityLevel, BOMBER_TILEMAP_COMPONENT);
+            (entityLevel, TILEMAP_BOMBER_COMPONENT);
     assert(levelTileComponent && "tileComponent is null\n");
 
     const Tableau2D &tabNiveau = levelTileComponent->mTabTilemap;
@@ -239,12 +239,12 @@ unsigned int ExplosionBombermanSystem::createEntityExplosion(unsigned int positi
     unsigned int explosionEntity = createExplosionEntity();
 
     FlagBombermanComponent *flagComponent = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
-            (explosionEntity, BOMBER_FLAG_COMPONENT);
+            (explosionEntity, FLAG_BOMBER_COMPONENT);
     assert(flagComponent && "flagComponent is null\n");
     flagComponent->muiNumFlag = FLAG_EXPLOSION;
 
     TilemapBombermanComponent *tileComponent = stairwayToComponentManager().searchComponentByType <TilemapBombermanComponent>
-            (explosionEntity, BOMBER_TILEMAP_COMPONENT);
+            (explosionEntity, TILEMAP_BOMBER_COMPONENT);
     assert(tileComponent && "tileComponent is null\n");
 
     tileComponent->mHeightTile = 16;
@@ -355,9 +355,9 @@ unsigned int ExplosionBombermanSystem::createExplosionEntity()
     ecs::Engine *ECSEngine = mptrSystemManager->getptrEngine();
     ECSEngine->bAddComponentToEntity( numCreatedEntity, ecs::POSITION_COMPONENT );
     ECSEngine->bAddComponentToEntity( numCreatedEntity, ecs::COLL_RECTBOX_COMPONENT );
-    ECSEngine->bAddComponentToEntity( numCreatedEntity, BOMBER_FLAG_COMPONENT );
-    ECSEngine->bAddComponentToEntity( numCreatedEntity, BOMBER_TIMER_COMPONENT );
-    ECSEngine->bAddComponentToEntity( numCreatedEntity, BOMBER_TILEMAP_COMPONENT );
+    ECSEngine->bAddComponentToEntity( numCreatedEntity, FLAG_BOMBER_COMPONENT );
+    ECSEngine->bAddComponentToEntity( numCreatedEntity, TIMER_BOMBER_COMPONENT );
+    ECSEngine->bAddComponentToEntity( numCreatedEntity, TILEMAP_BOMBER_COMPONENT );
     stairwayToComponentManager().updateComponentFromEntity();
     stairwayToComponentManager().instanciateExternComponent(numCreatedEntity, std::make_unique<FlagBombermanComponent>());
     stairwayToComponentManager().instanciateExternComponent(numCreatedEntity, std::make_unique<TimerBombermanComponent>());

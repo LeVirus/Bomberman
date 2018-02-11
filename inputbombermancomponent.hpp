@@ -10,7 +10,7 @@ struct InputBombermanComponent : public ecs::Component
 {
 	InputBombermanComponent()
 	{
-		muiTypeComponent = BOMBER_INPUT_COMPONENT;
+		muiTypeComponent = INPUT_BOMBER_COMPONENT;
 	}
 
 	void displayComponent()const override

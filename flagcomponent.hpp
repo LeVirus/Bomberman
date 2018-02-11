@@ -10,7 +10,7 @@ struct FlagBombermanComponent : public ecs::Component
 {
 	FlagBombermanComponent()
 	{
-		muiTypeComponent = BOMBER_FLAG_COMPONENT;
+		muiTypeComponent = FLAG_BOMBER_COMPONENT;
 	}
 
 	void displayComponent()const override

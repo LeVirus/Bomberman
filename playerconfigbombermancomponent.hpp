@@ -9,15 +9,14 @@ struct PlayerConfigBombermanComponent : public ecs::Component
 {
     PlayerConfigBombermanComponent()
     {
-        muiTypeComponent = BOMBER_PLAYER_CONFIG_COMPONENT;
+        muiTypeComponent = PLAYER_CONFIG_BOMBER_COMPONENT;
     }
 
     void displayComponent()const override
     {}
-
     unsigned int mNumberLife = 2;
-    unsigned int mInitX = 1;
-    unsigned int mInitY = 1;
+    unsigned int mInitX;
+    unsigned int mInitY;
 
     unsigned int mRadiusExplosion = 4;
     unsigned int mMode = MODE_PLAYER_NORMAL;

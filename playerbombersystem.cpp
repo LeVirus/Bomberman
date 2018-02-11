@@ -15,11 +15,11 @@ PlayerBomberSystem::PlayerBomberSystem()
 //    {
 //        std::cout << "Erreur PlayerBomberSystem ajout BOMBER_FLAG_COMPONENT.\n";
 //    }
-    if(! bAddComponentToSystem(BOMBER_TIMER_COMPONENT))
+    if(! bAddComponentToSystem(TIMER_BOMBER_COMPONENT))
     {
         std::cout << "Erreur PlayerBomberSystem ajout BOMBER_TIMER_COMPONENT.\n";
     }
-    if(! bAddComponentToSystem(BOMBER_PLAYER_CONFIG_COMPONENT))
+    if(! bAddComponentToSystem(PLAYER_CONFIG_BOMBER_COMPONENT))
     {
         std::cout << "Erreur PlayerBomberSystem ajout BOMBER_PLAYER_CONFIG_COMPONENT.\n";
     }
@@ -40,7 +40,7 @@ void PlayerBomberSystem::execSystem()
 //        }
 
         PlayerConfigBombermanComponent *playerConfComponent = stairwayToComponentManager().searchComponentByType <PlayerConfigBombermanComponent>
-                (*it, BOMBER_PLAYER_CONFIG_COMPONENT);
+                (*it, PLAYER_CONFIG_BOMBER_COMPONENT);
         assert(playerConfComponent && "PlayerBomberSystem::execSystem flagComponent is null\n");
         if(playerConfComponent->mMode == MODE_PLAYER_NORMAL)
         {
@@ -48,7 +48,7 @@ void PlayerBomberSystem::execSystem()
         }
 
         TimerBombermanComponent *timerComponent = stairwayToComponentManager().searchComponentByType <TimerBombermanComponent>
-                (*it, BOMBER_TIMER_COMPONENT);
+                (*it, TIMER_BOMBER_COMPONENT);
         assert(timerComponent && "PlayerBomberSystem::execSystem flagComponent is null\n");
 
 
@@ -60,7 +60,6 @@ void PlayerBomberSystem::execSystem()
                 ecs::PositionComponent *posComp = stairwayToComponentManager().searchComponentByType <ecs::PositionComponent>
                         (*it, ecs::POSITION_COMPONENT);
                 assert(posComp && "posComp is null\n");
-
                 MoteurGraphique::static_positionnerCaseTileMap(*posComp, playerConfComponent->mInitX, playerConfComponent->mInitY);
                 playerConfComponent->mMode = MODE_PLAYER_AFTER_REPOP;
                 //restart chrono for invulnerability frames
@@ -86,7 +85,7 @@ void PlayerBomberSystem::displaySystem() const
 void PlayerBomberSystem::setBombermanDeath(unsigned int numEntity)
 {
     PlayerConfigBombermanComponent *playerConfComponent = stairwayToComponentManager() .
-            searchComponentByType <PlayerConfigBombermanComponent> (numEntity, BOMBER_PLAYER_CONFIG_COMPONENT);
+            searchComponentByType <PlayerConfigBombermanComponent> (numEntity, PLAYER_CONFIG_BOMBER_COMPONENT);
     if(! playerConfComponent)
     {
         assert(playerConfComponent && "playerConfComponent is null\n");
@@ -100,7 +99,7 @@ void PlayerBomberSystem::setBombermanDeath(unsigned int numEntity)
     playerConfComponent->mMode = MODE_PLAYER_DEAD_TRANSITION;
 
     TimerBombermanComponent *timerComponent = stairwayToComponentManager().searchComponentByType <TimerBombermanComponent>
-            (numEntity, BOMBER_TIMER_COMPONENT);
+            (numEntity, TIMER_BOMBER_COMPONENT);
     assert(timerComponent && "flagComponent is null\n");
     timerComponent->mBombClockB.restart();
 }

@@ -5,6 +5,8 @@
 
 unsigned int Niveau::mNumEntityLevel;
 Tableau2D Niveau::mTabPositionDestructWall;
+vectPairUi_t Niveau::mInitBombermanPosition;
+unsigned int Niveau::mMaxPlayer;
 
 Niveau::Niveau()
 {
@@ -26,7 +28,24 @@ void Niveau::setPositionPair(std::ifstream &flux, TilemapBombermanComponent &lev
 	{
         flux >> levelTileComp.mvectPositionTile[i].first;
         flux >> levelTileComp.mvectPositionTile[i].second;
-	}
+    }
+}
+
+bool Niveau::setInitPositionBomberman(std::ifstream &flux)
+{
+    flux >> mMaxPlayer;
+    if(! mMaxPlayer || mMaxPlayer > 6)
+    {
+        flux.close();
+        return false;
+    }
+    mInitBombermanPosition.resize(mMaxPlayer);
+    for(unsigned int i = 0; i < mMaxPlayer; ++i)
+    {
+        flux >> mInitBombermanPosition[i].first;
+        flux >> mInitBombermanPosition[i].second;
+    }
+    return true;
 }
 
 /**
@@ -80,6 +99,10 @@ bool Niveau::loadLevel(unsigned int uiNumNiveau, unsigned int numEntityLevel, Ti
     levelTileComp.mLenghtTile = muiLongueurTile;
     setPositionPair(flux, levelTileComp);
 
+    if(! setInitPositionBomberman(flux))
+    {
+        return false;
+    }
 	//si tout se passe correctement le flux est fermé dans la fonction bAttribuerTab.
     if(! levelTileComp.mTabTilemap.bAttribuerTab(flux, muiLongueurNiveau , muiLargeurNiveau))return false;
 	return true;
@@ -111,6 +134,11 @@ unsigned char Niveau::static_getNumWallEntityOnPosition(unsigned int x, unsigned
 bool Niveau::static_setNumWallEntityOnPosition(unsigned int x, unsigned int y, unsigned char val)
 {
     return mTabPositionDestructWall.setValAt(x, y, val);
+}
+
+const vectPairUi_t &Niveau::static_getVectInitPositionBomberman()
+{
+    return mInitBombermanPosition;
 }
 
 const std::__cxx11::string &Niveau::getPathToTexture() const

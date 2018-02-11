@@ -4,7 +4,7 @@
 #include "bombbombermansystem.hpp"
 #include "explosionbombermansystem.hpp"
 #include "tilemapsystem.hpp"
-#include "playersystem.hpp"
+#include "playerbombersystem.hpp"
 #include "moteur.hpp"
 
 GestionnaireECS::GestionnaireECS(Moteur &refMoteur):mRefMoteur(refMoteur)

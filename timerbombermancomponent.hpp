@@ -9,7 +9,7 @@ struct TimerBombermanComponent : public ecs::Component
 {
     TimerBombermanComponent()
     {
-        muiTypeComponent = BOMBER_TIMER_COMPONENT;
+        muiTypeComponent = TIMER_BOMBER_COMPONENT;
     }
 
     void displayComponent()const override

@@ -9,7 +9,7 @@ struct BombConfigBombermanComponent : public ecs::Component
 {
     BombConfigBombermanComponent()
     {
-        muiTypeComponent = BOMBER_BOMB_CONFIG_COMPONENT;
+        muiTypeComponent = BOMB_CONFIG_BOMBER_COMPONENT;
     }
 
     void displayComponent()const override

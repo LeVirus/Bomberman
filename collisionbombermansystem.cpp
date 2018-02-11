@@ -7,7 +7,7 @@
 #include "vector2D.hpp"
 #include "geometriefreefunctions.hpp"
 #include "playerconfigbombermancomponent.hpp"
-#include "playersystem.hpp"
+#include "playerbombersystem.hpp"
 #include "moteurgraphique.hpp"
 #include "engine.hpp"
 #include <cassert>
@@ -30,14 +30,14 @@ bool CollisionBombermanSystem::getComponentForCollision(ecs::PositionComponent *
     }
 
     flagBombermanComponent = stairwayToComponentManager() .
-            searchComponentByType < FlagBombermanComponent > (uiNumEntity, BOMBER_FLAG_COMPONENT);
+            searchComponentByType < FlagBombermanComponent > (uiNumEntity, FLAG_BOMBER_COMPONENT);
     if( ! flagBombermanComponent )
     {
         return false;
     }
     //check if moveable component exists
     moveableBomberComp = stairwayToComponentManager() .
-                searchComponentByType < MoveableBombermanComponent > (uiNumEntity, BOMBER_MOVEABLE_COMPONENT);
+                searchComponentByType < MoveableBombermanComponent > (uiNumEntity, MOVEABLE_BOMBER_COMPONENT);
     return true;
 }
 
@@ -128,7 +128,7 @@ CollisionBombermanSystem::CollisionBombermanSystem()
 	{
 		std::cout << "Erreur CollisionBombermanSystem ajout COLL_RECTBOX_COMPONENT.\n";
 	}
-	if( ! bAddComponentToSystem( BOMBER_FLAG_COMPONENT ) )
+    if( ! bAddComponentToSystem( FLAG_BOMBER_COMPONENT ) )
 	{
 		std::cout << "Erreur CollisionBombermanSystem ajout POSITION_COMPONENT.\n";
 	}
@@ -153,7 +153,7 @@ void CollisionBombermanSystem::execSystem()
         if(flagBombermanComponent->muiNumFlag == FLAG_BOMBERMAN)
         {
             PlayerConfigBombermanComponent *playerConf = stairwayToComponentManager() .
-                    searchComponentByType <PlayerConfigBombermanComponent> (mVectNumEntity[i], BOMBER_PLAYER_CONFIG_COMPONENT);
+                    searchComponentByType <PlayerConfigBombermanComponent> (mVectNumEntity[i], PLAYER_CONFIG_BOMBER_COMPONENT);
             assert(playerConf && "playerConf null");
             if(playerConf->mMode == MODE_PLAYER_DEAD_TRANSITION)
             {
@@ -197,7 +197,7 @@ void CollisionBombermanSystem::execSystem()
                 if(flagBombermanComponent->muiNumFlag == FLAG_BOMBERMAN && flagBombermanComponentB->muiNumFlag == FLAG_EXPLOSION)
                 {
                     PlayerConfigBombermanComponent *playerConf = stairwayToComponentManager() .
-                            searchComponentByType <PlayerConfigBombermanComponent> (mVectNumEntity[i], BOMBER_PLAYER_CONFIG_COMPONENT);
+                            searchComponentByType <PlayerConfigBombermanComponent> (mVectNumEntity[i], PLAYER_CONFIG_BOMBER_COMPONENT);
                     assert(playerConf && "playerConf null");
                     if(playerConf->mMode == MODE_PLAYER_AFTER_REPOP)
                     {

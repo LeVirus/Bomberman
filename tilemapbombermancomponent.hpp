@@ -12,7 +12,7 @@ struct TilemapBombermanComponent : public ecs::Component
 {
     TilemapBombermanComponent()
     {
-        muiTypeComponent = BOMBER_TILEMAP_COMPONENT;
+        muiTypeComponent = TILEMAP_BOMBER_COMPONENT;
     }
 
     void displayComponent()const override

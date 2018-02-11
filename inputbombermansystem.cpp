@@ -10,7 +10,7 @@
 
 InputBombermanSystem::InputBombermanSystem()
 {
-    if(! bAddComponentToSystem(BOMBER_INPUT_COMPONENT))
+    if(! bAddComponentToSystem(INPUT_BOMBER_COMPONENT))
 	{
 			std::cout << "Erreur InputSystem ajout BOMBER_INPUT_COMPONENT.\n";
 	}
@@ -18,7 +18,7 @@ InputBombermanSystem::InputBombermanSystem()
 	{
 			std::cout << "Erreur InputSystem ajout POSITION_COMPONENT.\n";
 	}
-    if(! bAddComponentToSystem(BOMBER_MOVEABLE_COMPONENT))
+    if(! bAddComponentToSystem(MOVEABLE_BOMBER_COMPONENT))
 	{
             std::cout << "Erreur InputSystem ajout BOMBER_MOVEABLE_COMPONENT.\n";
 	}
@@ -53,14 +53,14 @@ void InputBombermanSystem::execSystem()
         {
             PlayerConfigBombermanComponent *playerConfigComp = stairwayToComponentManager() .
                     searchComponentByType<PlayerConfigBombermanComponent>(mVectNumEntity[i],
-                                                                       BOMBER_PLAYER_CONFIG_COMPONENT);
+                                                                       PLAYER_CONFIG_BOMBER_COMPONENT);
             if(! playerConfigComp || playerConfigComp->mMode == MODE_PLAYER_DEAD_TRANSITION)
             {
                 continue;
             }
             InputBombermanComponent *inputComponent = stairwayToComponentManager() .
                     searchComponentByType<InputBombermanComponent>(mVectNumEntity[i],
-                                                                    BOMBER_INPUT_COMPONENT);
+                                                                    INPUT_BOMBER_COMPONENT);
             if(! inputComponent)
             {
                 std::cout << i << " InputBombermanSystem pointeur NULL inputComponent \n";
@@ -76,7 +76,7 @@ void InputBombermanSystem::execSystem()
 			}
             MoveableBombermanComponent *moveableComponent = stairwayToComponentManager() .
                     searchComponentByType<MoveableBombermanComponent>(mVectNumEntity[i],
-                                                                       BOMBER_MOVEABLE_COMPONENT);
+                                                                       MOVEABLE_BOMBER_COMPONENT);
             if(! moveableComponent)
             {
 				std::cout << " InputBombermanSystem pointeur NULL moveableComponent \n";
@@ -85,7 +85,7 @@ void InputBombermanSystem::execSystem()
 
             TimerBombermanComponent *timerComp = stairwayToComponentManager() .
                     searchComponentByType<TimerBombermanComponent>(mVectNumEntity[i],
-                                                                       BOMBER_TIMER_COMPONENT);
+                                                                       TIMER_BOMBER_COMPONENT);
             if(! timerComp)
             {
                 std::cout << " TimerBombermanComponent pointeur NULL playerConfigComp \n";

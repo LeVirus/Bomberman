@@ -9,7 +9,7 @@ TilemapSystem::TilemapSystem()
     {
         std::cout << "Erreur BombBombermanSystem ajout POSITION_COMPONENT.\n";
     }
-    if(! bAddComponentToSystem(BOMBER_TILEMAP_COMPONENT))
+    if(! bAddComponentToSystem(TILEMAP_BOMBER_COMPONENT))
     {
         std::cout << "Erreur BombBombermanSystem ajout BOMBER_TILEMAP_COMPONENT.\n";
     }
@@ -22,7 +22,7 @@ void TilemapSystem::execSystem()
     for( unsigned int i = 0 ; i < mVectNumEntity.size() ; ++i )
     {
         TilemapBombermanComponent * tilemapComp = stairwayToComponentManager().
-                searchComponentByType<TilemapBombermanComponent> (mVectNumEntity[i], BOMBER_TILEMAP_COMPONENT);
+                searchComponentByType<TilemapBombermanComponent> (mVectNumEntity[i], TILEMAP_BOMBER_COMPONENT);
         ecs::PositionComponent * positionComp = stairwayToComponentManager().
                 searchComponentByType<ecs::PositionComponent>(mVectNumEntity[i], ecs::POSITION_COMPONENT);
         if(tilemapComp && positionComp)

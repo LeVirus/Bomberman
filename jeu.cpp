@@ -10,7 +10,7 @@ bool Jeu::chargerNiveau(unsigned int numNiv)
 {
 	mMoteurPrincipal.getGestionnaireECS().initECS();
     mMoteurPrincipal.loadLevelTileMap(mNiveau, numNiv);
-    mMoteurPrincipal.loadPlayersAndBot(1, 0);
+    mMoteurPrincipal.loadPlayersAndBot(2, 0);
 	mMoteurPrincipal.loadLevelWall(mNiveau);
 	return true;
 }

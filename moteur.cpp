@@ -59,7 +59,7 @@ sf::Event event;
 
 		InputBombermanComponent *ic = mGestECS.getECSComponentManager() ->
 				searchComponentByType< InputBombermanComponent >(
-					vectNumEntitySystem[i], BOMBER_INPUT_COMPONENT );
+                    vectNumEntitySystem[i], INPUT_BOMBER_COMPONENT );
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z))ic->mBitsetInput[MOVE_UP] = true;
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))ic->mBitsetInput[MOVE_DOWN] = true;
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))ic->mBitsetInput[MOVE_LEFT] = true;
@@ -93,7 +93,7 @@ void Moteur::loadLevelTileMap(Niveau &niv, unsigned int numNiv)
 	//création de l'entité avec les composants nécessaires
     std::vector<bool> bitsetComp;
     bitsetComp.resize(getGestionnaireECS().getECSComponentManager()->getNumberComponent());
-    bitsetComp[BOMBER_TILEMAP_COMPONENT] = true;
+    bitsetComp[TILEMAP_BOMBER_COMPONENT] = true;
     bitsetComp[ecs::POSITION_COMPONENT] = true;
     memEntity = mGestECS.addEntity(bitsetComp);
     mGestECS.getECSComponentManager()->updateComponentFromEntity();
@@ -107,7 +107,7 @@ void Moteur::loadLevelTileMap(Niveau &niv, unsigned int numNiv)
     pc->vect2DPosComp.mfY = POSITION_LEVEL_Y;
 
     TilemapBombermanComponent *tmc = mGestECS.getECSComponentManager() ->
-            searchComponentByType<TilemapBombermanComponent>(memEntity, BOMBER_TILEMAP_COMPONENT);
+            searchComponentByType<TilemapBombermanComponent>(memEntity, TILEMAP_BOMBER_COMPONENT);
     assert(tmc && "Moteur::loadTileMap TilemapBombermanComponent == null\n");
     niv.loadLevel(numNiv, memEntity, *tmc);
 
@@ -131,12 +131,12 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
         bitsetComp.resize(getGestionnaireECS().getECSComponentManager()->getNumberComponent());
         bitsetComp[ecs::DISPLAY_COMPONENT]          = true;
         bitsetComp[ecs::POSITION_COMPONENT]         = true;
-        bitsetComp[BOMBER_MOVEABLE_COMPONENT]       = true;
+        bitsetComp[MOVEABLE_BOMBER_COMPONENT]       = true;
         bitsetComp[ecs::COLL_RECTBOX_COMPONENT]     = true;
-        bitsetComp[BOMBER_INPUT_COMPONENT]          = true;
-        bitsetComp[BOMBER_FLAG_COMPONENT]           = true;
-        bitsetComp[BOMBER_PLAYER_CONFIG_COMPONENT]  = true;
-        bitsetComp[BOMBER_TIMER_COMPONENT]  = true;
+        bitsetComp[INPUT_BOMBER_COMPONENT]          = true;
+        bitsetComp[FLAG_BOMBER_COMPONENT]           = true;
+        bitsetComp[PLAYER_CONFIG_BOMBER_COMPONENT]  = true;
+        bitsetComp[TIMER_BOMBER_COMPONENT]          = true;
 
         unsigned int memEntity = mGestECS.addEntity(bitsetComp);
 		mGestECS.getECSComponentManager()->
@@ -152,7 +152,7 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
                 instanciateExternComponent(memEntity, std::make_unique<TimerBombermanComponent>());
 
         FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
-                searchComponentByType <FlagBombermanComponent> (memEntity, BOMBER_FLAG_COMPONENT);
+                searchComponentByType <FlagBombermanComponent> (memEntity, FLAG_BOMBER_COMPONENT);
 		fc->muiNumFlag = FLAG_BOMBERMAN;
 
 		ecs::CollRectBoxComponent * cc = mGestECS.getECSComponentManager() ->
@@ -171,8 +171,24 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
                 searchComponentByType< ecs::PositionComponent >(memEntity, ecs::POSITION_COMPONENT);
         assert( pc && "pc == null\n");
 
-        mMoteurGraphique.static_positionnerCaseTileMap(*pc, 1, 1);
+        PlayerConfigBombermanComponent * playerConfig = mGestECS.getECSComponentManager() ->
+                searchComponentByType<PlayerConfigBombermanComponent>(memEntity, PLAYER_CONFIG_BOMBER_COMPONENT);
+        assert(playerConfig && "pc == null\n");
 
+        const vectPairUi_t &memInitPosition = Niveau::static_getVectInitPositionBomberman();
+
+        playerConfig->mInitX = memInitPosition[i].first;
+        playerConfig->mInitY = memInitPosition[i].second;
+
+        switch(i)
+        {
+        case 0:
+            mMoteurGraphique.static_positionnerCaseTileMap(*pc, 1, 1);
+            break;
+        case 1:
+            mMoteurGraphique.static_positionnerCaseTileMap(*pc, 9, 1);
+            break;
+        }
 	}
 	return true;
 	//uiNumBot a implémenter ultérieurement
@@ -182,7 +198,7 @@ void Moteur::loadLevelWall(const Niveau &niv)
 {
 	std::vector< bool > bitsetComp(getGestionnaireECS().getECSComponentManager()->getNumberComponent());
     TilemapBombermanComponent *tmc = mGestECS.getECSComponentManager() ->
-            searchComponentByType<TilemapBombermanComponent>(niv.getNumEntityLevel(), BOMBER_TILEMAP_COMPONENT);
+            searchComponentByType<TilemapBombermanComponent>(niv.getNumEntityLevel(), TILEMAP_BOMBER_COMPONENT);
 
     assert(tmc && "level TilemapBombermanComponent is null");
 
@@ -208,7 +224,7 @@ void Moteur::loadLevelWall(const Niveau &niv)
 
 		bitsetComp[ ecs::POSITION_COMPONENT ] = true;
 		bitsetComp[ ecs::COLL_RECTBOX_COMPONENT ] = true;
-		bitsetComp[ BOMBER_FLAG_COMPONENT ] = true;
+        bitsetComp[ FLAG_BOMBER_COMPONENT ] = true;
 
 		unsigned int memEntity = mGestECS.addEntity( bitsetComp );
         //memorize entity number for destructible wall
@@ -224,7 +240,7 @@ void Moteur::loadLevelWall(const Niveau &niv)
 				instanciateExternComponent(memEntity, std::make_unique<FlagBombermanComponent>());
 
 		FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
-				searchComponentByType < FlagBombermanComponent > ( memEntity, BOMBER_FLAG_COMPONENT );
+                searchComponentByType < FlagBombermanComponent > ( memEntity, FLAG_BOMBER_COMPONENT );
 		fc->muiNumFlag = *it;
 
 		ecs::PositionComponent * pc = mGestECS.getECSComponentManager() ->

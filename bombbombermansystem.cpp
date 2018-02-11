@@ -13,11 +13,11 @@
 
 BombBombermanSystem::BombBombermanSystem() : mTimeExplode(500)
 {
-    if(! bAddComponentToSystem(BOMBER_FLAG_COMPONENT))
+    if(! bAddComponentToSystem(FLAG_BOMBER_COMPONENT))
     {
         std::cout << "Erreur BombBombermanSystem ajout BOMBER_FLAG_COMPONENT.\n";
     }
-    if(! bAddComponentToSystem(BOMBER_TIMER_COMPONENT))
+    if(! bAddComponentToSystem(TIMER_BOMBER_COMPONENT))
     {
         std::cout << "Erreur BombBombermanSystem ajout BOMBER_TIMER_COMPONENT.\n";
     }
@@ -31,7 +31,7 @@ void BombBombermanSystem::execSystem()
     {
 
         FlagBombermanComponent *flagComponent = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
-                (*it, BOMBER_FLAG_COMPONENT);
+                (*it, FLAG_BOMBER_COMPONENT);
 
         assert(flagComponent && "BombBombermanSystem::execSystem flagComponent is null\n");
         if(flagComponent->muiNumFlag != FLAG_BOMB)
@@ -40,7 +40,7 @@ void BombBombermanSystem::execSystem()
         }
 
          TimerBombermanComponent* timerComp = stairwayToComponentManager() .
-                    searchComponentByType <TimerBombermanComponent> (*it, BOMBER_TIMER_COMPONENT);
+                    searchComponentByType <TimerBombermanComponent> (*it, TIMER_BOMBER_COMPONENT);
         assert(timerComp && "BombBombermanSystem::execSystem :: timerComp == NULL\n");
 
         if(! timerComp->mLaunched)
@@ -76,9 +76,9 @@ unsigned int BombBombermanSystem::createBombEntity()
     ecs::Engine *ECSEngine = mptrSystemManager->getptrEngine();
     ECSEngine->bAddComponentToEntity(numCreatedEntity, ecs::DISPLAY_COMPONENT);
     ECSEngine->bAddComponentToEntity(numCreatedEntity, ecs::POSITION_COMPONENT);
-    ECSEngine->bAddComponentToEntity(numCreatedEntity, BOMBER_FLAG_COMPONENT);
-    ECSEngine->bAddComponentToEntity(numCreatedEntity, BOMBER_TIMER_COMPONENT);
-    ECSEngine->bAddComponentToEntity(numCreatedEntity, BOMBER_BOMB_CONFIG_COMPONENT);
+    ECSEngine->bAddComponentToEntity(numCreatedEntity, FLAG_BOMBER_COMPONENT);
+    ECSEngine->bAddComponentToEntity(numCreatedEntity, TIMER_BOMBER_COMPONENT);
+    ECSEngine->bAddComponentToEntity(numCreatedEntity, BOMB_CONFIG_BOMBER_COMPONENT);
     stairwayToComponentManager().updateComponentFromEntity();
     stairwayToComponentManager().instanciateExternComponent(numCreatedEntity, std::make_unique<FlagBombermanComponent>());
     stairwayToComponentManager().instanciateExternComponent(numCreatedEntity, std::make_unique<TimerBombermanComponent>());
@@ -98,7 +98,7 @@ void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionC
     MoteurGraphique::static_positionComponentCenterCurrentCase(*posComponent);
 
     BombConfigBombermanComponent *bombConfComponent = stairwayToComponentManager().searchComponentByType<BombConfigBombermanComponent>
-            (numCreatedEntity, BOMBER_BOMB_CONFIG_COMPONENT);
+            (numCreatedEntity, BOMB_CONFIG_BOMBER_COMPONENT);
     assert(bombConfComponent && "BombBombermanSystem::lauchBomb bombConfComponent is null\n");
     bombConfComponent->mNumPlayerEntity = numEntity;
 
@@ -109,7 +109,7 @@ void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionC
     dispComponent->muiNumSprite = SPRITE_BOMB;
 
     FlagBombermanComponent *flagComponent = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
-            (numCreatedEntity, BOMBER_FLAG_COMPONENT);
+            (numCreatedEntity, FLAG_BOMBER_COMPONENT);
     assert(flagComponent && "BombBombermanSystem::lauchBomb flagComponent is null\n");
     flagComponent->muiNumFlag = FLAG_BOMB;
 }

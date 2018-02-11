@@ -28,10 +28,10 @@ Tableau2D::Tableau2D(unsigned int largeur, unsigned int hauteur)
 bool Tableau2D::bAttribuerTab(const std::vector< unsigned char > &vect,
                                unsigned int uiLargeurTab, unsigned int uiHauteurTab)
 {
-    if( uiLargeurTab * uiHauteurTab != vect.size() )
+    if(uiLargeurTab * uiHauteurTab != vect.size())
 		return false;
-    resize( uiLargeurTab, uiHauteurTab );
-	std::copy ( vect.begin(), vect.end(), mVectChar.begin() );
+    resize(uiLargeurTab, uiHauteurTab);
+    std::copy (vect.begin(), vect.end(), mVectChar.begin());
 	return true;
 }
 

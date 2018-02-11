@@ -14,7 +14,7 @@ struct MoveableBombermanComponent : public ecs::Component
 
 	MoveableBombermanComponent()//: muiTypeComponent(BOMBER_MOVEABLE_COMPONENT)
 	{
-		muiTypeComponent = BOMBER_MOVEABLE_COMPONENT;
+		muiTypeComponent = MOVEABLE_BOMBER_COMPONENT;
 	}
 
 	void displayComponent()const override{
