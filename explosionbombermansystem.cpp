@@ -34,11 +34,9 @@ ExplosionBombermanSystem::ExplosionBombermanSystem()
 
 void ExplosionBombermanSystem::execSystem()
 {
-    if(! mLevelTilemapComp)
-    {
-        mLevelTilemapComp = stairwayToComponentManager().searchComponentByType <TilemapBombermanComponent>(
+    TilemapBombermanComponent *levelTilemapComp = stairwayToComponentManager().searchComponentByType <TilemapBombermanComponent>(
                     Niveau::getNumEntityLevel(), TILEMAP_BOMBER_COMPONENT);
-    }
+    assert(levelTilemapComp && "levelTilemapComp null");
     System::execSystem();
     std::vector< unsigned int >::iterator it = mVectNumEntity.begin();
     for(; it != mVectNumEntity.end() ; ++it)
@@ -74,7 +72,7 @@ void ExplosionBombermanSystem::execSystem()
                     {
                         //first entity explosion num, others position of wall to destroy
 
-                        destructWall(std::get<1>(*itt), std::get<2>(*itt), *mLevelTilemapComp);
+                        destructWall(std::get<1>(*itt), std::get<2>(*itt), *levelTilemapComp);
                         itt = mVectTupleMemWallDestroy.erase(itt);
                         if(itt == mVectTupleMemWallDestroy.end())break;
                     }

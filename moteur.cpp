@@ -38,7 +38,6 @@ const Jeu &Moteur::getJeu() const
 void Moteur::lancerBoucle()
 {
 	mMoteurGraphique.initialiserFenetre();
-
 	do
 	{
         mGestECS.getECSEngine()->execIteration();

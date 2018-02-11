@@ -107,7 +107,7 @@ bool Niveau::loadLevel(unsigned int uiNumNiveau, unsigned int numEntityLevel, Ti
     }
 	//si tout se passe correctement le flux est fermé dans la fonction bAttribuerTab.
     if(! levelTileComp.mTabTilemap.bAttribuerTab(flux, muiLongueurNiveau , muiLargeurNiveau))return false;
-	return true;
+    return true;
 
 }
 

@@ -1,5 +1,6 @@
 #include "tableau2d.hpp"
 #include <iostream>
+#include <cassert>
 
 
 /**
@@ -115,6 +116,7 @@ bool Tableau2D::setValAt(unsigned int uiCaseX, unsigned int uiCaseY, unsigned ch
 	{
 		return false;
 	}
+    //assert(uiCaseX + uiCaseY * muiLargeurTab < mVectChar.size() && "value out of bound");
     mVectChar[uiCaseX + uiCaseY * muiLargeurTab] = value;
 	return true;
 }
