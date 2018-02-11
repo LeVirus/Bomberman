@@ -1,4 +1,4 @@
-#include "playersystem.hpp"
+#include "playerbombersystem.hpp"
 #include "flagcomponent.hpp"
 #include "timerbombermancomponent.hpp"
 #include "playerconfigbombermancomponent.hpp"
@@ -51,8 +51,9 @@ void PlayerBomberSystem::execSystem()
                 (*it, BOMBER_TIMER_COMPONENT);
         assert(timerComponent && "PlayerBomberSystem::execSystem flagComponent is null\n");
 
+
         if(playerConfComponent->mMode == MODE_PLAYER_DEAD_TRANSITION &&
-           timerComponent->mBombClock.getElapsedTime().asMilliseconds() > playerConfComponent->mLatenceBetweenRepop)
+           timerComponent->mBombClockB.getElapsedTime().asMilliseconds() > playerConfComponent->mLatenceBetweenRepop)
         {
             if(playerConfComponent->mNumberLife)
             {
@@ -63,7 +64,7 @@ void PlayerBomberSystem::execSystem()
                 MoteurGraphique::static_positionnerCaseTileMap(*posComp, playerConfComponent->mInitX, playerConfComponent->mInitY);
                 playerConfComponent->mMode = MODE_PLAYER_AFTER_REPOP;
                 //restart chrono for invulnerability frames
-                timerComponent->mBombClock.restart();
+                timerComponent->mBombClockB.restart();
             }
             //Definitive death
             else
@@ -72,7 +73,7 @@ void PlayerBomberSystem::execSystem()
             }
         }
         else if(playerConfComponent->mMode == MODE_PLAYER_AFTER_REPOP &&
-                timerComponent->mBombClock.getElapsedTime().asMilliseconds() > playerConfComponent->mInvulnerabilityAfterDeath)
+                timerComponent->mBombClockB.getElapsedTime().asMilliseconds() > playerConfComponent->mInvulnerabilityAfterDeath)
         {
             playerConfComponent->mMode = MODE_PLAYER_NORMAL;
         }
@@ -93,8 +94,6 @@ void PlayerBomberSystem::setBombermanDeath(unsigned int numEntity)
 
     if(playerConfComponent->mNumberLife)
     {
-        std::cout << "--playerConfComponent->mNumberLife" << "\n";
-
         --playerConfComponent->mNumberLife;
     }
 
@@ -103,5 +102,5 @@ void PlayerBomberSystem::setBombermanDeath(unsigned int numEntity)
     TimerBombermanComponent *timerComponent = stairwayToComponentManager().searchComponentByType <TimerBombermanComponent>
             (numEntity, BOMBER_TIMER_COMPONENT);
     assert(timerComponent && "flagComponent is null\n");
-    timerComponent->mBombClock.restart();
+    timerComponent->mBombClockB.restart();
 }

@@ -47,4 +47,4 @@ HEADERS += \
     playerconfigbombermancomponent.hpp \
     tilemapbombermancomponent.hpp \
     bombconfigbombermancomponent.hpp \
-    playersystem.hpp
+    playerbombersystem.hpp
