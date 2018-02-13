@@ -85,14 +85,21 @@ void ExplosionBombermanSystem::execSystem()
                 //remove entity
                 mptrSystemManager->getptrEngine()->bRmEntity(*it);
             }
-            float fifthExplosionTime = mTimeExplosion / 5;
+            float tenthExplosionTime = mTimeExplosion / 10;
             TilemapBombermanComponent *tilemapComp = stairwayToComponentManager().searchComponentByType <TilemapBombermanComponent>(
                            *it, TILEMAP_BOMBER_COMPONENT);
             assert(tilemapComp && "levelTilemapComp null");
 
-            if(timerComp->mBombClockB.getElapsedTime().asMilliseconds() >= fifthExplosionTime)
+            if(timerComp->mBombClockB.getElapsedTime().asMilliseconds() >= tenthExplosionTime)
             {
-                tilemapComp->mTabTilemap.addToAllCase(7);
+                if(timerComp->mBombClock.getElapsedTime().asMilliseconds() >= mTimeExplosion / 2)
+                {
+                    tilemapComp->mTabTilemap.addToAllCase(7);//lower explosion
+                }
+                else
+                {
+                    tilemapComp->mTabTilemap.substractToAllCase(7);//higher explosion
+                }
                 timerComp->mBombClockB.restart();
             }
         }
@@ -272,33 +279,34 @@ unsigned int ExplosionBombermanSystem::createEntityExplosion(unsigned int positi
         //check if the radius explosion is the longuest it could be in the first part
         if(i == 0 && firstSize == explosionRadius)
         {
+            //7 * 4 = 28 for the fourth picture associate to explosion tile
             if(vertical)
-                tileComponent->mTabTilemap.setValAt(0, i, EXPLOSION_END_UP);
+                tileComponent->mTabTilemap.setValAt(0, i, EXPLOSION_END_UP + 28);
             else
-                tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_END_LEFT);
+                tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_END_LEFT + 28);
         }
         //check the middle of explosion
         else if(i == firstSize)
         {
             if(vertical)
-                tileComponent->mTabTilemap.setValAt(0, i, EXPLOSION_CENTER);
+                tileComponent->mTabTilemap.setValAt(0, i, EXPLOSION_CENTER + 28);
             else
-                tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_CENTER);
+                tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_CENTER + 28);
         }
         //check if the radius explosion is the longuest it could be in the second part
         else if(i == totalSize - 1 && secondSize == explosionRadius)
         {
             if(vertical)
-                tileComponent->mTabTilemap.setValAt(0, i, EXPLOSION_END_DOWN );
+                tileComponent->mTabTilemap.setValAt(0, i, EXPLOSION_END_DOWN + 28);
             else
-                tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_END_RIGHT);
+                tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_END_RIGHT + 28);
         }
         else
         {
             if(vertical)
-                tileComponent->mTabTilemap.setValAt(0, i, EXPLOSION_VERTICAL_MIDDLE);
+                tileComponent->mTabTilemap.setValAt(0, i, EXPLOSION_VERTICAL_MIDDLE + 28);
             else
-                tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_HORIZONTAL_MIDDLE);
+                tileComponent->mTabTilemap.setValAt(i, 0, EXPLOSION_HORIZONTAL_MIDDLE + 28);
         }
     }
     loadTilePosition(*tileComponent);

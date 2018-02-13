@@ -130,9 +130,9 @@ void Moteur::loadLevelTileMap(Niveau &niv, unsigned int numNiv)
 
 bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
 {
-    unsigned int memBombermanSprite;
+    unsigned int memBombermanSprite = SPRITE_BOMBERMAN_DOWN_STATIC;
     if(MAX_PLAYER < uiNumPlayer + uiNumBot)return false;
-    memBombermanSprite = mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect(71, 45, 16, 25));
+    loadBombermanSprite();
     mMoteurGraphique.loadSprite(TEXTURE_EXPLOSION, sf::IntRect(51, 0, 15, 15));
     unsigned int largeurTile = mPtrJeu.getNiveau().getLargeurTile();
     unsigned int longueurTile = mPtrJeu.getNiveau().getLongueurTile();
@@ -293,5 +293,20 @@ void Moteur::positionnerComponent(ecs::PositionComponent &posComp, unsigned int 
     posComp.vect2DPosComp.mfX = POSITION_LEVEL_X + posX * mPtrJeu.getNiveau().getLongueurTile();
     posComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + posY * mPtrJeu.getNiveau().getLargeurTile();
 //	std::cout << "XX " << posX << " posComp.X " <<posComp.vect2DPosComp.mfX
-//			  << " YY " << posY << " posComp.Y " <<posComp.vect2DPosComp.mfY<< std::endl;
+    //			  << " YY " << posY << " posComp.Y " <<posComp.vect2DPosComp.mfY<< std::endl;
+}
+
+void Moteur::loadBombermanSprite()
+{
+    unsigned int cursorX = 3, cursorY = 19;
+    for(unsigned int i = 0 ; i < 12; ++i)
+    {
+        if(i == 3)
+        {
+            cursorY += 25;
+            cursorX = 3;
+        }
+        mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect(cursorX, cursorY, 16, 25));
+        cursorX += 17;
+    }
 }

@@ -34,7 +34,8 @@ public:
     inline unsigned int getLargeur()const{return muiLargeurTab;}
     inline unsigned int getHauteur()const{return muiHauteurTab;}
 
-	void afficherTab()const;
+    void afficherTab()const;
+    void substractToAllCase(unsigned char val);
 };
 
 #endif // TABLEAU2D_H

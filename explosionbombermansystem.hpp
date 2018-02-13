@@ -21,7 +21,7 @@ class ExplosionBombermanSystem : public ecs::System
 {
 private:
     vectTupleTriUI mVectTupleMemWallDestroy;
-    unsigned int mTimeExplosion = 1500;
+    unsigned int mTimeExplosion = 600;
     unsigned int createExplosionEntity();
     bool createExplosions(unsigned int caseX, unsigned int caseY, unsigned int explosionRadius);
     unsigned int createEntityExplosion(unsigned int positionCaseX, unsigned int positionCaseY, unsigned int explosionRadius,

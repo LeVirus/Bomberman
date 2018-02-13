@@ -4,11 +4,16 @@
 #include "system.hpp"
 #include "constants.hpp"
 
+namespace ecs
+{
+    struct DisplayComponent;
+}
+
 class InputBombermanSystem : public ecs::System
 {
 private:
     void setMoveableDirection(std::bitset<4> &directionComp, const std::bitset<NUMBR_INPUT> &inputComp);
-
+    void setSpriteForBomberman(unsigned int direction, ecs::DisplayComponent &displayComp);
 public:
 	InputBombermanSystem();
 	virtual void execSystem();

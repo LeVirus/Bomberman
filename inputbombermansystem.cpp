@@ -7,6 +7,7 @@
 #include "moveablebombermancomponent.hpp"
 #include "constants.hpp"
 #include "flagcomponent.hpp"
+#include "displaycomponent.hpp"
 
 InputBombermanSystem::InputBombermanSystem()
 {
@@ -43,6 +44,38 @@ void InputBombermanSystem::setMoveableDirection(std::bitset<4> &directionComp, c
     else if(inputComp[MOVE_LEFT])
     {
         directionComp[MOVE_LEFT] = true;
+    }
+}
+
+void InputBombermanSystem::setSpriteForBomberman(unsigned int direction, ecs::DisplayComponent &displayComp)
+{
+    unsigned int &memCurrentSprite = displayComp.muiNumSprite;
+    switch (direction) {
+    case MOVE_DOWN:
+        if(memCurrentSprite == SPRITE_BOMBERMAN_DOWN_STATIC)memCurrentSprite = SPRITE_BOMBERMAN_DOWN_STEPA;
+        else if(memCurrentSprite == SPRITE_BOMBERMAN_DOWN_STEPA)memCurrentSprite = SPRITE_BOMBERMAN_DOWN_STATIC;
+        else memCurrentSprite = SPRITE_BOMBERMAN_DOWN_STATIC;
+
+        break;
+    case MOVE_UP:
+        if(memCurrentSprite == SPRITE_BOMBERMAN_UP_STATIC)memCurrentSprite = SPRITE_BOMBERMAN_UP_STEPA;
+        else if(memCurrentSprite == SPRITE_BOMBERMAN_UP_STEPA)memCurrentSprite = SPRITE_BOMBERMAN_UP_STATIC;
+        else memCurrentSprite = SPRITE_BOMBERMAN_UP_STATIC;
+        break;
+    case MOVE_LEFT:
+        if(memCurrentSprite == SPRITE_BOMBERMAN_LEFT_STATIC)memCurrentSprite = SPRITE_BOMBERMAN_LEFT_STEPA;
+        else if(memCurrentSprite == SPRITE_BOMBERMAN_LEFT_STEPA)memCurrentSprite = SPRITE_BOMBERMAN_LEFT_STATIC;
+        else memCurrentSprite = SPRITE_BOMBERMAN_LEFT_STATIC;
+
+        break;
+    case MOVE_RIGHT:
+        if(memCurrentSprite == SPRITE_BOMBERMAN_RIGHT_STATIC)memCurrentSprite = SPRITE_BOMBERMAN_RIGHT_STEPA;
+        else if(memCurrentSprite == SPRITE_BOMBERMAN_RIGHT_STEPA)memCurrentSprite = SPRITE_BOMBERMAN_RIGHT_STATIC;
+        else memCurrentSprite = SPRITE_BOMBERMAN_RIGHT_STATIC;
+
+        break;
+    default:
+        break;
     }
 }
 
@@ -92,6 +125,14 @@ void InputBombermanSystem::execSystem()
                 continue;
             }
 
+            ecs::DisplayComponent *displayComp = stairwayToComponentManager() .
+                    searchComponentByType<ecs::DisplayComponent>(mVectNumEntity[i], ecs::DISPLAY_COMPONENT);
+            if(! displayComp)
+            {
+                std::cout << " displayComp pointeur NULL playerConfigComp \n";
+                continue;
+            }
+
 			//si aucune entré utilisateur entité suivante
             if(inputComponent -> mBitsetInput.none())continue;
 
@@ -100,19 +141,23 @@ void InputBombermanSystem::execSystem()
             if(inputComponent->mBitsetInput[MOVE_RIGHT])
             {
                 positionComp->vect2DPosComp.mfX += moveableComponent->mfVelocite;
+                setSpriteForBomberman(MOVE_RIGHT, *displayComp);
             }
             else if(inputComponent->mBitsetInput[MOVE_LEFT])
             {
                 positionComp->vect2DPosComp.mfX -= moveableComponent->mfVelocite;
+                setSpriteForBomberman(MOVE_LEFT, *displayComp);
             }
 
             if(inputComponent->mBitsetInput[MOVE_UP])
 			{
                 positionComp->vect2DPosComp.mfY -=  moveableComponent->mfVelocite;
+                setSpriteForBomberman(MOVE_UP, *displayComp);
 			}
             else if(inputComponent->mBitsetInput[MOVE_DOWN])
             {
                 positionComp->vect2DPosComp.mfY +=  moveableComponent->mfVelocite;
+                setSpriteForBomberman(MOVE_DOWN, *displayComp);
             }
             if(timerComp->mLaunched && timerComp->mBombClock.getElapsedTime().asMilliseconds() > playerConfigComp->mLatenceBetweenBomb)
             {

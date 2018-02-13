@@ -96,6 +96,15 @@ void Tableau2D::addToAllCase(unsigned char val)
     }
 }
 
+void Tableau2D::substractToAllCase(unsigned char val)
+{
+    std::vector<unsigned char>::iterator ittt = mVectChar.begin();
+    for(;ittt != mVectChar.end();++ittt)
+    {
+        *ittt -= val;
+    }
+}
+
 /**
  * @brief Fonction d'affichage console du tableau.
  * L'affichage sera effectué en fonction des propriétés
