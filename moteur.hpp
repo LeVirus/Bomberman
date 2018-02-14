@@ -15,6 +15,7 @@ private:
 	MoteurGraphique mMoteurGraphique;
 	void positionnerComponent(ecs::PositionComponent &posComp, unsigned int posX, unsigned int posY);
     void loadBombermanSprite();
+    void LoadBomBSprite();
 	const Jeu &mPtrJeu;
     bool mLetMeOut = false;
 public:

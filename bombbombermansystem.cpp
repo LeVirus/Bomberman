@@ -1,6 +1,7 @@
 #include "bombbombermansystem.hpp"
 #include "timerbombermancomponent.hpp"
 #include "flagcomponent.hpp"
+#include "displaycomponent.hpp"
 #include "positioncomponent.hpp"
 #include "bombconfigbombermancomponent.hpp"
 #include "displaycomponent.hpp"
@@ -50,6 +51,11 @@ void BombBombermanSystem::execSystem()
         BombConfigBombermanComponent* bombConfComp = stairwayToComponentManager() .
                     searchComponentByType <BombConfigBombermanComponent> (*it, BOMB_CONFIG_BOMBER_COMPONENT);
         assert(bombConfComp && "bombConfComp == NULL\n");
+        if(timerComp->mBombClockB.getElapsedTime().asMilliseconds() > 400)
+        {
+            changeSpriteBomb(*it, bombConfComp->mPreviousSizeLittle);
+            timerComp->mBombClockB.restart();
+        }
 
         if(! timerComp->mLaunched)
         {
@@ -94,6 +100,27 @@ unsigned int BombBombermanSystem::createBombEntity()
     return numCreatedEntity;
 }
 
+void BombBombermanSystem::changeSpriteBomb(unsigned int numEntity, bool &previousSizeLittle)
+{
+    ecs::DisplayComponent *displayComp = stairwayToComponentManager() .
+            searchComponentByType <ecs::DisplayComponent> (numEntity, ecs::DISPLAY_COMPONENT);
+    assert(displayComp && "bombConfComp == NULL\n");
+    if(displayComp->muiNumSprite == SPRITE_BOMB_LITTLE || displayComp->muiNumSprite == SPRITE_BOMB_BIG)
+    {
+        displayComp->muiNumSprite = SPRITE_BOMB_MEDIUM;
+    }
+    else if(previousSizeLittle)
+    {
+        previousSizeLittle = false;
+        displayComp->muiNumSprite = SPRITE_BOMB_BIG;
+    }
+    else
+    {
+        previousSizeLittle = true;
+        displayComp->muiNumSprite = SPRITE_BOMB_LITTLE;
+    }
+}
+
 void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionComponent &posA)
 {
     unsigned int numCreatedEntity = createBombEntity();
@@ -114,7 +141,7 @@ void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionC
             (numCreatedEntity, ecs::DISPLAY_COMPONENT);
     assert(dispComponent && "BombBombermanSystem::lauchBomb dispComponent is null\n");
 
-    dispComponent->muiNumSprite = SPRITE_BOMB;
+    dispComponent->muiNumSprite = SPRITE_BOMB_LITTLE;
 
     FlagBombermanComponent *flagComponent = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
             (numCreatedEntity, FLAG_BOMBER_COMPONENT);

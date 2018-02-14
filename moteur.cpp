@@ -133,7 +133,7 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
     unsigned int memBombermanSprite = SPRITE_BOMBERMAN_DOWN_STATIC;
     if(MAX_PLAYER < uiNumPlayer + uiNumBot)return false;
     loadBombermanSprite();
-    mMoteurGraphique.loadSprite(TEXTURE_EXPLOSION, sf::IntRect(51, 0, 15, 15));
+    LoadBomBSprite();
     unsigned int largeurTile = mPtrJeu.getNiveau().getLargeurTile();
     unsigned int longueurTile = mPtrJeu.getNiveau().getLongueurTile();
     for(unsigned int i = 0 ; i < uiNumPlayer ; ++i)
@@ -307,6 +307,16 @@ void Moteur::loadBombermanSprite()
             cursorX = 3;
         }
         mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect(cursorX, cursorY, 16, 25));
+        cursorX += 17;
+    }
+}
+
+void Moteur::LoadBomBSprite()
+{
+    unsigned int cursorX = 0, cursorY = 0;
+    for(unsigned int i = 0 ; i < 3; ++i)
+    {
+        mMoteurGraphique.loadSprite(TEXTURE_EXPLOSION, sf::IntRect(cursorX, cursorY, 16, 16));
         cursorX += 17;
     }
 }

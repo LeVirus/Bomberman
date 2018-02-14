@@ -15,6 +15,7 @@ class BombBombermanSystem : public ecs::System
 private:
     ExplosionBombermanSystem *m_ptrExplosionSystem = nullptr;
     unsigned int createBombEntity();
+    void changeSpriteBomb(unsigned int numEntity, bool &previousSizeLittle);
 public:
     BombBombermanSystem();
     virtual void execSystem();
