@@ -19,7 +19,7 @@ struct TimerBombermanComponent : public ecs::Component
     sf::Clock mBombClock;
     bool mLaunched = false;
     sf::Clock mBombClockB;
-    bool mLaunchedB = false;
+    sf::Clock mBombClockC;
 };
 
 #endif // TIMERBOMBERMANCOMPONENT_HPP

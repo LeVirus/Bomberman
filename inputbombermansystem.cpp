@@ -47,35 +47,49 @@ void InputBombermanSystem::setMoveableDirection(std::bitset<4> &directionComp, c
     }
 }
 
-void InputBombermanSystem::setSpriteForBomberman(unsigned int direction, ecs::DisplayComponent &displayComp)
+void InputBombermanSystem::setSpriteForBomberman(unsigned int direction, ecs::DisplayComponent &displayComp, bool &previousStepA)
 {
     unsigned int &memCurrentSprite = displayComp.muiNumSprite;
+
+    unsigned int memStatic, memStepA, memStepB;
     switch (direction) {
     case MOVE_DOWN:
-        if(memCurrentSprite == SPRITE_BOMBERMAN_DOWN_STATIC)memCurrentSprite = SPRITE_BOMBERMAN_DOWN_STEPA;
-        else if(memCurrentSprite == SPRITE_BOMBERMAN_DOWN_STEPA)memCurrentSprite = SPRITE_BOMBERMAN_DOWN_STATIC;
-        else memCurrentSprite = SPRITE_BOMBERMAN_DOWN_STATIC;
-
+        memStatic = SPRITE_BOMBERMAN_DOWN_STATIC;
+        memStepA = SPRITE_BOMBERMAN_DOWN_STEPA;
+        memStepB = SPRITE_BOMBERMAN_DOWN_STEPB;
         break;
     case MOVE_UP:
-        if(memCurrentSprite == SPRITE_BOMBERMAN_UP_STATIC)memCurrentSprite = SPRITE_BOMBERMAN_UP_STEPA;
-        else if(memCurrentSprite == SPRITE_BOMBERMAN_UP_STEPA)memCurrentSprite = SPRITE_BOMBERMAN_UP_STATIC;
-        else memCurrentSprite = SPRITE_BOMBERMAN_UP_STATIC;
+        memStatic = SPRITE_BOMBERMAN_UP_STATIC;
+        memStepA = SPRITE_BOMBERMAN_UP_STEPA;
+        memStepB = SPRITE_BOMBERMAN_UP_STEPB;
         break;
     case MOVE_LEFT:
-        if(memCurrentSprite == SPRITE_BOMBERMAN_LEFT_STATIC)memCurrentSprite = SPRITE_BOMBERMAN_LEFT_STEPA;
-        else if(memCurrentSprite == SPRITE_BOMBERMAN_LEFT_STEPA)memCurrentSprite = SPRITE_BOMBERMAN_LEFT_STATIC;
-        else memCurrentSprite = SPRITE_BOMBERMAN_LEFT_STATIC;
-
+        memStatic = SPRITE_BOMBERMAN_LEFT_STATIC;
+        memStepA = SPRITE_BOMBERMAN_LEFT_STEPA;
+        memStepB = SPRITE_BOMBERMAN_LEFT_STEPB;
         break;
     case MOVE_RIGHT:
-        if(memCurrentSprite == SPRITE_BOMBERMAN_RIGHT_STATIC)memCurrentSprite = SPRITE_BOMBERMAN_RIGHT_STEPA;
-        else if(memCurrentSprite == SPRITE_BOMBERMAN_RIGHT_STEPA)memCurrentSprite = SPRITE_BOMBERMAN_RIGHT_STATIC;
-        else memCurrentSprite = SPRITE_BOMBERMAN_RIGHT_STATIC;
+        memStatic = SPRITE_BOMBERMAN_RIGHT_STATIC;
+        memStepA = SPRITE_BOMBERMAN_RIGHT_STEPA;
+        memStepB = SPRITE_BOMBERMAN_RIGHT_STEPB;
 
         break;
     default:
-        break;
+        return;
+    }
+    if(memCurrentSprite == memStatic)
+    {
+        if(previousStepA)memCurrentSprite = memStepB;
+        else memCurrentSprite = memStepA;
+        if(previousStepA)previousStepA = false;//WTF previousStepA = !previousStepA don't fucking
+        else previousStepA = true;        }
+    else if(memCurrentSprite == memStepA || memCurrentSprite == memStepB)
+    {
+        memCurrentSprite = memStatic;
+    }
+    else
+    {
+        memCurrentSprite = memStepA;
     }
 }
 
@@ -138,26 +152,51 @@ void InputBombermanSystem::execSystem()
 
 			//traitement évènement joueur
             setMoveableDirection(moveableComponent->mBitsetDirection, inputComponent->mBitsetInput);
+            bool changeSprite = false;
+
+            if(timerComp->mBombClockC.getElapsedTime().asMilliseconds() > 200)
+            {
+                changeSprite =true;
+            }
+
             if(inputComponent->mBitsetInput[MOVE_RIGHT])
             {
                 positionComp->vect2DPosComp.mfX += moveableComponent->mfVelocite;
-                setSpriteForBomberman(MOVE_RIGHT, *displayComp);
+                if(changeSprite)
+                {
+                    setSpriteForBomberman(MOVE_RIGHT, *displayComp, playerConfigComp->mPreviousStepA);
+                    timerComp->mBombClockC.restart();
+                    changeSprite = false;
+                }
             }
             else if(inputComponent->mBitsetInput[MOVE_LEFT])
             {
                 positionComp->vect2DPosComp.mfX -= moveableComponent->mfVelocite;
-                setSpriteForBomberman(MOVE_LEFT, *displayComp);
+                if(changeSprite)
+                {
+                    setSpriteForBomberman(MOVE_LEFT, *displayComp, playerConfigComp->mPreviousStepA);
+                    timerComp->mBombClockC.restart();
+                    changeSprite = false;
+                }
             }
 
             if(inputComponent->mBitsetInput[MOVE_UP])
-			{
+            {
                 positionComp->vect2DPosComp.mfY -=  moveableComponent->mfVelocite;
-                setSpriteForBomberman(MOVE_UP, *displayComp);
-			}
+                if(changeSprite)
+                {
+                    setSpriteForBomberman(MOVE_UP, *displayComp, playerConfigComp->mPreviousStepA);
+                    timerComp->mBombClockC.restart();
+                }
+            }
             else if(inputComponent->mBitsetInput[MOVE_DOWN])
             {
                 positionComp->vect2DPosComp.mfY +=  moveableComponent->mfVelocite;
-                setSpriteForBomberman(MOVE_DOWN, *displayComp);
+                if(changeSprite)
+                {
+                    setSpriteForBomberman(MOVE_DOWN, *displayComp, playerConfigComp->mPreviousStepA);
+                    timerComp->mBombClockC.restart();
+                }
             }
             if(timerComp->mLaunched && timerComp->mBombClock.getElapsedTime().asMilliseconds() > playerConfigComp->mLatenceBetweenBomb)
             {
