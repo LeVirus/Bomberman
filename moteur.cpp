@@ -299,11 +299,11 @@ void Moteur::positionnerComponent(ecs::PositionComponent &posComp, unsigned int 
 void Moteur::loadBombermanSprite()
 {
     unsigned int cursorX = 3, cursorY = 19;
-    for(unsigned int i = 0 ; i < 12; ++i)
+    for(unsigned int i = 0 ; i < 18; ++i)
     {
-        if(i == 3)
+        if(i == 3 || i == 12)
         {
-            cursorY += 25;
+            cursorY += 26;
             cursorX = 3;
         }
         mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect(cursorX, cursorY, 16, 25));

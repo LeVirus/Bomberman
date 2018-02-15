@@ -15,6 +15,7 @@ struct PlayerConfigBombermanComponent : public ecs::Component
     void displayComponent()const override
     {}
     bool mPreviousStepA;
+    bool mVisibleSprite = true;
     unsigned int mNumberLife = 2;
     unsigned int mInitX;
     unsigned int mInitY;

@@ -31,6 +31,7 @@ struct DisplayComponent : public Component{
         std::cout << "muiNumSprite" << muiNumSprite << "\n";
     }
     unsigned int muiNumSprite;
+    bool mVisible = true;
 };
 
 }//fin namespace

@@ -1,6 +1,7 @@
 #include "playerbombersystem.hpp"
 #include "flagcomponent.hpp"
 #include "timerbombermancomponent.hpp"
+#include "displaycomponent.hpp"
 #include "playerconfigbombermancomponent.hpp"
 #include "positioncomponent.hpp"
 #include "constants.hpp"
@@ -50,33 +51,65 @@ void PlayerBomberSystem::execSystem()
         TimerBombermanComponent *timerComponent = stairwayToComponentManager().searchComponentByType <TimerBombermanComponent>
                 (*it, TIMER_BOMBER_COMPONENT);
         assert(timerComponent && "PlayerBomberSystem::execSystem flagComponent is null\n");
+        ecs::DisplayComponent *displayComp = stairwayToComponentManager().searchComponentByType <ecs::DisplayComponent>
+                (*it, ecs::DISPLAY_COMPONENT);
+        assert(displayComp && "posComp is null\n");
 
-
-        if(playerConfComponent->mMode == MODE_PLAYER_DEAD_TRANSITION &&
-           timerComponent->mBombClockB.getElapsedTime().asMilliseconds() > playerConfComponent->mLatenceBetweenRepop)
+        if(playerConfComponent->mMode == MODE_PLAYER_DEAD_TRANSITION )
         {
-            if(playerConfComponent->mNumberLife)
+            if(displayComp->muiNumSprite < SPRITE_DEAD_A)
             {
-                ecs::PositionComponent *posComp = stairwayToComponentManager().searchComponentByType <ecs::PositionComponent>
-                        (*it, ecs::POSITION_COMPONENT);
-                assert(posComp && "posComp is null\n");
-                MoteurGraphique::static_positionnerCaseTileMap(*posComp, playerConfComponent->mInitX, playerConfComponent->mInitY);
-                playerConfComponent->mMode = MODE_PLAYER_AFTER_REPOP;
-                //restart chrono for invulnerability frames
-                timerComponent->mBombClockB.restart();
+                timerComponent->mBombClockC.restart();
+                displayComp->muiNumSprite = SPRITE_DEAD_A;
             }
-            //Definitive death
-            else
+            else if(displayComp->muiNumSprite != SPRITE_DEAD_F && timerComponent->mBombClockC.getElapsedTime().asMilliseconds() > playerConfComponent->mLatenceBetweenRepop / 6)
             {
-                Niveau::decrementCurrentNumberPlayers();
-                mptrSystemManager->getptrEngine()->bRmEntity(*it);
+                ++displayComp->muiNumSprite;
+                timerComponent->mBombClockC.restart();
 
+            }
+            if(timerComponent->mBombClockB.getElapsedTime().asMilliseconds() > playerConfComponent->mLatenceBetweenRepop)
+            {
+                if(playerConfComponent->mNumberLife)
+                {
+                    ecs::PositionComponent *posComp = stairwayToComponentManager().searchComponentByType <ecs::PositionComponent>
+                            (*it, ecs::POSITION_COMPONENT);
+                    assert(posComp && "posComp is null\n");
+                    MoteurGraphique::static_positionnerCaseTileMap(*posComp, playerConfComponent->mInitX, playerConfComponent->mInitY);
+                    playerConfComponent->mMode = MODE_PLAYER_AFTER_REPOP;
+                    //restart chrono for invulnerability frames
+                    timerComponent->mBombClockB.restart();
+                    timerComponent->mBombClockD.restart();
+                    displayComp->muiNumSprite = SPRITE_BOMBERMAN_DOWN_STATIC;
+                }
+                //Definitive death
+                else
+                {
+                    Niveau::decrementCurrentNumberPlayers();
+                    mptrSystemManager->getptrEngine()->bRmEntity(*it);
+
+                }
             }
         }
-        else if(playerConfComponent->mMode == MODE_PLAYER_AFTER_REPOP &&
-                timerComponent->mBombClockB.getElapsedTime().asMilliseconds() > playerConfComponent->mInvulnerabilityAfterDeath)
+        else if(playerConfComponent->mMode == MODE_PLAYER_AFTER_REPOP)
         {
-            playerConfComponent->mMode = MODE_PLAYER_NORMAL;
+            if(timerComponent->mBombClockD.getElapsedTime().asMilliseconds() > 10)
+            {
+                timerComponent->mBombClockD.restart();
+                if(displayComp->mVisible)
+                {
+                    displayComp->mVisible = false;
+                }
+                else
+                {
+                    displayComp->mVisible = true;
+                }
+            }
+            if(timerComponent->mBombClockB.getElapsedTime().asMilliseconds() > playerConfComponent->mInvulnerabilityAfterDeath)
+            {
+                displayComp->mVisible = true;
+                playerConfComponent->mMode = MODE_PLAYER_NORMAL;
+            }
         }
     }
 }

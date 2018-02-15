@@ -89,6 +89,7 @@ void MoteurGraphique::displayECSSprite()
     assert( mVectComponentDisplaySystem && "mVectComponentDisplaySystem == null\n" );
     for( unsigned int i = 0; i < mVectComponentDisplaySystem -> size() ; ++i )
     {
+        if(! (* mVectComponentDisplaySystem )[ i ].first->mVisible)continue;
         unsigned int uiNumSprite = (* mVectComponentDisplaySystem )[ i ].first -> muiNumSprite;
         const ecs::Vector2D vector2DPos = (* mVectComponentDisplaySystem )[ i ].second -> vect2DPosComp;
         assert( ( uiNumSprite < mVectSprite.size() ) && "mVectSprite overflow\n");
