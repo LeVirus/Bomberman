@@ -20,16 +20,32 @@ void Niveau::adaptToScale(float fX, float fY)
     muiLongueurTile *= fX;
 }
 
-void Niveau::setPositionPair(std::ifstream &flux, TilemapBombermanComponent &levelTileComp)
+void Niveau::setPositionPair(std::ifstream &flux, TilemapBombermanComponent &levelTileComp, unsigned int numLevel)
 {
-	unsigned int uiNbrTuile;
-	flux >> uiNbrTuile;
-    levelTileComp.mvectPositionTile.resize(uiNbrTuile);
-    for(unsigned int i = 0; i < levelTileComp.mvectPositionTile.size() ; ++i)
-	{
-        flux >> levelTileComp.mvectPositionTile[i].first;
-        flux >> levelTileComp.mvectPositionTile[i].second;
+    switch(numLevel)
+    {
+        case 0:
+        levelTileComp.mvectPositionTile.push_back({17, 0});
+        levelTileComp.mvectPositionTile.push_back({52, 0});
+        levelTileComp.mvectPositionTile.push_back({34, 0});
+        levelTileComp.mvectPositionTile.push_back({68, 0});
+        levelTileComp.mvectPositionTile.push_back({0, 17});
+        levelTileComp.mvectPositionTile.push_back({17, 17});
+        levelTileComp.mvectPositionTile.push_back({34, 17});
+        levelTileComp.mvectPositionTile.push_back({68, 17});
+        levelTileComp.mvectPositionTile.push_back({85, 17});
+        levelTileComp.mvectPositionTile.push_back({102, 17});
+        break;
     }
+
+//	unsigned int uiNbrTuile;
+//	flux >> uiNbrTuile;
+//    levelTileComp.mvectPositionTile.resize(uiNbrTuile);
+//    for(unsigned int i = 0; i < levelTileComp.mvectPositionTile.size() ; ++i)
+//	{
+//        flux >> levelTileComp.mvectPositionTile[i].first;
+//        flux >> levelTileComp.mvectPositionTile[i].second;
+//    }
 }
 
 bool Niveau::setInitPositionBomberman(std::ifstream &flux)
@@ -99,7 +115,7 @@ bool Niveau::loadLevel(unsigned int uiNumNiveau, unsigned int numEntityLevel, Ti
     levelTileComp.mPersistant = true;
     levelTileComp.mHeightTile = muiLargeurTile;
     levelTileComp.mLenghtTile = muiLongueurTile;
-    setPositionPair(flux, levelTileComp);
+    setPositionPair(flux, levelTileComp, uiNumNiveau);
 
     if(! setInitPositionBomberman(flux))
     {
@@ -108,7 +124,6 @@ bool Niveau::loadLevel(unsigned int uiNumNiveau, unsigned int numEntityLevel, Ti
 	//si tout se passe correctement le flux est fermé dans la fonction bAttribuerTab.
     if(! levelTileComp.mTabTilemap.bAttribuerTab(flux, muiLongueurNiveau , muiLargeurNiveau))return false;
     return true;
-
 }
 
 unsigned int Niveau::getLongueurNiveau() const

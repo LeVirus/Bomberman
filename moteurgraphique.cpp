@@ -19,7 +19,7 @@ MoteurGraphique::MoteurGraphique()
     mVectTexture.resize(3);
     mVectTexture[0].loadFromFile("../Bomberman/Ressources/Texture/textBomberman.png");
     mVectTexture[1].loadFromFile("../Bomberman/Ressources/Texture/textExplode.png");
-    mVectTexture[2].loadFromFile("../Bomberman/Ressources/Texture/textTileMap.png");
+    mVectTexture[2].loadFromFile("../Bomberman/Ressources/Texture/textLevelTileMap.png");
 }
 
 void MoteurGraphique::getEventFromWindows(sf::Event &event)

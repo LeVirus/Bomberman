@@ -125,7 +125,6 @@ void Moteur::loadLevelTileMap(Niveau &niv, unsigned int numNiv)
     niv.adaptToScale(SIZE_SCALE, SIZE_SCALE);
     //récupération et modification des composants
     mMoteurGraphique.memorizeSizeTile(niv.getLongueurTile(), niv.getLargeurTile());
-
 }
 
 bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
@@ -185,7 +184,6 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
         PlayerConfigBombermanComponent * playerConfig = mGestECS.getECSComponentManager() ->
                 searchComponentByType<PlayerConfigBombermanComponent>(memEntity, PLAYER_CONFIG_BOMBER_COMPONENT);
         assert(playerConfig && "pc == null\n");
-
         const vectPairUi_t &memInitPosition = Niveau::static_getVectInitPositionBomberman();
 
         playerConfig->mInitX = memInitPosition[i].first;
@@ -226,7 +224,7 @@ void Moteur::loadLevelWall(const Niveau &niv)
     std::vector<unsigned char>::const_iterator it = memTabNiv.begin();
     for(; it != memTabNiv.end(); ++it)
 	{
-        if(*it != TILE_SOLID_WALL && *it != TILE_DESTRUCTIBLE_WALL)
+        if(*it > TILE_DESTRUCTIBLE_WALL)
 		{
 			++cmptX;
 			if(cmptX >= longueurNiveau)
@@ -257,7 +255,7 @@ void Moteur::loadLevelWall(const Niveau &niv)
 
 		FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
                 searchComponentByType < FlagBombermanComponent > ( memEntity, FLAG_BOMBER_COMPONENT );
-		fc->muiNumFlag = *it;
+        fc->muiNumFlag = FLAG_DESTRUCTIBLE_WALL;
 
 		ecs::PositionComponent * pc = mGestECS.getECSComponentManager() ->
 				searchComponentByType< ecs::PositionComponent >( memEntity, ecs::POSITION_COMPONENT );        

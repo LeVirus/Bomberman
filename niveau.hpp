@@ -19,7 +19,7 @@ private:
     static vectPairUi_t mInitBombermanPosition;
     static Tableau2D mTabPositionDestructWall;
 
-    void setPositionPair(std::ifstream &flux , TilemapBombermanComponent &levelTileComp);
+    void setPositionPair(std::ifstream &flux , TilemapBombermanComponent &levelTileComp, unsigned int numLevel);
     bool setInitPositionBomberman(std::ifstream &flux);
 
 public:
