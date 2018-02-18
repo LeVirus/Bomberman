@@ -171,7 +171,7 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
         //offset
         cc->mVect2dVectOrigins.mfX = 5;
         cc->mRectBox.mSetLenghtRectBox(longueurTile - 10);
-        cc->mVect2dVectOrigins.mfY = 36;
+        cc->mVect2dVectOrigins.mfY = 56;
         cc->mRectBox.mSetHeightRectBox(largeurTile - 10);
         ecs::DisplayComponent * dc = mGestECS.getECSComponentManager() ->
                 searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT );

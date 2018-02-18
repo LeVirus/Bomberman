@@ -37,15 +37,6 @@ void Niveau::setPositionPair(TilemapBombermanComponent &levelTileComp, unsigned 
         levelTileComp.mvectPositionTile.push_back({85, 17});//TILE_DESTRUCTION_WALL_F
         break;
     }
-
-//	unsigned int uiNbrTuile;
-//	flux >> uiNbrTuile;
-//    levelTileComp.mvectPositionTile.resize(uiNbrTuile);
-//    for(unsigned int i = 0; i < levelTileComp.mvectPositionTile.size() ; ++i)
-//	{
-//        flux >> levelTileComp.mvectPositionTile[i].first;
-//        flux >> levelTileComp.mvectPositionTile[i].second;
-//    }
 }
 
 bool Niveau::setInitPositionBomberman(std::ifstream &flux)
