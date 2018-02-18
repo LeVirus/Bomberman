@@ -62,7 +62,7 @@ void Moteur::getInput()
 {
     InputBombermanSystem * ss = mGestECS.getECSSystemManager() ->
                 searchSystemByType< InputBombermanSystem > ( INPUT_BOMBER_SYSTEM );
-    assert(ss && "sdfs");
+    assert(ss && "ss null");
 	const std::vector< unsigned int > &vectNumEntitySystem = mGestECS.getECSSystemManager() ->
 			searchSystemByType< InputBombermanSystem > ( INPUT_BOMBER_SYSTEM )->getVectNumEntity();
 

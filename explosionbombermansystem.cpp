@@ -58,11 +58,12 @@ void ExplosionBombermanSystem::execSystem()
         {
             timerComp->mBombClock.restart();
             timerComp->mBombClockB.restart();
+            timerComp->mBombClockC.restart();
             timerComp->mLaunched = true;
         }
         else
         {
-            unsigned int timeElapsed = timerComp->mBombClock.getElapsedTime().asMilliseconds();
+            int timeElapsed = timerComp->mBombClock.getElapsedTime().asMilliseconds();
             if(timeElapsed >= mTimeExplosion)
             {
                 //remove explosion entity
@@ -72,7 +73,6 @@ void ExplosionBombermanSystem::execSystem()
                     if(std::get<0>(*itt) == ((*it)))
                     {
                         //first entity explosion num, others position of wall to destroy
-
                         destructWall(std::get<1>(*itt), std::get<2>(*itt), *levelTilemapComp);
                         itt = mVectTupleMemWallDestroy.erase(itt);
                         if(itt == mVectTupleMemWallDestroy.end())break;
@@ -85,6 +85,8 @@ void ExplosionBombermanSystem::execSystem()
                 //remove entity
                 mptrSystemManager->getptrEngine()->bRmEntity(*it);
             }
+            treatAnimationWallDestruction(*levelTilemapComp, *timerComp);
+
             float tenthExplosionTime = mTimeExplosion / 10;
             TilemapBombermanComponent *tilemapComp = stairwayToComponentManager().searchComponentByType <TilemapBombermanComponent>(
                            *it, TILEMAP_BOMBER_COMPONENT);
@@ -133,6 +135,30 @@ void ExplosionBombermanSystem::destructWall(unsigned int x, unsigned int y,
     tilemapComp.mTabTilemap.setValAt(x, y, TILE_EMPTY);
     unsigned int numEntityWall = Niveau::static_getNumWallEntityOnPosition(x, y);
     mptrSystemManager->getptrEngine()->bRmEntity(numEntityWall);
+}
+
+void ExplosionBombermanSystem::treatAnimationWallDestruction(TilemapBombermanComponent &tilemapComp,
+                                                             TimerBombermanComponent &timerComp)
+{
+    if(timerComp.mBombClockC.getElapsedTime().asMilliseconds() > mTimeExplosion / 5)
+    {
+        timerComp.mBombClockC.restart();
+        vectTupleTriUI::iterator it = mVectTupleMemWallDestroy.begin();
+        for(;it != mVectTupleMemWallDestroy.end(); ++it)
+        {
+            unsigned int memValue = tilemapComp.mTabTilemap.getValAt(std::get<1>(*it), std::get<2>(*it));
+            if(memValue == TILE_DESTRUCTIBLE_WALL)
+            {
+                memValue = TILE_DESTRUCTION_WALL_A;
+            }
+            else
+            {
+                if(memValue != TILE_DESTRUCTION_WALL_F)
+                    ++memValue;
+            }
+            tilemapComp.mTabTilemap.setValAt(std::get<1>(*it), std::get<2>(*it), memValue);
+        }
+    }
 }
 
 bool ExplosionBombermanSystem::createExplosions(unsigned int caseX, unsigned int caseY, unsigned int explosionRadius)

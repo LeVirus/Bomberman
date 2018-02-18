@@ -25,16 +25,16 @@ void Niveau::setPositionPair(TilemapBombermanComponent &levelTileComp, unsigned 
     switch(numLevel)
     {
         case 0:
-        levelTileComp.mvectPositionTile.push_back({17, 0});
-        levelTileComp.mvectPositionTile.push_back({52, 0});
-        levelTileComp.mvectPositionTile.push_back({34, 0});
-        levelTileComp.mvectPositionTile.push_back({68, 0});
-        levelTileComp.mvectPositionTile.push_back({0, 17});
-        levelTileComp.mvectPositionTile.push_back({17, 17});
-        levelTileComp.mvectPositionTile.push_back({34, 17});
-        levelTileComp.mvectPositionTile.push_back({68, 17});
-        levelTileComp.mvectPositionTile.push_back({85, 17});
-        levelTileComp.mvectPositionTile.push_back({102, 17});
+        levelTileComp.mvectPositionTile.push_back({17, 0});//TILE_SOLID_WALL_EXTERN
+        levelTileComp.mvectPositionTile.push_back({52, 0});//TILE_SOLID_WALL_INTERN
+        levelTileComp.mvectPositionTile.push_back({34, 0});//TILE_DESTRUCTIBLE_WALL
+        levelTileComp.mvectPositionTile.push_back({68, 0});//TILE_EMPTY
+        levelTileComp.mvectPositionTile.push_back({0, 17});//TILE_DESTRUCTION_WALL_A
+        levelTileComp.mvectPositionTile.push_back({17, 17});//TILE_DESTRUCTION_WALL_B
+        levelTileComp.mvectPositionTile.push_back({34, 17});//TILE_DESTRUCTION_WALL_C
+        levelTileComp.mvectPositionTile.push_back({51, 17});//TILE_DESTRUCTION_WALL_D
+        levelTileComp.mvectPositionTile.push_back({68, 17});//TILE_DESTRUCTION_WALL_E
+        levelTileComp.mvectPositionTile.push_back({85, 17});//TILE_DESTRUCTION_WALL_F
         break;
     }
 

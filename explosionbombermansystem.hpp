@@ -6,6 +6,8 @@ namespace ecs
     struct PositionComponent;
 }
 
+struct TimerBombermanComponent;
+
 struct TilemapBombermanComponent;
 
 
@@ -21,7 +23,7 @@ class ExplosionBombermanSystem : public ecs::System
 {
 private:
     vectTupleTriUI mVectTupleMemWallDestroy;
-    unsigned int mTimeExplosion = 600;
+    int mTimeExplosion = 600;
     unsigned int createExplosionEntity();
     bool createExplosions(unsigned int caseX, unsigned int caseY, unsigned int explosionRadius);
     unsigned int createEntityExplosion(unsigned int positionCaseX, unsigned int positionCaseY, unsigned int explosionRadius,
@@ -29,6 +31,7 @@ private:
     void loadTilePosition(TilemapBombermanComponent &tileComp);
     void memorizeWallToDestroy(const vectTupleTriUI &vectWallToDestroy, unsigned int vertEntity, unsigned int horizEntity);
     void destructWall(unsigned int x, unsigned int y, TilemapBombermanComponent &tilemapComp);
+    void treatAnimationWallDestruction(TilemapBombermanComponent &tilemapComp, TimerBombermanComponent &timerComp);
 public:
     ExplosionBombermanSystem();
     virtual void execSystem();
