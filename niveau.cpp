@@ -20,7 +20,7 @@ void Niveau::adaptToScale(float fX, float fY)
     muiLongueurTile *= fX;
 }
 
-void Niveau::setPositionPair(std::ifstream &flux, TilemapBombermanComponent &levelTileComp, unsigned int numLevel)
+void Niveau::setPositionPair(TilemapBombermanComponent &levelTileComp, unsigned int numLevel)
 {
     switch(numLevel)
     {
@@ -115,7 +115,7 @@ bool Niveau::loadLevel(unsigned int uiNumNiveau, unsigned int numEntityLevel, Ti
     levelTileComp.mPersistant = true;
     levelTileComp.mHeightTile = muiLargeurTile;
     levelTileComp.mLenghtTile = muiLongueurTile;
-    setPositionPair(flux, levelTileComp, uiNumNiveau);
+    setPositionPair(levelTileComp, uiNumNiveau);
 
     if(! setInitPositionBomberman(flux))
     {

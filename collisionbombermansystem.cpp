@@ -154,8 +154,7 @@ void CollisionBombermanSystem::execSystem()
         {
             PlayerConfigBombermanComponent *playerConf = stairwayToComponentManager() .
                     searchComponentByType <PlayerConfigBombermanComponent> (mVectNumEntity[i], PLAYER_CONFIG_BOMBER_COMPONENT);
-//            assert(playerConf && "playerConf null");
-            if(!playerConf)continue;
+            assert(playerConf && "playerConf null");
             if(playerConf->mMode == MODE_PLAYER_DEAD_TRANSITION)
             {
                 continue;
