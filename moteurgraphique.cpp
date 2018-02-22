@@ -142,7 +142,7 @@ void MoteurGraphique::static_getPositionsCurrentCase(const ecs::PositionComponen
         ++caseX;
     }
 
-    if(fCaseY > 0.30)
+    if(fCaseY > 0.20)
     {
         ++caseY;
     }
