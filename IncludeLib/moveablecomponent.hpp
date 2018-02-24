@@ -25,7 +25,7 @@ struct MoveableComponent : public Component{
     MoveableComponent(){
         muiTypeComponent = MOVEABLE_COMPONENT;
         mbMoveUpToDate = false;
-        mfVelocite = 10;
+        mfVelocite = 6;
     }
 
     /**

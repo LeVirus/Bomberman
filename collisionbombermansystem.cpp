@@ -239,9 +239,11 @@ void CollisionBombermanSystem::treatBombermanCollisionBehaviorWall(ecs::Position
         {
             float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfX -
                     RectA.mRectBox.mfGetLenghtRectBox() - RectA.mVect2dVectOrigins.mfX - 2;
-            if( abs(posA.vect2DPosComp.mfX -  newTheoricalPosition) <= moveableBomberComp.mfVelocite + 1)
+            if( abs(posA.vect2DPosComp.mfX -  newTheoricalPosition) <= RectB.mRectBox.mfGetLenghtRectBox() / 2/*moveableBomberComp.mfVelocite + 1*/)
             {
+
                 posA.vect2DPosComp.mfX = newTheoricalPosition;
+
             }
         }
     }
@@ -251,7 +253,7 @@ void CollisionBombermanSystem::treatBombermanCollisionBehaviorWall(ecs::Position
         {
             float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfX + RectB.mRectBox.mfGetLenghtRectBox() -
                     RectA.mVect2dVectOrigins.mfX + 2;
-            if( abs(posA.vect2DPosComp.mfX - newTheoricalPosition) <= moveableBomberComp.mfVelocite /*+ 1*/)
+            if( abs(posA.vect2DPosComp.mfX - newTheoricalPosition) <= /*moveableBomberComp.mfVelocite + 1*/RectB.mRectBox.mfGetLenghtRectBox() / 2)
             {
                 posA.vect2DPosComp.mfX = newTheoricalPosition;
             }
@@ -264,7 +266,7 @@ void CollisionBombermanSystem::treatBombermanCollisionBehaviorWall(ecs::Position
         {
             float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfY +
                     RectB.mRectBox.mfGetHeightRectBox() - RectA.mVect2dVectOrigins.mfY + 2;
-            if( abs(posA.vect2DPosComp.mfY - newTheoricalPosition) <= moveableBomberComp.mfVelocite /*+ 1*/)
+            if( abs(posA.vect2DPosComp.mfY - newTheoricalPosition) <= moveableBomberComp.mfVelocite + 1)
             {
                 posA.vect2DPosComp.mfY = newTheoricalPosition;
             }
@@ -277,7 +279,8 @@ void CollisionBombermanSystem::treatBombermanCollisionBehaviorWall(ecs::Position
         {
             float newTheoricalPosition = RectB.mRectBox.mGetOriginsRectBox().mfY -
                     (RectA.mRectBox.mfGetHeightRectBox() + RectA.mVect2dVectOrigins.mfY) - 2;
-            if( abs(posA.vect2DPosComp.mfY - newTheoricalPosition) <= moveableBomberComp.mfVelocite /*+ 1*/)
+
+            if( abs(posA.vect2DPosComp.mfY - newTheoricalPosition) <= /*RectB.mRectBox.mfGetHeightRectBox() / 2*/moveableBomberComp.mfVelocite + 1)
             {
                 posA.vect2DPosComp.mfY = newTheoricalPosition;
             }
