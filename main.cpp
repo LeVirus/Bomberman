@@ -1,16 +1,38 @@
 #include <iostream>
 #include "jeu.hpp"
 
+unsigned int setConfig();
 
 int main()
 {
-	Jeu jeu;
-    jeu.initECS();
+    unsigned int input = setConfig();
+    if(input == SERVER)
+    {
+
+    }
+    else if(input == CLIENT)
+    {
+
+    }
+    else {
+        Jeu jeu;
+        jeu.initECS();
+        do
+        {
+            jeu.chargerNiveau(0);
+            jeu.lancerJeu();
+        }while(! jeu.getMainEngine().stopGame());
+    }
+	return 0;
+}
+
+unsigned int setConfig()
+{
+    unsigned int input;
     do
     {
-        jeu.chargerNiveau(0);
-        jeu.lancerJeu();
-    }while(! jeu.getMainEngine().stopGame());
-
-	return 0;
+        std::cout << "(0) SERVER\n(1) CLIENT\n(2) SOLO\n";
+        std::cin >> input;
+    }while (input > 2);
+    return input;
 }

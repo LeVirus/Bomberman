@@ -8,7 +8,7 @@ QMAKE_CXXFLAGS_DEBUG += -Wall -Wextra -Wpedantic -Og
 
 INCLUDEPATH += IncludeLib/
 
-LIBS += -L../Bomberman/Lib -lsfml-graphics -lsfml-window -lsfml-system -lECS  #-lsfml-network  -lsfml-audio
+LIBS += -L../Bomberman/Lib -lsfml-graphics -lsfml-window -lsfml-system -lECS  -lsfml-network#  -lsfml-audio
 
 SOURCES += main.cpp \
     jeu.cpp \
@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     collisionbombermansystem.cpp \
     tilemapsystem.cpp \
     bombbombermansystem.cpp \
-    playerbombersystem.cpp
+    playerbombersystem.cpp \
+    basesocket.cpp
 
 HEADERS += \
     jeu.hpp \
@@ -47,4 +48,5 @@ HEADERS += \
     playerconfigbombermancomponent.hpp \
     tilemapbombermancomponent.hpp \
     bombconfigbombermancomponent.hpp \
-    playerbombersystem.hpp
+    playerbombersystem.hpp \
+    basesocket.hpp
