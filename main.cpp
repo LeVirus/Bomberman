@@ -1,18 +1,25 @@
 #include <iostream>
 #include "jeu.hpp"
+#include "basesocket.hpp"
 
 unsigned int setConfig();
 
 int main()
 {
     unsigned int input = setConfig();
-    if(input == SERVER)
+    if(input == SERVER)//TEST
     {
-
+        std::cout << "SERVER\n";
+        BaseSocket base;
+        base.setListener();
+        std::cout << "listen on port 54000\n";
+        base.checkReceiveData();
     }
-    else if(input == CLIENT)
+    else if(input == CLIENT)//TEST
     {
-
+        std::cout << "CLIENT\n";
+        BaseSocket base;
+        base.sendData("127.0.0.1", 54000);
     }
     else {
         Jeu jeu;

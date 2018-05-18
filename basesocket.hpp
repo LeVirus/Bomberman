@@ -7,17 +7,19 @@ using vectPairIpPort = std::vector<std::pair<sf::IpAddress, unsigned int>>;
 
 class BaseSocket
 {
-private:
+protected:
     unsigned int m_port;
-    sf::IpAddress m_ipAdress;
     sf::UdpSocket m_socket;
     std::string m_data;
     vectPairIpPort m_vectDestination;
 public:
     BaseSocket();
-    BaseSocket(const sf::IpAddress &ipAdress, unsigned int port);
+    BaseSocket(unsigned int port);
     void broadcastData();
+    bool sendData(unsigned int num);
+    bool sendData(const sf::IpAddress &ipAdress, unsigned int port);
     bool setListener();
+    bool checkReceiveData();
     void addDestination(const sf::IpAddress &ipAdress, unsigned int port);
 };
 
