@@ -13,7 +13,7 @@ int main()
         BaseSocket base;
         base.setListener();
         std::cout << "listen on port 54000\n";
-        base.checkReceiveData();
+//        base.checkReceiveData();
     }
     else if(input == CLIENT)//TEST
     {
@@ -21,15 +21,15 @@ int main()
         BaseSocket base;
         base.sendData("127.0.0.1", 54000);
     }
-    else {
+//    else {
         Jeu jeu;
-        jeu.initECS();
+        jeu.initECS(input);
         do
         {
             jeu.chargerNiveau(0);
             jeu.lancerJeu();
         }while(! jeu.getMainEngine().stopGame());
-    }
+//    }
 	return 0;
 }
 

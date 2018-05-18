@@ -18,7 +18,7 @@ public:
 	ecs::SystemManager *getECSSystemManager();
 	ecs::ComponentManager *getECSComponentManager();
     ecs::Engine *getECSEngine();
-    void initECS();
+    void initECS(unsigned int mod);
 	unsigned int addEntity( const std::vector< bool > &bitsetComp );
     const Moteur &getMoteur()const;
 };

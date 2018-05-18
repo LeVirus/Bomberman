@@ -24,7 +24,8 @@ SOURCES += main.cpp \
     tilemapsystem.cpp \
     bombbombermansystem.cpp \
     playerbombersystem.cpp \
-    basesocket.cpp
+    basesocket.cpp \
+    serversocketsystem.cpp
 
 HEADERS += \
     jeu.hpp \
@@ -49,4 +50,5 @@ HEADERS += \
     tilemapbombermancomponent.hpp \
     bombconfigbombermancomponent.hpp \
     playerbombersystem.hpp \
-    basesocket.hpp
+    basesocket.hpp \
+    serversocketsystem.hpp

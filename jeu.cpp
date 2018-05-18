@@ -14,9 +14,9 @@ bool Jeu::chargerNiveau(unsigned int numNiv)
     return true;
 }
 
-void Jeu::initECS()
+void Jeu::initECS(unsigned int mod)
 {
-    mMoteurPrincipal.getGestionnaireECS().initECS();
+    mMoteurPrincipal.getGestionnaireECS().initECS(mod);
 }
 
 const Niveau &Jeu::getNiveau() const
