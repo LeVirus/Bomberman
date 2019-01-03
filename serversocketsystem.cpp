@@ -8,6 +8,11 @@ ServerSocketSystem::ServerSocketSystem()
     }
 }
 
+void ServerSocketSystem::syncClientNetworkID()
+{
+    System::execSystem();
+}
+
 void ServerSocketSystem::execSystem()
 {
     System::execSystem();

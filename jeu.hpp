@@ -11,8 +11,8 @@ private:
 	Niveau mNiveau;
 public:
 	Jeu();
-    bool chargerNiveau(unsigned int numNiv);
-    void initECS(unsigned int mod = SOLO);
+    bool chargerNiveau(unsigned int numNiv, GameMode gm);
+    void initECS(GameMode mod = SOLO);
 	const Niveau &getNiveau()const;
 	void lancerJeu();
     const Moteur &getMainEngine()const{return mMoteurPrincipal;}

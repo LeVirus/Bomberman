@@ -9,6 +9,7 @@ class ServerSocketSystem : public ecs::System, BaseSocket
 {
 public:
     ServerSocketSystem();
+    void syncClientNetworkID();
     virtual void execSystem();
     virtual void displaySystem()const;
 };

@@ -15,9 +15,9 @@ GestionnaireECS::GestionnaireECS(Moteur &refMoteur):mRefMoteur(refMoteur)
 	mSysMan = &mEngineECS.getSystemManager();
 }
 
-void GestionnaireECS::initECS(unsigned int mod)
+void GestionnaireECS::initECS(GameMode mod)
 {
-    mCompMan->addEmplacementsForExternComponent(7);
+    mCompMan->addEmplacementsForExternComponent(8);
     mSysMan->bAddSystem(ecs::DISPLAY_SYSTEM);
 	mSysMan->bAddExternSystem(std::make_unique<InputBombermanSystem>());
 	mSysMan->bAddExternSystem(std::make_unique<CollisionBombermanSystem>());
@@ -28,6 +28,10 @@ void GestionnaireECS::initECS(unsigned int mod)
     if(mod == SERVER)
     {
         mSysMan->bAddExternSystem(std::make_unique<ServerSocketSystem>());
+    }
+    if(mod == CLIENT)
+    {
+//        mSysMan->bAddExternSystem(std::make_unique<ServerSocketSystem>());
     }
 }
 

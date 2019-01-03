@@ -27,6 +27,13 @@ public:
     void loadLevelTileMap(Niveau &niv, unsigned int numNiv);
 	bool loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot );
     void loadLevelWall(const Niveau &niv);
+
+    /**
+     * @brief synchronizeEntitiesNetworkId
+     * Send data from server to client. This for synch
+     * entities network id to client and server.
+     */
+    void synchronizeEntitiesNetworkId();
     bool stopGame()const;
 };
 

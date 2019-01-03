@@ -2,7 +2,9 @@
 #define GESTIONNAIREECS_H
 
 #include "engine.hpp"
+#include "constants.hpp"
 #include <bitset>
+
 
 class Moteur;
 
@@ -18,7 +20,7 @@ public:
 	ecs::SystemManager *getECSSystemManager();
 	ecs::ComponentManager *getECSComponentManager();
     ecs::Engine *getECSEngine();
-    void initECS(unsigned int mod);
+    void initECS(GameMode mod);
 	unsigned int addEntity( const std::vector< bool > &bitsetComp );
     const Moteur &getMoteur()const;
 };

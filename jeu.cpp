@@ -6,15 +6,19 @@ Jeu::Jeu():mMoteurPrincipal(*this)
 
 }
 
-bool Jeu::chargerNiveau(unsigned int numNiv)
+bool Jeu::chargerNiveau(unsigned int numNiv, GameMode gm)
 {
     mMoteurPrincipal.loadLevelTileMap(mNiveau, numNiv);
     mMoteurPrincipal.loadPlayersAndBot(2, 0);
 	mMoteurPrincipal.loadLevelWall(mNiveau);
+    if(gm == GameMode::SERVER)
+    {
+        mMoteurPrincipal.synchronizeEntitiesNetworkId();
+    }
     return true;
 }
 
-void Jeu::initECS(unsigned int mod)
+void Jeu::initECS(GameMode mod)
 {
     mMoteurPrincipal.getGestionnaireECS().initECS(mod);
 }

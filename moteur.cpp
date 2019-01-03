@@ -13,6 +13,7 @@
 #include "flagcomponent.hpp"
 #include "playerconfigbombermancomponent.hpp"
 #include "jeu.hpp"
+#include "serversocketsystem.hpp"
 
 #include "displaysystem.hpp"
 #include "positioncomponent.hpp"
@@ -63,7 +64,7 @@ void Moteur::getInput()
     InputBombermanSystem * ss = mGestECS.getECSSystemManager() ->
                 searchSystemByType< InputBombermanSystem > ( INPUT_BOMBER_SYSTEM );
     assert(ss && "ss null");
-	const std::vector< unsigned int > &vectNumEntitySystem = mGestECS.getECSSystemManager() ->
+    const std::vector<unsigned int> &vectNumEntitySystem = mGestECS.getECSSystemManager() ->
 			searchSystemByType< InputBombermanSystem > ( INPUT_BOMBER_SYSTEM )->getVectNumEntity();
 
 	for( unsigned int i = 0 ; i < vectNumEntitySystem.size() ; ++i )
@@ -279,6 +280,14 @@ void Moteur::loadLevelWall(const Niveau &niv)
 			++cmptY;
 		}
     }
+}
+
+void Moteur::synchronizeEntitiesNetworkId()
+{
+    ServerSocketSystem * sss = mGestECS.getECSSystemManager()->
+            searchSystemByType<ServerSocketSystem>(SERVER_SOCKET_SYSTEM);
+    assert(sss && "ServerSocketSystem == nullptr");
+    sss->syncClientNetworkID();
 }
 
 bool Moteur::stopGame() const

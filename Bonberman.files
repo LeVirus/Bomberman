@@ -60,3 +60,8 @@ playerconfigbombermancomponent.hpp
 bombconfigbombermancomponent.hpp
 tilemapsystem.hpp
 tilemapsystem.cpp
+basesocket.cpp
+basesocket.hpp
+serversocketsystem.hpp
+serversocketsystem.cpp
+networkcomponent.hpp

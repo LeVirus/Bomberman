@@ -16,7 +16,7 @@ void BaseSocket::broadcastData()
 {
     for(size_t i = 0; i < m_vectDestination.size(); ++i)
     {
-        if (m_socket.send(m_data.c_str(), m_data.size(), m_vectDestination[i].first, m_vectDestination[i].second) != sf::Socket::Done)
+        if(sendData(m_vectDestination[i].first, m_vectDestination[i].second))
         {
             // error...
         }
@@ -56,6 +56,7 @@ bool BaseSocket::checkReceiveData()
     char data[100];
     sf::IpAddress ipSender;
     unsigned short senderPort;
+    //wait while receive data
     if (m_socket.receive(data, 100, sizeReceived, ipSender, senderPort) != sf::Socket::Done)
     {
         return false;
