@@ -9,13 +9,15 @@ class Jeu
 private:
 	Moteur mMoteurPrincipal;
 	Niveau mNiveau;
+    static GameMode mGameMode;
 public:
-	Jeu();
-    bool chargerNiveau(unsigned int numNiv, GameMode gm);
-    void initECS(GameMode mod = SOLO);
+    Jeu(GameMode gm);
+    bool chargerNiveau(unsigned int numNiv);
+    void initECS();
 	const Niveau &getNiveau()const;
 	void lancerJeu();
     const Moteur &getMainEngine()const{return mMoteurPrincipal;}
+    static GameMode getGameMode(){return mGameMode;}
 };
 
 #endif // JEU_H

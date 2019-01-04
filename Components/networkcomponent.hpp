@@ -16,6 +16,7 @@ struct NetworkBombermanComponent : public ecs::Component
         //Component::displayComponent();
     }
     unsigned int mNetworkId;
+    NetworkTypeEntity mEntityType;
 };
 
 #endif // NETWORKCOMPONENT_HPP

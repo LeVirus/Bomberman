@@ -60,6 +60,8 @@ Systems/collisionbombermansystem.cpp
 Systems/collisionbombermansystem.hpp
 Systems/inputbombermansystem.cpp
 Systems/inputbombermansystem.hpp
+Systems/socketsystem.hpp
+Systems/socketsystem.cpp
 
 Components/moveablebombermancomponent.hpp
 Components/tilemapbombermancomponent.hpp

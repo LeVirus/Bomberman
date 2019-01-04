@@ -25,7 +25,7 @@ public:
 	void getInput();
 	GestionnaireECS &getGestionnaireECS();
     void loadLevelTileMap(Niveau &niv, unsigned int numNiv);
-	bool loadPlayersAndBot( unsigned int uiNumPlayer, unsigned int uiNumBot );
+    bool loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot);
     void loadLevelWall(const Niveau &niv);
 
     /**

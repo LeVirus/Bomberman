@@ -1,26 +1,29 @@
 #include "jeu.hpp"
 #include <cassert>
 
-Jeu::Jeu():mMoteurPrincipal(*this)
-{
+GameMode Jeu::mGameMode;
 
+Jeu::Jeu(GameMode gm) : mMoteurPrincipal(*this)
+{
+    mGameMode = gm;
+    std::cerr << gm << mGameMode << "HAHA\n";
 }
 
-bool Jeu::chargerNiveau(unsigned int numNiv, GameMode gm)
+bool Jeu::chargerNiveau(unsigned int numNiv)
 {
     mMoteurPrincipal.loadLevelTileMap(mNiveau, numNiv);
     mMoteurPrincipal.loadPlayersAndBot(2, 0);
-	mMoteurPrincipal.loadLevelWall(mNiveau);
-    if(gm == GameMode::SERVER)
+    mMoteurPrincipal.loadLevelWall(mNiveau);
+    if(mGameMode == GameMode::SERVER)
     {
         mMoteurPrincipal.synchronizeEntitiesNetworkId();
     }
     return true;
 }
 
-void Jeu::initECS(GameMode mod)
+void Jeu::initECS()
 {
-    mMoteurPrincipal.getGestionnaireECS().initECS(mod);
+    mMoteurPrincipal.getGestionnaireECS().initECS();
 }
 
 const Niveau &Jeu::getNiveau() const

@@ -20,7 +20,7 @@ public:
 	ecs::SystemManager *getECSSystemManager();
 	ecs::ComponentManager *getECSComponentManager();
     ecs::Engine *getECSEngine();
-    void initECS(GameMode mod);
+    void initECS();
 	unsigned int addEntity( const std::vector< bool > &bitsetComp );
     const Moteur &getMoteur()const;
 };

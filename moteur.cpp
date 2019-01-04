@@ -12,8 +12,9 @@
 #include "collrectboxcomponent.hpp"
 #include "flagcomponent.hpp"
 #include "playerconfigbombermancomponent.hpp"
+#include "networkcomponent.hpp"
 #include "jeu.hpp"
-#include "serversocketsystem.hpp"
+#include "socketsystem.hpp"
 
 #include "displaysystem.hpp"
 #include "positioncomponent.hpp"
@@ -23,8 +24,6 @@
 #include <bitset>
 #include <cassert>
 #include <SFML/System/Clock.hpp>
-#include <iostream>
-
 
 Moteur::Moteur(const Jeu &jeu):  mGestECS(*this), mPtrJeu(jeu)
 {
@@ -142,14 +141,26 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
         bitsetComp[ecs::POSITION_COMPONENT]         = true;
         bitsetComp[MOVEABLE_BOMBER_COMPONENT]       = true;
         bitsetComp[ecs::COLL_RECTBOX_COMPONENT]     = true;
-        bitsetComp[INPUT_BOMBER_COMPONENT]          = true;
         bitsetComp[FLAG_BOMBER_COMPONENT]           = true;
         bitsetComp[PLAYER_CONFIG_BOMBER_COMPONENT]  = true;
         bitsetComp[TIMER_BOMBER_COMPONENT]          = true;
 
+        if((i == 0 && Jeu::getGameMode() != GameMode::CLIENT) ||
+                (i == 1 && Jeu::getGameMode() != GameMode::SERVER))
+        {
+            bitsetComp[INPUT_BOMBER_COMPONENT]          = true;
+        }
+        if(Jeu::getGameMode() != GameMode::SOLO)
+        {
+            bitsetComp[NETWORK_BOMBER_COMPONENT]        = true;
+        }
+
         unsigned int memEntity = mGestECS.addEntity(bitsetComp);
-		mGestECS.getECSComponentManager()->
-				instanciateExternComponent(memEntity, std::make_unique<InputBombermanComponent>());
+        if(bitsetComp[INPUT_BOMBER_COMPONENT])
+        {
+            mGestECS.getECSComponentManager()->
+                    instanciateExternComponent(memEntity, std::make_unique<InputBombermanComponent>());
+        }
 
 		mGestECS.getECSComponentManager()->
 				instanciateExternComponent(memEntity, std::make_unique<MoveableBombermanComponent>());
@@ -160,12 +171,27 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
         mGestECS.getECSComponentManager()->
                 instanciateExternComponent(memEntity, std::make_unique<TimerBombermanComponent>());
 
+        if(bitsetComp[NETWORK_BOMBER_COMPONENT])
+        {
+            mGestECS.getECSComponentManager()->
+                    instanciateExternComponent(memEntity, std::make_unique<NetworkBombermanComponent>());
+
+            NetworkBombermanComponent *nb = mGestECS.getECSComponentManager()->
+                    searchComponentByType<NetworkBombermanComponent> (memEntity, NETWORK_BOMBER_COMPONENT);
+            nb->mEntityType = NetworkTypeEntity::TYPE_BOMBERMAN;
+            nb->mNetworkId = rand() % 1000;//random id
+
+            //TO DO CHECK IF THE ID EXISTS IN SOCKETSYSTEM MAP
+        }
+
         FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
                 searchComponentByType <FlagBombermanComponent> (memEntity, FLAG_BOMBER_COMPONENT);
-		fc->muiNumFlag = FLAG_BOMBERMAN;
+        assert(fc && "dc == null\n");
+        fc->muiNumFlag = FLAG_BOMBERMAN;
 
 		ecs::CollRectBoxComponent * cc = mGestECS.getECSComponentManager() ->
                 searchComponentByType< ecs::CollRectBoxComponent >(memEntity, ecs::COLL_RECTBOX_COMPONENT);
+        assert(cc && "dc == null\n");
 
         //offset
         cc->mVect2dVectOrigins.mfX = 5;
@@ -174,11 +200,12 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
         cc->mRectBox.mSetHeightRectBox(largeurTile - 10);
         ecs::DisplayComponent * dc = mGestECS.getECSComponentManager() ->
                 searchComponentByType< ecs::DisplayComponent >( memEntity, ecs::DISPLAY_COMPONENT );
+        assert(dc && "dc == null\n");
         dc->muiNumSprite = memBombermanSprite;
 
         ecs::PositionComponent * pc = mGestECS.getECSComponentManager() ->
                 searchComponentByType< ecs::PositionComponent >(memEntity, ecs::POSITION_COMPONENT);
-        assert( pc && "pc == null\n");
+        assert(pc && "pc == null\n");
 
         PlayerConfigBombermanComponent * playerConfig = mGestECS.getECSComponentManager() ->
                 searchComponentByType<PlayerConfigBombermanComponent>(memEntity, PLAYER_CONFIG_BOMBER_COMPONENT);
@@ -188,19 +215,35 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
         playerConfig->mInitX = memInitPosition[i].first;
         playerConfig->mInitY = memInitPosition[i].second;
 
-        InputBombermanComponent * inputComp = mGestECS.getECSComponentManager() ->
-                searchComponentByType<InputBombermanComponent>(memEntity, INPUT_BOMBER_COMPONENT);
-        assert(inputComp && "inputComp == null\n");
-        switch(i)
+        InputBombermanComponent * inputComp = nullptr;
+        if(bitsetComp[INPUT_BOMBER_COMPONENT])
         {
-        case 0:
+            inputComp = mGestECS.getECSComponentManager() ->
+                    searchComponentByType<InputBombermanComponent>(memEntity, INPUT_BOMBER_COMPONENT);
+            assert(inputComp && "inputComp == null\n");
+        }
+        if(i == 0)
+        {
             mMoteurGraphique.static_positionnerCaseTileMap(*pc, 1, 1);
-            inputComp->mNumInput = INPUT_PLAYER_A;
-            break;
-        case 1:
+            if(bitsetComp[INPUT_BOMBER_COMPONENT])
+            {
+                inputComp->mNumInput = INPUT_PLAYER_A;
+            }
+        }
+        else if(i == 1)
+        {
             mMoteurGraphique.static_positionnerCaseTileMap(*pc, 9, 1);
-            inputComp->mNumInput = INPUT_PLAYER_B;
-            break;
+            if(bitsetComp[INPUT_BOMBER_COMPONENT])
+            {
+                if(Jeu::getGameMode() == GameMode::CLIENT)
+                {
+                    inputComp->mNumInput = INPUT_PLAYER_A;
+                }
+                else
+                {
+                    inputComp->mNumInput = INPUT_PLAYER_B;
+                }
+            }
         }
 	}
 	return true;
@@ -282,9 +325,9 @@ void Moteur::loadLevelWall(const Niveau &niv)
 
 void Moteur::synchronizeEntitiesNetworkId()
 {
-    ServerSocketSystem * sss = mGestECS.getECSSystemManager()->
-            searchSystemByType<ServerSocketSystem>(SERVER_SOCKET_SYSTEM);
-    assert(sss && "ServerSocketSystem == nullptr");
+    SocketSystem * sss = mGestECS.getECSSystemManager()->
+            searchSystemByType<SocketSystem>(SOCKET_SYSTEM);
+    assert(sss && "SocketSystem == nullptr");
     sss->syncClientNetworkID();
 }
 

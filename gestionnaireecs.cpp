@@ -1,13 +1,14 @@
 #include "gestionnaireecs.hpp"
 #include "inputbombermansystem.hpp"
 #include "collisionbombermansystem.hpp"
-#include "serversocketsystem.hpp"
+#include "socketsystem.hpp"
 #include "bombbombermansystem.hpp"
 #include "explosionbombermansystem.hpp"
 #include "tilemapsystem.hpp"
 #include "playerbombersystem.hpp"
 #include "moteur.hpp"
 #include "constants.hpp"
+#include "jeu.hpp"
 
 GestionnaireECS::GestionnaireECS(Moteur &refMoteur):mRefMoteur(refMoteur)
 {
@@ -15,7 +16,7 @@ GestionnaireECS::GestionnaireECS(Moteur &refMoteur):mRefMoteur(refMoteur)
 	mSysMan = &mEngineECS.getSystemManager();
 }
 
-void GestionnaireECS::initECS(GameMode mod)
+void GestionnaireECS::initECS()
 {
     mCompMan->addEmplacementsForExternComponent(8);
     mSysMan->bAddSystem(ecs::DISPLAY_SYSTEM);
@@ -25,13 +26,13 @@ void GestionnaireECS::initECS(GameMode mod)
     mSysMan->bAddExternSystem(std::make_unique<BombBombermanSystem>());
     mSysMan->bAddExternSystem(std::make_unique<TilemapSystem>());
     mSysMan->bAddExternSystem(std::make_unique<PlayerBomberSystem>());
-    if(mod == SERVER)
+    if(Jeu::getGameMode() == SERVER)
     {
-        mSysMan->bAddExternSystem(std::make_unique<ServerSocketSystem>());
+        mSysMan->bAddExternSystem(std::make_unique<SocketSystem>());
     }
-    if(mod == CLIENT)
+    if(Jeu::getGameMode() == CLIENT)
     {
-//        mSysMan->bAddExternSystem(std::make_unique<ServerSocketSystem>());
+//        mSysMan->bAddExternSystem(std::make_unique<SocketSystem>());
     }
 }
 

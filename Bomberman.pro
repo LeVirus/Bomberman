@@ -28,7 +28,7 @@ SOURCES += main.cpp \
     Systems/tilemapsystem.cpp \
     Systems/bombbombermansystem.cpp \
     Systems/playerbombersystem.cpp \
-    Systems/serversocketsystem.cpp
+    Systems/socketsystem.cpp
 
 HEADERS += \
     jeu.hpp \
@@ -54,4 +54,4 @@ HEADERS += \
     Systems/explosionbombermansystem.cpp \
     Systems/collisionbombermansystem.hpp \
     Systems/playerbombersystem.hpp \
-    Systems/serversocketsystem.hpp
+    Systems/socketsystem.hpp

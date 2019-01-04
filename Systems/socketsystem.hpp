@@ -5,10 +5,10 @@
 #include "constants.hpp"
 #include "basesocket.hpp"
 
-class ServerSocketSystem : public ecs::System, BaseSocket
+class SocketSystem : public ecs::System, BaseSocket
 {
 public:
-    ServerSocketSystem();
+    SocketSystem();
     void syncClientNetworkID();
     virtual void execSystem();
     virtual void displaySystem()const;

@@ -7,29 +7,27 @@ GameMode setConfig();
 int main()
 {
     GameMode input = setConfig();
-    if(input == GameMode::SERVER)//TEST
-    {
-        std::cout << "SERVER\n";
-        BaseSocket base;
-        base.setListener();
-        std::cout << "listen on port 54000\n";
-        base.checkReceiveData();
-    }
-    else if(input == GameMode::CLIENT)//TEST
-    {
-        std::cout << "CLIENT\n";
-        BaseSocket base;
-        base.sendData("127.0.0.1", 54000);
-    }
-//    else {
-        Jeu jeu;
-        jeu.initECS(input);
-        do
-        {
-            jeu.chargerNiveau(0, input);
-            jeu.lancerJeu();
-        }while(! jeu.getMainEngine().stopGame());
+//    if(input == GameMode::SERVER)//TEST
+//    {
+//        std::cout << "SERVER\n";
+//        BaseSocket base;
+//        base.setListener();
+//        std::cout << "listen on port 54000\n";
+//        base.checkReceiveData();
 //    }
+//    else if(input == GameMode::CLIENT)//TEST
+//    {
+//        std::cout << "CLIENT\n";
+//        BaseSocket base;
+//        base.sendData("127.0.0.1", 54000);
+//    }
+    Jeu jeu(input);
+    jeu.initECS();
+    do
+    {
+        jeu.chargerNiveau(0);
+        jeu.lancerJeu();
+    }while(! jeu.getMainEngine().stopGame());
 	return 0;
 }
 
@@ -46,7 +44,7 @@ GameMode setConfig()
     {
         ret = GameMode::SERVER;
     }
-    if(input == 0)
+    else if(input == 1)
     {
         ret = GameMode::CLIENT;
     }

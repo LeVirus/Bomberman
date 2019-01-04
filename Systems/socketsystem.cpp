@@ -1,19 +1,20 @@
-#include "serversocketsystem.hpp"
+#include "socketsystem.hpp"
+#include "networkcomponent.hpp"
 
-ServerSocketSystem::ServerSocketSystem()
+SocketSystem::SocketSystem()
 {
-    if(! bAddComponentToSystem(BOMB_CONFIG_BOMBER_COMPONENT))
+    if(! bAddComponentToSystem(NETWORK_BOMBER_COMPONENT))
     {
-        std::cout << "Erreur ServerSocketSystem ajout BOMB_CONFIG_BOMBER_COMPONENT.\n";
+        std::cout << "Erreur SocketSystem ajout BOMB_CONFIG_BOMBER_COMPONENT.\n";
     }
 }
 
-void ServerSocketSystem::syncClientNetworkID()
+void SocketSystem::syncClientNetworkID()
 {
     System::execSystem();
 }
 
-void ServerSocketSystem::execSystem()
+void SocketSystem::execSystem()
 {
     System::execSystem();
     std::vector<unsigned int>::iterator it = mVectNumEntity.begin();
@@ -64,7 +65,7 @@ void ServerSocketSystem::execSystem()
     }
 }
 
-void ServerSocketSystem::displaySystem() const
+void SocketSystem::displaySystem() const
 {
 
 }
