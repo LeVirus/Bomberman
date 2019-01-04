@@ -7,6 +7,9 @@ QMAKE_CXXFLAGS += -std=c++14
 QMAKE_CXXFLAGS_DEBUG += -Wall -Wextra -Wpedantic -Og
 
 INCLUDEPATH += IncludeLib/
+INCLUDEPATH += Systems/
+INCLUDEPATH += Components/
+INCLUDEPATH += Utils/
 
 LIBS += -L../Bomberman/Lib -lsfml-graphics -lsfml-window -lsfml-system -lECS  -lsfml-network#  -lsfml-audio
 
@@ -15,40 +18,40 @@ SOURCES += main.cpp \
     moteur.cpp \
     moteurgraphique.cpp \
     gestionnaireecs.cpp \
-    niveau.cpp \
-    tilemap.cpp \
-    tableau2d.cpp \
-    inputbombermansystem.cpp \
-    explosionbombermansystem.cpp \
-    collisionbombermansystem.cpp \
-    tilemapsystem.cpp \
-    bombbombermansystem.cpp \
-    playerbombersystem.cpp \
-    basesocket.cpp \
-    serversocketsystem.cpp
+    Utils/niveau.cpp \
+    Utils/tilemap.cpp \
+    Utils/tableau2d.cpp \
+    Utils/basesocket.cpp \
+    Systems/inputbombermansystem.cpp \
+    Systems/explosionbombermansystem.cpp \
+    Systems/collisionbombermansystem.cpp \
+    Systems/tilemapsystem.cpp \
+    Systems/bombbombermansystem.cpp \
+    Systems/playerbombersystem.cpp \
+    Systems/serversocketsystem.cpp
 
 HEADERS += \
     jeu.hpp \
     moteur.hpp \
     moteurgraphique.hpp \
     gestionnaireecs.hpp \
-    niveau.hpp \
-    tilemap.hpp \
-    tableau2d.hpp \
-    constants.hpp \
-    inputbombermansystem.hpp \
-    inputbombermancomponent.hpp \
-    explosionbombermansystem.cpp \
-    moveablebombermancomponent.hpp \
-    collisionbombermansystem.hpp \
-    flagcomponent.hpp \
-    bombbombermansystem.hpp \
-    tilemapsystem.hpp \
-    timerbombermancomponent.hpp \
-    bombbombermansystem.hpp \
-    playerconfigbombermancomponent.hpp \
-    tilemapbombermancomponent.hpp \
-    bombconfigbombermancomponent.hpp \
-    playerbombersystem.hpp \
-    basesocket.hpp \
-    serversocketsystem.hpp
+    Utils/niveau.hpp \
+    Utils/tilemap.hpp \
+    Utils/tableau2d.hpp \
+    Utils/constants.hpp \
+    Utils/basesocket.hpp \
+    Components/inputbombermancomponent.hpp \
+    Components/playerconfigbombermancomponent.hpp \
+    Components/tilemapbombermancomponent.hpp \
+    Components/bombconfigbombermancomponent.hpp \
+    Components/moveablebombermancomponent.hpp \
+    Components/flagcomponent.hpp \
+    Components/timerbombermancomponent.hpp \
+    Systems/bombbombermansystem.hpp \
+    Systems/inputbombermansystem.hpp \
+    Systems/bombbombermansystem.hpp \
+    Systems/tilemapsystem.hpp \
+    Systems/explosionbombermansystem.cpp \
+    Systems/collisionbombermansystem.hpp \
+    Systems/playerbombersystem.hpp \
+    Systems/serversocketsystem.hpp
