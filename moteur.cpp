@@ -108,8 +108,6 @@ void Moteur::loadLevelTileMap(Niveau &niv, unsigned int numNiv)
     bitsetComp[TILEMAP_BOMBER_COMPONENT] = true;
     bitsetComp[ecs::POSITION_COMPONENT] = true;
     memEntity = mGestECS.addEntity(bitsetComp);
-    mGestECS.getECSComponentManager()->updateComponentFromEntity();
-
     mGestECS.getECSComponentManager()->instanciateExternComponent(memEntity, std::make_unique<TilemapBombermanComponent>());
 
     ecs::PositionComponent *pc = mGestECS.getECSComponentManager() ->
@@ -241,7 +239,7 @@ void Moteur::loadLevelWall(const Niveau &niv)
 		bitsetComp[ ecs::COLL_RECTBOX_COMPONENT ] = true;
         bitsetComp[ FLAG_BOMBER_COMPONENT ] = true;
 
-		unsigned int memEntity = mGestECS.addEntity( bitsetComp );
+        unsigned int memEntity = mGestECS.addEntity(bitsetComp);
         //memorize entity number for destructible wall
 
         if(*it == TILE_DESTRUCTIBLE_WALL)
@@ -255,7 +253,7 @@ void Moteur::loadLevelWall(const Niveau &niv)
 				instanciateExternComponent(memEntity, std::make_unique<FlagBombermanComponent>());
 
 		FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
-                searchComponentByType < FlagBombermanComponent > ( memEntity, FLAG_BOMBER_COMPONENT );
+                searchComponentByType <FlagBombermanComponent> ( memEntity, FLAG_BOMBER_COMPONENT );
         fc->muiNumFlag = FLAG_DESTRUCTIBLE_WALL;
 
 		ecs::PositionComponent * pc = mGestECS.getECSComponentManager() ->
