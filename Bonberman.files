@@ -73,3 +73,4 @@ Components/inputbombermancomponent.hpp
 Components/flagcomponent.hpp
 
 Bomberman.pro
+Utils/networkserialstruct.hpp

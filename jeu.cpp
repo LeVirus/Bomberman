@@ -1,12 +1,10 @@
 #include "jeu.hpp"
-#include <cassert>
 
 GameMode Jeu::mGameMode;
 
 Jeu::Jeu(GameMode gm) : mMoteurPrincipal(*this)
 {
     mGameMode = gm;
-    std::cerr << gm << mGameMode << "HAHA\n";
 }
 
 bool Jeu::chargerNiveau(unsigned int numNiv)

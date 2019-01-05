@@ -1,5 +1,10 @@
 #include "socketsystem.hpp"
 #include "networkcomponent.hpp"
+#include "positioncomponent.hpp"
+#include "networkserialstruct.hpp"
+#include "ECSconstantes.hpp"
+#include <cstring>
+#include <cassert>
 
 SocketSystem::SocketSystem()
 {
@@ -12,57 +17,54 @@ SocketSystem::SocketSystem()
 void SocketSystem::syncClientNetworkID()
 {
     System::execSystem();
+    m_data.clear();
+    serializeEntitiesData();
+    sendData("127.0.0.1", 54000);
+}
+
+void SocketSystem::serializeEntitiesData()
+{
+    for(size_t i = 0; i < mVectNumEntity.size(); ++i)
+    {
+        NetworkBombermanComponent* networkComp = stairwayToComponentManager().
+                searchComponentByType<NetworkBombermanComponent>(mVectNumEntity[i], NETWORK_BOMBER_COMPONENT);
+        assert(networkComp && "BombBombermanSystem::execSystem :: timerComp == NULL\n");
+        switch(networkComp->mEntityType)
+        {
+        case NetworkTypeEntity::TYPE_BOMBERMAN:
+            serializeBombermanEntity(mVectNumEntity[i], networkComp->mNetworkId);
+            break;
+        case NetworkTypeEntity::TYPE_BOMB:
+            break;
+        case NetworkTypeEntity::TYPE_DESTRUCTIVE_WALL:
+            break;
+
+        }
+    }
+}
+
+void SocketSystem::serializeBombermanEntity(unsigned int entityNum, unsigned int networkID)
+{
+    NetworkData bombermanData;
+    bombermanData.mEntityType = NetworkTypeEntity::TYPE_BOMBERMAN;
+    bombermanData.mNetworkID = networkID;
+    ecs::PositionComponent* posComp = stairwayToComponentManager().
+            searchComponentByType<ecs::PositionComponent>(entityNum, ecs::POSITION_COMPONENT);
+    assert(posComp && "posComp == NULL\n");
+    bombermanData.mPosX = posComp->vect2DPosComp.mfX;
+    bombermanData.mPosY = posComp->vect2DPosComp.mfY;
+//    char *buffer;
+//    memcpy(buffer, bombermanData, sizeof(bombermanData));
+//    m_data += std::string(buffer);
 }
 
 void SocketSystem::execSystem()
 {
     System::execSystem();
-    std::vector<unsigned int>::iterator it = mVectNumEntity.begin();
-    for(; it != mVectNumEntity.end() ; ++it)
-    {
-//        FlagBombermanComponent *flagComponent = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
-//                (*it, FLAG_BOMBER_COMPONENT);
-
-//        assert(flagComponent && "BombBombermanSystem::execSystem flagComponent is null\n");
-//        if(flagComponent->muiNumFlag != FLAG_BOMB)
-//        {
-//            continue;
-//        }
-
-//        TimerBombermanComponent* timerComp = stairwayToComponentManager() .
-//                    searchComponentByType <TimerBombermanComponent> (*it, TIMER_BOMBER_COMPONENT);
-//        assert(timerComp && "BombBombermanSystem::execSystem :: timerComp == NULL\n");
-
-//        BombConfigBombermanComponent* bombConfComp = stairwayToComponentManager() .
-//                    searchComponentByType <BombConfigBombermanComponent> (*it, BOMB_CONFIG_BOMBER_COMPONENT);
-//        assert(bombConfComp && "bombConfComp == NULL\n");
-//        if(timerComp->mBombClockB.getElapsedTime().asMilliseconds() > 400)
-//        {
-//            changeSpriteBomb(*it, bombConfComp->mPreviousSizeLittle);
-//            timerComp->mBombClockB.restart();
-//        }
-
-//        if(! timerComp->mLaunched)
-//        {
-//            timerComp->mBombClock.restart();
-//            timerComp->mLaunched = true;
-//        }
-//        else
-//        {
-//            unsigned int timeElapsed = timerComp->mBombClock.getElapsedTime().asMilliseconds();
-//            if(timeElapsed >= bombConfComp->mTimeBeforeExplosion)
-//            {
-
-//                if(! m_ptrExplosionSystem)
-//                {
-//                    m_ptrExplosionSystem = mptrSystemManager->searchSystemByType<ExplosionBombermanSystem>(EXPLOSION_BOMBER_SYSTEM);
-//                    assert(m_ptrExplosionSystem && "BombBombermanSystem::BombBombermanSystem explosionSystem is null\n");
-//                }
-//                m_ptrExplosionSystem->makeBombExplode(*it);
-//                mptrSystemManager->getptrEngine()->bRmEntity(*it);
-//            }
-//        }
-    }
+    m_data.clear();
+    //Ajouter les input
+    serializeEntitiesData();
+    sendData("127.0.0.1", 54000);
 }
 
 void SocketSystem::displaySystem() const

@@ -323,6 +323,10 @@ void Moteur::loadLevelWall(const Niveau &niv)
     }
 }
 
+/**
+ * @brief Moteur::synchronizeEntitiesNetworkId
+ * For server only. Send network id of common entity of server and client(s).
+ */
 void Moteur::synchronizeEntitiesNetworkId()
 {
     SocketSystem * sss = mGestECS.getECSSystemManager()->

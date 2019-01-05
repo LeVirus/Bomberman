@@ -32,7 +32,7 @@ void GestionnaireECS::initECS()
     }
     if(Jeu::getGameMode() == CLIENT)
     {
-//        mSysMan->bAddExternSystem(std::make_unique<SocketSystem>());
+        mSysMan->bAddExternSystem(std::make_unique<SocketSystem>());
     }
 }
 

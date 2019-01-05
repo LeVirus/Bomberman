@@ -1,10 +1,10 @@
 #ifndef INPUTBOMBERMANCOMPONENT_HPP
 #define INPUTBOMBERMANCOMPONENT_HPP
+
 #include "component.hpp"
 #include "ECSconstantes.hpp"
 #include "constants.hpp"
 #include <bitset>
-
 
 struct InputBombermanComponent : public ecs::Component
 {
