@@ -30,7 +30,7 @@ void GestionnaireECS::initECS()
     {
         mSysMan->bAddExternSystem(std::make_unique<SocketSystem>());
     }
-    if(Jeu::getGameMode() == CLIENT)
+    else if(Jeu::getGameMode() == CLIENT)
     {
         mSysMan->bAddExternSystem(std::make_unique<SocketSystem>());
     }

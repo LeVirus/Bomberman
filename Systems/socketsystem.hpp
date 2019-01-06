@@ -5,9 +5,10 @@
 #include "constants.hpp"
 #include "basesocket.hpp"
 
-class SocketSystem : public ecs::System, BaseSocket
+class SocketSystem : public ecs::System, public BaseSocket
 {
 private:
+    void unserializeEntitiesData();
     void serializeEntitiesData();
     void serializeBombermanEntity(unsigned int entityNum, unsigned int networkID);
 public:

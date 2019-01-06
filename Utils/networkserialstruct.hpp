@@ -1,8 +1,9 @@
 #pragma once
 
+
 struct NetworkData
 {
-    unsigned int mEntityType;
+    uint8_t mEntityType;
     unsigned int mNetworkID;
     float mPosX, mPosY;
 };

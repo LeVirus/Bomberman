@@ -16,6 +16,10 @@ bool Jeu::chargerNiveau(unsigned int numNiv)
     {
         mMoteurPrincipal.synchronizeEntitiesNetworkId();
     }
+    else if(mGameMode == GameMode::CLIENT)
+    {        
+        mMoteurPrincipal.waitServerSync();
+    }
     return true;
 }
 

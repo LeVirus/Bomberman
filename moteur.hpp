@@ -7,17 +7,19 @@
 #include <string>
 
 class Jeu;
-
+class SocketSystem;
 class Moteur
 {
 private:
 	GestionnaireECS mGestECS;
 	MoteurGraphique mMoteurGraphique;
+    const Jeu &mPtrJeu;
+    bool mLetMeOut = false;
+
 	void positionnerComponent(ecs::PositionComponent &posComp, unsigned int posX, unsigned int posY);
     void loadBombermanSprite();
     void LoadBomBSprite();
-	const Jeu &mPtrJeu;
-    bool mLetMeOut = false;
+    SocketSystem *getSocketSystem();
 public:
 	Moteur(const Jeu &jeu);
 	const Jeu &getJeu()const;
@@ -27,6 +29,7 @@ public:
     void loadLevelTileMap(Niveau &niv, unsigned int numNiv);
     bool loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot);
     void loadLevelWall(const Niveau &niv);
+    void waitServerSync();
 
     /**
      * @brief synchronizeEntitiesNetworkId

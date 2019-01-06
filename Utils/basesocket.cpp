@@ -1,4 +1,5 @@
 #include "basesocket.hpp"
+#include "networkserialstruct.hpp"
 #include <iostream>
 
 BaseSocket::BaseSocket(): m_port(54000)
@@ -50,18 +51,23 @@ bool BaseSocket::setListener()
     return m_socket.bind(m_port) != sf::Socket::Done;
 }
 
-bool BaseSocket::checkReceiveData()
+bool BaseSocket::waitForReceiveData()
 {
     size_t sizeReceived;
-    char data[100];
+    char *data = new char[sizeof(NetworkData)];
     sf::IpAddress ipSender;
     unsigned short senderPort;
-    //wait while receive data
-    if (m_socket.receive(data, 100, sizeReceived, ipSender, senderPort) != sf::Socket::Done)
+//    m_socket.setBlocking(true);
+    setListener();
+    //wait while receive data CLIENT
+    if (m_socket.receive(data, sizeof(NetworkData), sizeReceived, ipSender, senderPort) != sf::Socket::Done)
     {
         return false;
     }
+    m_data = data;
     std::cout << "Received " << sizeReceived << " bytes from " << ipSender << " on port " << senderPort << std::endl;
+    m_socket.setBlocking(false);
+    delete data;
     return true;
 }
 

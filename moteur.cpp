@@ -323,16 +323,24 @@ void Moteur::loadLevelWall(const Niveau &niv)
     }
 }
 
-/**
- * @brief Moteur::synchronizeEntitiesNetworkId
- * For server only. Send network id of common entity of server and client(s).
- */
 void Moteur::synchronizeEntitiesNetworkId()
 {
-    SocketSystem * sss = mGestECS.getECSSystemManager()->
+    SocketSystem * sss = getSocketSystem();
+    sss->syncClientNetworkID();
+}
+
+void Moteur::waitServerSync()
+{
+    SocketSystem * sss = getSocketSystem();
+    sss->waitForReceiveData();
+}
+
+SocketSystem *Moteur::getSocketSystem()
+{
+    SocketSystem *sss = mGestECS.getECSSystemManager()->
             searchSystemByType<SocketSystem>(SOCKET_SYSTEM);
     assert(sss && "SocketSystem == nullptr");
-    sss->syncClientNetworkID();
+    return sss;
 }
 
 bool Moteur::stopGame() const

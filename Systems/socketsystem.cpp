@@ -3,6 +3,7 @@
 #include "positioncomponent.hpp"
 #include "networkserialstruct.hpp"
 #include "ECSconstantes.hpp"
+#include "networkserialstruct.hpp"
 #include <cstring>
 #include <cassert>
 
@@ -19,7 +20,25 @@ void SocketSystem::syncClientNetworkID()
     System::execSystem();
     m_data.clear();
     serializeEntitiesData();
-    sendData("127.0.0.1", 54000);
+    sendData("127.0.0.1", 54000);//SERVER SEND TO CLIENT
+}
+
+void SocketSystem::unserializeEntitiesData()
+{
+    if(m_data.empty())
+    {
+        return;
+    }
+    switch(m_data[0])
+    {
+    case NetworkTypeEntity::TYPE_BOMBERMAN:
+//        serializeBombermanEntity(mVectNumEntity[i], networkComp->mNetworkId);
+        break;
+    case NetworkTypeEntity::TYPE_BOMB:
+        break;
+    case NetworkTypeEntity::TYPE_DESTRUCTIVE_WALL:
+        break;
+    }
 }
 
 void SocketSystem::serializeEntitiesData()
@@ -38,7 +57,6 @@ void SocketSystem::serializeEntitiesData()
             break;
         case NetworkTypeEntity::TYPE_DESTRUCTIVE_WALL:
             break;
-
         }
     }
 }
@@ -53,18 +71,19 @@ void SocketSystem::serializeBombermanEntity(unsigned int entityNum, unsigned int
     assert(posComp && "posComp == NULL\n");
     bombermanData.mPosX = posComp->vect2DPosComp.mfX;
     bombermanData.mPosY = posComp->vect2DPosComp.mfY;
-//    char *buffer;
-//    memcpy(buffer, bombermanData, sizeof(bombermanData));
-//    m_data += std::string(buffer);
+    char *buffer = new char[sizeof(NetworkData)];
+    memcpy(buffer, &bombermanData, sizeof(NetworkData));
+    m_data += std::string(buffer);
+    delete buffer;
 }
 
 void SocketSystem::execSystem()
 {
-    System::execSystem();
-    m_data.clear();
+    //System::execSystem();
+    //m_data.clear();
     //Ajouter les input
-    serializeEntitiesData();
-    sendData("127.0.0.1", 54000);
+    //serializeEntitiesData();
+    //sendData("127.0.0.1", 54000);
 }
 
 void SocketSystem::displaySystem() const
