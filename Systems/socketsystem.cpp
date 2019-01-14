@@ -9,7 +9,7 @@
 
 SocketSystem::SocketSystem()
 {
-    if(! bAddComponentToSystem(NETWORK_BOMBER_COMPONENT))
+    if(!bAddComponentToSystem(NETWORK_BOMBER_COMPONENT))
     {
         std::cout << "Erreur SocketSystem ajout BOMB_CONFIG_BOMBER_COMPONENT.\n";
     }
@@ -18,14 +18,13 @@ SocketSystem::SocketSystem()
 void SocketSystem::syncClientNetworkID()
 {
     System::execSystem();
-    m_data.clear();
     serializeEntitiesData();
     sendData("127.0.0.1", 54000);//SERVER SEND TO CLIENT
 }
 
 void SocketSystem::unserializeEntitiesData()
 {
-    if(m_data.empty())
+    if(!m_data)
     {
         return;
     }
@@ -71,10 +70,10 @@ void SocketSystem::serializeBombermanEntity(unsigned int entityNum, unsigned int
     assert(posComp && "posComp == NULL\n");
     bombermanData.mPosX = posComp->vect2DPosComp.mfX;
     bombermanData.mPosY = posComp->vect2DPosComp.mfY;
-    char *buffer = new char[sizeof(NetworkData)];
-    memcpy(buffer, &bombermanData, sizeof(NetworkData));
-    m_data += std::string(buffer);
-    delete buffer;
+    clearBuffer();
+    m_data = new char[sizeof(NetworkData)];
+    memcpy(m_data, &bombermanData, sizeof(NetworkData));
+    std::cerr << sizeof (m_data) << std::endl;
 }
 
 void SocketSystem::execSystem()

@@ -4,11 +4,10 @@
 
 BaseSocket::BaseSocket(): m_port(54000)
 {
-    m_data.resize(100);
     //m_socket.setBlocking(false);
 }
 
-BaseSocket::BaseSocket(unsigned int port): m_port(port)
+BaseSocket::BaseSocket(unsigned short port): m_port(port)
 {
     //m_socket.setBlocking(false);
 }
@@ -30,16 +29,13 @@ bool BaseSocket::sendData(unsigned int num)
     {
         return false;
     }
-    if(m_socket.send(m_data.c_str(), m_data.size(), m_vectDestination[num].first, m_vectDestination[num].second) != sf::Socket::Done)
-    {
-        return false;
-    }
-    return true;
+    return sendData(m_vectDestination[num].first, m_vectDestination[num].second);
 }
 
-bool BaseSocket::sendData(const sf::IpAddress &ipAdress, unsigned int port)
+bool BaseSocket::sendData(const sf::IpAddress &ipAdress, unsigned short port)
 {
-    if(m_socket.send(m_data.c_str(), m_data.size(), ipAdress, port) != sf::Socket::Done)
+    std::cerr << sizeof (m_data) << std::endl;
+    if(!m_data || m_socket.send(m_data, sizeof (m_data), ipAdress, port) != sf::Socket::Done)
     {
         return false;
     }
@@ -64,14 +60,27 @@ bool BaseSocket::waitForReceiveData()
     {
         return false;
     }
-    m_data = data;
     std::cout << "Received " << sizeReceived << " bytes from " << ipSender << " on port " << senderPort << std::endl;
     m_socket.setBlocking(false);
-    delete data;
+    delete[] data;
     return true;
 }
 
 void BaseSocket::addDestination(const sf::IpAddress &ipAdress, unsigned int port)
 {
     m_vectDestination.push_back({ipAdress, port});
+}
+
+void BaseSocket::clearBuffer()
+{
+    if(m_data)
+    {
+        delete[] m_data;
+        m_data = nullptr;
+    }
+}
+
+BaseSocket::~BaseSocket()
+{
+    clearBuffer();
 }

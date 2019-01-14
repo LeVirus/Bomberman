@@ -3,24 +3,26 @@
 
 #include <SFML/Network.hpp>
 
-using vectPairIpPort = std::vector<std::pair<sf::IpAddress, unsigned int>>;
+using vectPairIpPort = std::vector<std::pair<sf::IpAddress, unsigned short>>;
 
 class BaseSocket
 {
 protected:
-    unsigned int m_port;
+    unsigned short m_port;
     sf::UdpSocket m_socket;
-    std::string m_data;
+    char *m_data = nullptr;
     vectPairIpPort m_vectDestination;
+    void clearBuffer();
 public:
     BaseSocket();
-    BaseSocket(unsigned int port);
+    BaseSocket(unsigned short port);
     void broadcastData();
     bool sendData(unsigned int num);
-    bool sendData(const sf::IpAddress &ipAdress, unsigned int port);
+    bool sendData(const sf::IpAddress &ipAdress, unsigned short port);
     bool setListener();
     bool waitForReceiveData();
     void addDestination(const sf::IpAddress &ipAdress, unsigned int port);
+    ~BaseSocket();
 };
 
 #endif // BASESOCKET_HPP
