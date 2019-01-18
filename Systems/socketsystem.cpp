@@ -24,20 +24,21 @@ void SocketSystem::syncClientNetworkID()
 
 void SocketSystem::unserializeEntitiesData()
 {
-    if(!m_data)
-    {
-        return;
-    }
-    switch(m_data[0])
-    {
-    case NetworkTypeEntity::TYPE_BOMBERMAN:
-//        serializeBombermanEntity(mVectNumEntity[i], networkComp->mNetworkId);
-        break;
-    case NetworkTypeEntity::TYPE_BOMB:
-        break;
-    case NetworkTypeEntity::TYPE_DESTRUCTIVE_WALL:
-        break;
-    }
+//    const uint8_t* buffer = getBuffer();
+//    if(!buffer)
+//    {
+//        return;
+//    }
+//    switch(buffer[0])
+//    {
+//    case NetworkTypeEntity::TYPE_BOMBERMAN:
+////        serializeBombermanEntity(mVectNumEntity[i], networkComp->mNetworkId);
+//        break;
+//    case NetworkTypeEntity::TYPE_BOMB:
+//        break;
+//    case NetworkTypeEntity::TYPE_DESTRUCTIVE_WALL:
+//        break;
+//    }
 }
 
 void SocketSystem::serializeEntitiesData()
@@ -70,10 +71,8 @@ void SocketSystem::serializeBombermanEntity(unsigned int entityNum, unsigned int
     assert(posComp && "posComp == NULL\n");
     bombermanData.mPosX = posComp->vect2DPosComp.mfX;
     bombermanData.mPosY = posComp->vect2DPosComp.mfY;
-    clearBuffer();
-    m_data = new char[sizeof(NetworkData)];
-    memcpy(m_data, &bombermanData, sizeof(NetworkData));
-    std::cerr << sizeof (m_data) << std::endl;
+
+    addSerializeData(&bombermanData, sizeof (bombermanData));
 }
 
 void SocketSystem::execSystem()

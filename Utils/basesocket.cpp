@@ -1,6 +1,7 @@
 #include "basesocket.hpp"
 #include "networkserialstruct.hpp"
 #include <iostream>
+#include <string.h>
 
 BaseSocket::BaseSocket(): m_port(54000)
 {
@@ -34,8 +35,7 @@ bool BaseSocket::sendData(unsigned int num)
 
 bool BaseSocket::sendData(const sf::IpAddress &ipAdress, unsigned short port)
 {
-    std::cerr << sizeof (m_data) << std::endl;
-    if(!m_data || m_socket.send(m_data, sizeof (m_data), ipAdress, port) != sf::Socket::Done)
+    if(m_socket.send(m_data, m_bufferSize, ipAdress, port) != sf::Socket::Done)
     {
         return false;
     }
@@ -50,34 +50,25 @@ bool BaseSocket::setListener()
 bool BaseSocket::waitForReceiveData()
 {
     size_t sizeReceived;
-    char *data = new char[sizeof(NetworkData)];
+    uint8_t data[500];
     sf::IpAddress ipSender;
     unsigned short senderPort;
-//    m_socket.setBlocking(true);
+    m_socket.setBlocking(true);
     setListener();
     //wait while receive data CLIENT
-    if (m_socket.receive(data, sizeof(NetworkData), sizeReceived, ipSender, senderPort) != sf::Socket::Done)
+    std::cout << "Wait for receiving ... " << std::endl;
+    if (m_socket.receive(data, 500, sizeReceived, ipSender, senderPort) != sf::Socket::Done)
     {
         return false;
     }
     std::cout << "Received " << sizeReceived << " bytes from " << ipSender << " on port " << senderPort << std::endl;
     m_socket.setBlocking(false);
-    delete[] data;
     return true;
 }
 
 void BaseSocket::addDestination(const sf::IpAddress &ipAdress, unsigned int port)
 {
     m_vectDestination.push_back({ipAdress, port});
-}
-
-void BaseSocket::clearBuffer()
-{
-    if(m_data)
-    {
-        delete[] m_data;
-        m_data = nullptr;
-    }
 }
 
 BaseSocket::~BaseSocket()

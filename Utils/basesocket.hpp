@@ -2,17 +2,16 @@
 #define BASESOCKET_HPP
 
 #include <SFML/Network.hpp>
+#include "NetworkDataUtils.hpp"
 
 using vectPairIpPort = std::vector<std::pair<sf::IpAddress, unsigned short>>;
 
-class BaseSocket
+class BaseSocket: public NetworkDataUtils
 {
 protected:
     unsigned short m_port;
     sf::UdpSocket m_socket;
-    char *m_data = nullptr;
     vectPairIpPort m_vectDestination;
-    void clearBuffer();
 public:
     BaseSocket();
     BaseSocket(unsigned short port);

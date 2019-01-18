@@ -74,3 +74,5 @@ Components/flagcomponent.hpp
 
 Bomberman.pro
 Utils/networkserialstruct.hpp
+Utils/NetworkDataUtils.hpp
+Utils/NetworkDataUtils.cpp

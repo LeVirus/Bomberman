@@ -22,6 +22,7 @@ SOURCES += main.cpp \
     Utils/tilemap.cpp \
     Utils/tableau2d.cpp \
     Utils/basesocket.cpp \
+    Utils/NetworkDataUtils.cpp \
     Systems/inputbombermansystem.cpp \
     Systems/explosionbombermansystem.cpp \
     Systems/collisionbombermansystem.cpp \
@@ -40,6 +41,7 @@ HEADERS += \
     Utils/tableau2d.hpp \
     Utils/constants.hpp \
     Utils/basesocket.hpp \
+    Utils/NetworkDataUtils.hpp \
     Components/inputbombermancomponent.hpp \
     Components/playerconfigbombermancomponent.hpp \
     Components/tilemapbombermancomponent.hpp \
