@@ -56,4 +56,5 @@ HEADERS += \
     Systems/explosionbombermansystem.cpp \
     Systems/collisionbombermansystem.hpp \
     Systems/playerbombersystem.hpp \
-    Systems/socketsystem.hpp
+    Systems/socketsystem.hpp \
+    Components/networkcomponent.hpp

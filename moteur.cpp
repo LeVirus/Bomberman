@@ -178,7 +178,7 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
 
             NetworkBombermanComponent *nb = mGestECS.getECSComponentManager()->
                     searchComponentByType<NetworkBombermanComponent> (memEntity, NETWORK_BOMBER_COMPONENT);
-            nb->mEntityType = NetworkTypeEntity::TYPE_BOMBERMAN;
+            nb->mEntityType = TypeEntityFlag::FLAG_BOMBERMAN;
             nb->mNetworkId = rand() % 1000;//random id
 
             //TO DO CHECK IF THE ID EXISTS IN SOCKETSYSTEM MAP
@@ -326,13 +326,14 @@ void Moteur::loadLevelWall(const Niveau &niv)
 void Moteur::synchronizeEntitiesNetworkId()
 {
     SocketSystem * sss = getSocketSystem();
-    sss->syncClientNetworkID();
+    sss->serverSyncClientNetworkID();
 }
 
 void Moteur::waitServerSync()
 {
     SocketSystem * sss = getSocketSystem();
     sss->waitForReceiveData();
+    sss->clientSyncNetworkID();
 }
 
 SocketSystem *Moteur::getSocketSystem()

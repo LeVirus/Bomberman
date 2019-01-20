@@ -27,11 +27,7 @@ void GestionnaireECS::initECS()
     mSysMan->bAddExternSystem(std::make_unique<TilemapSystem>());
     mSysMan->bAddExternSystem(std::make_unique<PlayerBomberSystem>());
     //A voir si j'utilise un systeme de socket commun ou un pour client et un pour serveur
-    if(Jeu::getGameMode() == SERVER)
-    {
-        mSysMan->bAddExternSystem(std::make_unique<SocketSystem>());
-    }
-    else if(Jeu::getGameMode() == CLIENT)
+    if(Jeu::getGameMode() == SERVER || Jeu::getGameMode() == CLIENT)
     {
         mSysMan->bAddExternSystem(std::make_unique<SocketSystem>());
     }

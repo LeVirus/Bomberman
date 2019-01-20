@@ -20,8 +20,7 @@ public:
     bool sendData(const sf::IpAddress &ipAdress, unsigned short port);
     bool setListener();
     bool waitForReceiveData();
-    void addDestination(const sf::IpAddress &ipAdress, unsigned int port);
-    ~BaseSocket();
+    void addDestination(const sf::IpAddress &ipAdress, unsigned short port);
 };
 
 #endif // BASESOCKET_HPP

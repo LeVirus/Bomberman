@@ -8,13 +8,13 @@ class NetworkDataUtils
 {
 protected:
     uint8_t m_data[SOCKET_DATA_SIZE];
-    unsigned int m_bufferSize = 0;
+    unsigned long m_bufferCursor = 0;
 public:
     NetworkDataUtils();
     bool addSerializeData(const void *newData, unsigned int size);
     void clearBuffer();
     const uint8_t* getBuffer() const;
-    unsigned int getBufferSize()const{return m_bufferSize;}
+    inline unsigned long getBufferSize()const{return m_bufferCursor;}
 };
 
 #endif // NETWORKDATAUTILS_H

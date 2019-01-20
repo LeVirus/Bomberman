@@ -19,5 +19,6 @@ struct FlagBombermanComponent : public ecs::Component
 		std::cout << "muiNumSprite" << muiNumSprite << "\n";
 	}
 	unsigned int muiNumSprite, muiNumFlag;
+    virtual ~FlagBombermanComponent() = default;
 };
 #endif // FLAGCOMPONENT_HPP

@@ -14,9 +14,10 @@ struct BombConfigBombermanComponent : public ecs::Component
 
     void displayComponent()const override
     {}
-    bool mPreviousSizeLittle = true;
     unsigned int mNumPlayerEntity;
     unsigned int mTimeBeforeExplosion = 2000;
+    bool mPreviousSizeLittle = true;
+    virtual ~BombConfigBombermanComponent() = default;
 };
 
 #endif // BOMBCONFIGBOMBERMANCOMPONENT_HPP

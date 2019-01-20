@@ -35,7 +35,7 @@ bool BaseSocket::sendData(unsigned int num)
 
 bool BaseSocket::sendData(const sf::IpAddress &ipAdress, unsigned short port)
 {
-    if(m_socket.send(m_data, m_bufferSize, ipAdress, port) != sf::Socket::Done)
+    if(m_socket.send(m_data, m_bufferCursor, ipAdress, port) != sf::Socket::Done)
     {
         return false;
     }
@@ -50,28 +50,23 @@ bool BaseSocket::setListener()
 bool BaseSocket::waitForReceiveData()
 {
     size_t sizeReceived;
-    uint8_t data[500];
     sf::IpAddress ipSender;
     unsigned short senderPort;
     m_socket.setBlocking(true);
     setListener();
     //wait while receive data CLIENT
-    std::cout << "Wait for receiving ... " << std::endl;
-    if (m_socket.receive(data, 500, sizeReceived, ipSender, senderPort) != sf::Socket::Done)
+    std::cout << "Waiting for receiving... " << std::endl;
+    if (m_socket.receive(m_data, 500, sizeReceived, ipSender, senderPort) != sf::Socket::Done)
     {
         return false;
     }
+    m_bufferCursor = sizeReceived;
     std::cout << "Received " << sizeReceived << " bytes from " << ipSender << " on port " << senderPort << std::endl;
-    m_socket.setBlocking(false);
+//    m_socket.setBlocking(false);
     return true;
 }
 
-void BaseSocket::addDestination(const sf::IpAddress &ipAdress, unsigned int port)
+void BaseSocket::addDestination(const sf::IpAddress &ipAdress, unsigned short port)
 {
     m_vectDestination.push_back({ipAdress, port});
-}
-
-BaseSocket::~BaseSocket()
-{
-    clearBuffer();
 }

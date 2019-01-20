@@ -5,17 +5,20 @@
 #include "constants.hpp"
 #include "basesocket.hpp"
 
+struct NetworkData;
+
 class SocketSystem : public ecs::System, public BaseSocket
 {
 private:
-    void unserializeEntitiesData();
     void serializeEntitiesData();
     void serializeBombermanEntity(unsigned int entityNum, unsigned int networkID);
 public:
     SocketSystem();
-    void syncClientNetworkID();
+    void serverSyncClientNetworkID();
+    bool clientSyncNetworkID();
     virtual void execSystem();
-    virtual void displaySystem()const;
+    virtual void displaySystem()const{}
+    virtual ~SocketSystem() = default;
 };
 
 #endif // SERVERSOCKETSYSTEM_HPP

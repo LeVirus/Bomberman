@@ -1,9 +1,10 @@
 #pragma once
 
+#include "constants.hpp"
 
 struct NetworkData
 {
-    uint8_t mEntityType;
+    TypeEntityFlag mEntityType;
     unsigned int mNetworkID;
     float mPosX, mPosY;
 };
