@@ -12,6 +12,7 @@ class SocketSystem : public ecs::System, public BaseSocket
 private:
     void serializeEntitiesData();
     void serializeBombermanEntity(unsigned int entityNum, unsigned int networkID);
+    void clientUpdateEntitiesFromServer();
 public:
     SocketSystem();
     void serverSyncClientNetworkID();

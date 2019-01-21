@@ -179,9 +179,10 @@ bool Moteur::loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot)
             NetworkBombermanComponent *nb = mGestECS.getECSComponentManager()->
                     searchComponentByType<NetworkBombermanComponent> (memEntity, NETWORK_BOMBER_COMPONENT);
             nb->mEntityType = TypeEntityFlag::FLAG_BOMBERMAN;
-            nb->mNetworkId = rand() % 1000;//random id
-
-            //TO DO CHECK IF THE ID EXISTS IN SOCKETSYSTEM MAP
+            if(Jeu::getGameMode() == GameMode::SERVER)
+            {
+                nb->mNetworkId = NetworkBombermanComponent::attributeNum();
+            }
         }
 
         FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
@@ -332,7 +333,7 @@ void Moteur::synchronizeEntitiesNetworkId()
 void Moteur::waitServerSync()
 {
     SocketSystem * sss = getSocketSystem();
-    sss->waitForReceiveData();
+    sss->receiveData(true);
     sss->clientSyncNetworkID();
 }
 

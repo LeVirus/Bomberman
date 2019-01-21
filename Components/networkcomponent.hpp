@@ -18,6 +18,11 @@ struct NetworkBombermanComponent : public ecs::Component
     unsigned int mNetworkId;
     TypeEntityFlag mEntityType;
     virtual ~NetworkBombermanComponent() = default;
+    static unsigned int attributeNum()
+    {
+        static unsigned int mExistingNum = 0;
+        return ++mExistingNum;
+    }
 };
 
 #endif // NETWORKCOMPONENT_HPP

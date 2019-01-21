@@ -6,6 +6,7 @@
 #include "constants.hpp"
 #include "networkserialstruct.hpp"
 #include "flagcomponent.hpp"
+#include "jeu.hpp"
 #include <cstring>
 #include <cassert>
 
@@ -62,7 +63,6 @@ bool SocketSystem::clientSyncNetworkID()
                     std::cerr << posX << std::endl;
                     std::cerr << posY << std::endl;
                     std::cerr << netComp->mNetworkId << std::endl;
-
                     break;
                 }
             }
@@ -73,6 +73,7 @@ bool SocketSystem::clientSyncNetworkID()
 
 void SocketSystem::serializeEntitiesData()
 {
+    this->m_bufferCursor = 0;
     for(size_t i = 0; i < mVectNumEntity.size(); ++i)
     {
         NetworkBombermanComponent* networkComp = stairwayToComponentManager().
@@ -106,11 +107,49 @@ void SocketSystem::serializeBombermanEntity(unsigned int entityNum, unsigned int
     addSerializeData(&bombermanData, sizeof (bombermanData));
 }
 
+void SocketSystem::clientUpdateEntitiesFromServer()
+{
+    if(!sizeof (m_data))
+    {
+        return;
+    }
+    for(size_t i = 0; i < m_bufferCursor; i += NETWORK_BLOC_DATA_SIZE)
+    {
+        NetworkData networkData;
+        assert(i + NETWORK_BLOC_DATA_SIZE < SOCKET_DATA_SIZE);
+        memcpy(&networkData, &m_data[i], NETWORK_BLOC_DATA_SIZE);
+        for(size_t j = 0; j < mVectNumEntity.size(); ++j)
+        {
+            NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
+                    (mVectNumEntity[j], NETWORK_BOMBER_COMPONENT);
+            assert(netComp && "netComp == NULL");
+
+            if(netComp->mNetworkId == networkData.mNetworkID)
+            {
+                ecs::PositionComponent *posComp = stairwayToComponentManager().searchComponentByType <ecs::PositionComponent>
+                        (mVectNumEntity[j], ecs::POSITION_COMPONENT);
+                assert(posComp && "posComp == NULL");
+                posComp->vect2DPosComp.mfX = networkData.mPosX;
+                posComp->vect2DPosComp.mfY = networkData.mPosY;
+                break;
+            }
+        }
+    }
+}
+
 void SocketSystem::execSystem()
 {
-    //System::execSystem();
-    //m_data.clear();
-    //Ajouter les input
-    //serializeEntitiesData();
-    //sendData("127.0.0.1", 54000);
+    System::execSystem();
+    //TEST
+    if(Jeu::getGameMode() == GameMode::SERVER)
+    {
+        serializeEntitiesData();
+        sendData("127.0.0.1", 54000);
+    }
+    else if(Jeu::getGameMode() == GameMode::CLIENT)
+    {
+        receiveData();
+        clientUpdateEntitiesFromServer();
+    }
+
 }

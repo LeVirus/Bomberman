@@ -19,7 +19,7 @@ public:
     bool sendData(unsigned int num);
     bool sendData(const sf::IpAddress &ipAdress, unsigned short port);
     bool setListener();
-    bool waitForReceiveData();
+    bool receiveData(bool waitForServer = false);
     void addDestination(const sf::IpAddress &ipAdress, unsigned short port);
 };
 

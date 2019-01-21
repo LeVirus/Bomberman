@@ -47,12 +47,15 @@ bool BaseSocket::setListener()
     return m_socket.bind(m_port) != sf::Socket::Done;
 }
 
-bool BaseSocket::waitForReceiveData()
+bool BaseSocket::receiveData(bool waitForServer)
 {
     size_t sizeReceived;
     sf::IpAddress ipSender;
     unsigned short senderPort;
-    m_socket.setBlocking(true);
+    if(waitForServer)
+    {
+        m_socket.setBlocking(true);
+    }
     setListener();
     //wait while receive data CLIENT
     std::cout << "Waiting for receiving... " << std::endl;
@@ -62,7 +65,6 @@ bool BaseSocket::waitForReceiveData()
     }
     m_bufferCursor = sizeReceived;
     std::cout << "Received " << sizeReceived << " bytes from " << ipSender << " on port " << senderPort << std::endl;
-//    m_socket.setBlocking(false);
     return true;
 }
 
