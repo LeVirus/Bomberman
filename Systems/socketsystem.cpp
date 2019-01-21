@@ -37,33 +37,34 @@ bool SocketSystem::clientSyncNetworkID()
         NetworkData networkData;
         assert(i + NETWORK_BLOC_DATA_SIZE < SOCKET_DATA_SIZE);
         memcpy(&networkData, &m_data[i], NETWORK_BLOC_DATA_SIZE);
-        std::cerr << "posX " << i << std::endl;
-
         for(size_t j = 0; j < mVectNumEntity.size(); ++j)
         {
-            std::cerr << "possaaX " << j << std::endl;
             FlagBombermanComponent* flagComp  = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
-                    (mVectNumEntity[i], FLAG_BOMBER_COMPONENT);
-            //assert(flagComp && "flagComp == NULL");
-            NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
-                    (mVectNumEntity[i], NETWORK_BOMBER_COMPONENT);
-            //assert(netComp && "netComp== NULL");
+                    (mVectNumEntity[j], FLAG_BOMBER_COMPONENT);
+            assert(flagComp && "flagComp == NULL");
             ecs::PositionComponent *posComp = stairwayToComponentManager().searchComponentByType <ecs::PositionComponent>
-                    (mVectNumEntity[i], ecs::POSITION_COMPONENT);
-            //assert(posComp && "posComp == NULL");
-            if(!flagComp || !netComp || !posComp)
+                    (mVectNumEntity[j], ecs::POSITION_COMPONENT);
+            assert(posComp && "posComp == NULL");
+            if(networkData.mEntityType == flagComp->muiNumFlag )
             {
-                continue;
-            }
 
-            if(networkData.mEntityType == flagComp->muiNumFlag)
-            {
-                int posX = static_cast<int>(networkData.mPosX);
-                std::cerr << posX << std::endl;
-                int posY = static_cast<int>(networkData.mPosY);
-                std::cerr << posY << std::endl;
+                int posX = static_cast<int>(posComp->vect2DPosComp.mfX);
+                int posXNetwork = static_cast<int>(networkData.mPosX);
+                int posY = static_cast<int>(posComp->vect2DPosComp.mfY);
+                int posYNetwork = static_cast<int>(networkData.mPosY);
+                if(posX == posXNetwork && posY == posYNetwork)
+                {
+                    NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
+                            (mVectNumEntity[j], NETWORK_BOMBER_COMPONENT);
+                    assert(netComp && "netComp == NULL");
+                    //Synch num entity
+                    netComp->mNetworkId = networkData.mNetworkID;
+                    std::cerr << posX << std::endl;
+                    std::cerr << posY << std::endl;
+                    std::cerr << netComp->mNetworkId << std::endl;
 
-                //if(networkData.mPosX == )
+                    break;
+                }
             }
         }
     }
@@ -78,15 +79,15 @@ void SocketSystem::serializeEntitiesData()
                 searchComponentByType<NetworkBombermanComponent>(mVectNumEntity[i], NETWORK_BOMBER_COMPONENT);
         assert(networkComp && "BombBombermanSystem::execSystem :: timerComp == NULL\n");
 
-        switch(networkComp->mEntityType)
+        if(networkComp->mEntityType == TypeEntityFlag::FLAG_BOMBERMAN)
         {
-        case TypeEntityFlag::FLAG_BOMBERMAN:
+//        case TypeEntityFlag::FLAG_BOMBERMAN:
             serializeBombermanEntity(mVectNumEntity[i], networkComp->mNetworkId);
-            break;
-        case TypeEntityFlag::FLAG_BOMB:
-            break;
-        case TypeEntityFlag::FLAG_SOLID_WALL:
-            break;
+//            break;
+//        case TypeEntityFlag::FLAG_BOMB:
+//            break;
+//        case TypeEntityFlag::FLAG_SOLID_WALL:
+//            break;
         }
     }
 }
