@@ -6,18 +6,22 @@
 #include "basesocket.hpp"
 
 struct NetworkData;
+struct NetworkLevelData;
+class Niveau;
 
 class SocketSystem : public ecs::System, public BaseSocket
 {
 private:
     void serializeEntitiesData();
+    void serializeLevelData(const Niveau &level);
     void serializeBombermanEntity(unsigned int entityNum, unsigned int networkID);
     void clientUpdateEntitiesFromServer();
 public:
     SocketSystem();
-    void serverSyncClientNetworkID();
     bool clientSyncNetworkID();
+    bool clientSyncNetworkLevel(NetworkLevelData &levelData);
     virtual void execSystem();
+    void synchronizeLevelToClients(const Niveau &level);
     virtual void displaySystem()const{}
     virtual ~SocketSystem() = default;
 };

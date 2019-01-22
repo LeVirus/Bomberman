@@ -1,5 +1,7 @@
 #include "moteur.hpp"
 #include "tilemap.hpp"
+#include "NetworkDataUtils.hpp"
+#include "networkserialstruct.hpp"
 #include "vector2D.hpp"
 #include "ECSconstantes.hpp"
 #include "moveablebombermancomponent.hpp"
@@ -98,10 +100,10 @@ GestionnaireECS &Moteur::getGestionnaireECS()
 	return mGestECS;
 }
 
-void Moteur::loadLevelTileMap(Niveau &niv, unsigned int numNiv)
+unsigned int Moteur::initLevel()
 {
-	unsigned int memEntity;
-	//création de l'entité avec les composants nécessaires
+    unsigned int memEntity;
+    //création de l'entité avec les composants nécessaires
     std::vector<bool> bitsetComp;
     bitsetComp.resize(getGestionnaireECS().getECSComponentManager()->getNumberComponent());
     bitsetComp[TILEMAP_BOMBER_COMPONENT] = true;
@@ -114,11 +116,29 @@ void Moteur::loadLevelTileMap(Niveau &niv, unsigned int numNiv)
     assert(pc && "Moteur::loadTileMap PositionComponent == null\n");
     pc->vect2DPosComp.mfX = POSITION_LEVEL_X;
     pc->vect2DPosComp.mfY = POSITION_LEVEL_Y;
+    return memEntity;
+}
 
+void Moteur::loadLevelTileMap(Niveau &niv, unsigned int numNiv)
+{
+    unsigned int memEntity = initLevel();
     TilemapBombermanComponent *tmc = mGestECS.getECSComponentManager() ->
             searchComponentByType<TilemapBombermanComponent>(memEntity, TILEMAP_BOMBER_COMPONENT);
     assert(tmc && "Moteur::loadTileMap TilemapBombermanComponent == null\n");
     niv.loadLevel(numNiv, memEntity, *tmc);
+
+    niv.adaptToScale(SIZE_SCALE, SIZE_SCALE);
+    //récupération et modification des composants
+    mMoteurGraphique.memorizeSizeTile(niv.getLongueurTile(), niv.getLargeurTile());
+}
+
+void Moteur::loadLevelTileMapFromServer(Niveau &niv, const NetworkLevelData &dataLevel)
+{
+    unsigned int memEntity = initLevel();
+    TilemapBombermanComponent *tmc = mGestECS.getECSComponentManager() ->
+            searchComponentByType<TilemapBombermanComponent>(memEntity, TILEMAP_BOMBER_COMPONENT);
+    assert(tmc && "Moteur::loadTileMap TilemapBombermanComponent == null\n");
+    niv.loadLevelFromServer(memEntity, *tmc, dataLevel);
 
     niv.adaptToScale(SIZE_SCALE, SIZE_SCALE);
     //récupération et modification des composants
@@ -324,17 +344,29 @@ void Moteur::loadLevelWall(const Niveau &niv)
     }
 }
 
-void Moteur::synchronizeEntitiesNetworkId()
+void Moteur::synchronizeEntitiesNetworkIdToClients()
 {
     SocketSystem * sss = getSocketSystem();
-    sss->serverSyncClientNetworkID();
+    sss->execSystem();
 }
 
-void Moteur::waitServerSync()
+void Moteur::waitServerSync(Niveau &niv)
 {
     SocketSystem * sss = getSocketSystem();
     sss->receiveData(true);
+    NetworkLevelData levelData;
+    sss->clientSyncNetworkLevel(levelData);
+    loadLevelTileMapFromServer(niv, levelData);
+
+    sss->receiveData(true);
     sss->clientSyncNetworkID();
+}
+
+void Moteur::synchronizeLevelToClients(const Niveau &level)
+{
+    SocketSystem *sss = getSocketSystem();
+    assert(sss && "SocketSystem == nullptr");
+    sss->synchronizeLevelToClients(level);
 }
 
 SocketSystem *Moteur::getSocketSystem()

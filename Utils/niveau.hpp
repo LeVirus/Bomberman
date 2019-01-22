@@ -9,6 +9,7 @@
 typedef std::vector<std::pair<unsigned int, unsigned int>> vectPairUi_t;
 
 struct TilemapBombermanComponent;
+struct NetworkLevelData;
 
 class Niveau
 {
@@ -21,11 +22,16 @@ private:
 
     void setPositionPair(TilemapBombermanComponent &levelTileComp, unsigned int numLevel);
     bool setInitPositionBomberman(std::ifstream &flux);
-
+    void setTilemapLevelData(TilemapBombermanComponent &levelTileComp);
 public:
 	Niveau();
+    static const Tableau2D &getLevelArray();
+
     void displayLevel()const;
     bool loadLevel(unsigned int uiNumNiveau , unsigned int numEntityLevel, TilemapBombermanComponent &levelTileComp);
+    bool loadLevelFromServer(unsigned int numEntityLevel, TilemapBombermanComponent &levelTileComp,
+                             const NetworkLevelData &dataLevel);
+
     void adaptToScale(float fX, float fY);
     unsigned int getLongueurTile()const;
     unsigned int getLargeurTile()const;

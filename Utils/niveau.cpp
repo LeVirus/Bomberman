@@ -1,5 +1,6 @@
 #include "niveau.hpp"
 #include "tilemapbombermancomponent.hpp"
+#include "networkserialstruct.hpp"
 #include <cassert>
 #include <iostream>
 
@@ -12,6 +13,11 @@ unsigned int Niveau::mCurrentNumberPlayer;
 Niveau::Niveau()
 {
 
+}
+
+const Tableau2D &Niveau::getLevelArray()
+{
+    return mTabPositionDestructWall;
 }
 
 void Niveau::adaptToScale(float fX, float fY)
@@ -57,6 +63,18 @@ bool Niveau::setInitPositionBomberman(std::ifstream &flux)
     return true;
 }
 
+void Niveau::setTilemapLevelData(TilemapBombermanComponent &levelTileComp)
+{
+    levelTileComp.mNumAssociateTexture = TEXTURE_LEVEL;
+
+    mTabPositionDestructWall.resize(muiLongueurNiveau, muiLargeurNiveau);
+
+    levelTileComp.mTabTilemap.resize(muiLongueurNiveau, muiLargeurNiveau);
+    levelTileComp.mPersistant = true;
+    levelTileComp.mHeightTile = muiLargeurTile;
+    levelTileComp.mLenghtTile = muiLongueurTile;
+}
+
 /**
  * @brief TileMap::loadLevel Chargement du niveau à partir du fichier texte de la classe Niveau.
  * structure du fichier::
@@ -98,14 +116,7 @@ bool Niveau::loadLevel(unsigned int uiNumNiveau, unsigned int numEntityLevel, Ti
 	flux >> muiLongueurTile;
 	flux >> muiLargeurTile;
 
-    levelTileComp.mNumAssociateTexture = TEXTURE_LEVEL;
-
-    mTabPositionDestructWall.resize(muiLongueurNiveau, muiLargeurNiveau);
-
-    levelTileComp.mTabTilemap.resize(muiLongueurNiveau, muiLargeurNiveau);
-    levelTileComp.mPersistant = true;
-    levelTileComp.mHeightTile = muiLargeurTile;
-    levelTileComp.mLenghtTile = muiLongueurTile;
+    setTilemapLevelData(levelTileComp);
     setPositionPair(levelTileComp, uiNumNiveau);
 
     if(! setInitPositionBomberman(flux))
@@ -114,6 +125,41 @@ bool Niveau::loadLevel(unsigned int uiNumNiveau, unsigned int numEntityLevel, Ti
     }
 	//si tout se passe correctement le flux est fermé dans la fonction bAttribuerTab.
     if(! levelTileComp.mTabTilemap.bAttribuerTab(flux, muiLongueurNiveau , muiLargeurNiveau))return false;
+    return true;
+}
+
+bool Niveau::loadLevelFromServer(unsigned int numEntityLevel, TilemapBombermanComponent &levelTileComp,
+                                 const NetworkLevelData &dataLevel)
+{
+    mNumEntityLevel = numEntityLevel;
+
+//    levelTileComp.mNumAssociateTexture = TEXTURE_LEVEL;
+
+//    mTabPositionDestructWall.resize(muiLongueurNiveau, muiLargeurNiveau);
+
+    muiLongueurNiveau = dataLevel.mLenght;
+    muiLargeurNiveau = dataLevel.mHeight;
+    muiLongueurTile = dataLevel.mLenghtTile;
+    muiLargeurTile = dataLevel.mHeightTile;
+
+    setTilemapLevelData(levelTileComp);
+
+//    levelTileComp.mTabTilemap.resize(muiLongueurNiveau, muiLargeurNiveau);
+//    levelTileComp.mPersistant = true;
+//    levelTileComp.mHeightTile = muiLargeurTile;
+//    levelTileComp.mLenghtTile = muiLongueurTile;
+
+    setPositionPair(levelTileComp, 0);//SALE
+
+//    if(! setInitPositionBomberman(flux))//Définis dans la sync des entités
+//    {
+//        return false;
+//    }
+    //si tout se passe correctement le flux est fermé dans la fonction bAttribuerTab.
+    if(! levelTileComp.mTabTilemap.bAttribuerTab(dataLevel.mLevelArray, muiLongueurNiveau , muiLargeurNiveau))
+    {
+        return false;
+    }
     return true;
 }
 

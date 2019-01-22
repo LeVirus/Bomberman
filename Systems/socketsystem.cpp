@@ -18,13 +18,6 @@ SocketSystem::SocketSystem()
     }
 }
 
-void SocketSystem::serverSyncClientNetworkID()
-{
-    System::execSystem();
-    serializeEntitiesData();
-    sendData("127.0.0.1", 54000);//SERVER SEND TO CLIENT
-}
-
 bool SocketSystem::clientSyncNetworkID()
 {
     if(!sizeof (m_data))
@@ -33,11 +26,11 @@ bool SocketSystem::clientSyncNetworkID()
     }
     System::execSystem();
 
-    for(size_t i = 0; i < m_bufferCursor; i += NETWORK_BLOC_DATA_SIZE)
+    for(size_t i = 0; i < m_bufferCursor; i += sizeof(NetworkData))
     {
         NetworkData networkData;
-        assert(i + NETWORK_BLOC_DATA_SIZE < SOCKET_DATA_SIZE);
-        memcpy(&networkData, &m_data[i], NETWORK_BLOC_DATA_SIZE);
+        assert(i + sizeof(NetworkData) < SOCKET_DATA_SIZE);
+        memcpy(&networkData, &m_data[i], sizeof(NetworkData));
         for(size_t j = 0; j < mVectNumEntity.size(); ++j)
         {
             FlagBombermanComponent* flagComp  = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
@@ -71,6 +64,16 @@ bool SocketSystem::clientSyncNetworkID()
     return true;
 }
 
+bool SocketSystem::clientSyncNetworkLevel(NetworkLevelData &levelData)
+{
+    if(!sizeof (m_data))
+    {
+        return false;
+    }
+    memcpy(&levelData, &m_data[0], sizeof(NetworkLevelData));
+    return true;
+}
+
 void SocketSystem::serializeEntitiesData()
 {
     this->m_bufferCursor = 0;
@@ -93,6 +96,18 @@ void SocketSystem::serializeEntitiesData()
     }
 }
 
+void SocketSystem::serializeLevelData(const Niveau &level)
+{
+    NetworkLevelData levelData;
+    levelData.mHeight = level.getLongueurNiveau();
+    levelData.mLenght = level.getLargeurNiveau();
+    levelData.mLenghtTile = level.getLongueurTile();
+    levelData.mHeightTile= level.getLargeurTile();
+    levelData.mLevelArray = level.getLevelArray().getTab();
+    clearBuffer();
+    addSerializeData(&levelData, sizeof (levelData));
+}
+
 void SocketSystem::serializeBombermanEntity(unsigned int entityNum, unsigned int networkID)
 {
     NetworkData bombermanData;
@@ -113,11 +128,11 @@ void SocketSystem::clientUpdateEntitiesFromServer()
     {
         return;
     }
-    for(size_t i = 0; i < m_bufferCursor; i += NETWORK_BLOC_DATA_SIZE)
+    for(size_t i = 0; i < m_bufferCursor; i += sizeof(NetworkData))
     {
         NetworkData networkData;
-        assert(i + NETWORK_BLOC_DATA_SIZE < SOCKET_DATA_SIZE);
-        memcpy(&networkData, &m_data[i], NETWORK_BLOC_DATA_SIZE);
+        assert(i + sizeof(NetworkData) < SOCKET_DATA_SIZE);
+        memcpy(&networkData, &m_data[i], sizeof(NetworkData));
         for(size_t j = 0; j < mVectNumEntity.size(); ++j)
         {
             NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
@@ -140,7 +155,6 @@ void SocketSystem::clientUpdateEntitiesFromServer()
 void SocketSystem::execSystem()
 {
     System::execSystem();
-    //TEST
     if(Jeu::getGameMode() == GameMode::SERVER)
     {
         serializeEntitiesData();
@@ -152,4 +166,10 @@ void SocketSystem::execSystem()
         clientUpdateEntitiesFromServer();
     }
 
+}
+
+void SocketSystem::synchronizeLevelToClients(const Niveau &level)
+{
+    serializeLevelData(level);
+    sendData("127.0.0.1", 54000);
 }

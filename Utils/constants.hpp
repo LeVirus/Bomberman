@@ -26,7 +26,6 @@ PLAYER_BOMBER_SYSTEM = ecs::NUMBER_SYSTEM_BASE_ECS + 5,
 SOCKET_SYSTEM = ecs::NUMBER_SYSTEM_BASE_ECS + 6;
 
 const unsigned int SOCKET_DATA_SIZE = 500;
-const unsigned int NETWORK_BLOC_DATA_SIZE = 16;
 
 
 const unsigned int SPRITE_INVISIBLE = 5000;

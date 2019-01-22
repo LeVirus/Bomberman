@@ -8,6 +8,9 @@
 
 class Jeu;
 class SocketSystem;
+class Tableau2D;
+struct NetworkLevelData;
+
 class Moteur
 {
 private:
@@ -20,6 +23,7 @@ private:
     void loadBombermanSprite();
     void LoadBomBSprite();
     SocketSystem *getSocketSystem();
+    unsigned int initLevel();
 public:
 	Moteur(const Jeu &jeu);
 	const Jeu &getJeu()const;
@@ -27,16 +31,19 @@ public:
 	void getInput();
 	GestionnaireECS &getGestionnaireECS();
     void loadLevelTileMap(Niveau &niv, unsigned int numNiv);
+    void loadLevelTileMapFromServer(Niveau &niv, const NetworkLevelData &dataLevel);
     bool loadPlayersAndBot(unsigned int uiNumPlayer, unsigned int uiNumBot);
     void loadLevelWall(const Niveau &niv);
-    void waitServerSync();
+    void waitServerSync(Niveau &niv);
+
+    void synchronizeLevelToClients(const Niveau &level);
 
     /**
      * @brief synchronizeEntitiesNetworkId
      * Send data from server to client. This for synch
      * entities network id to client and server.
      */
-    void synchronizeEntitiesNetworkId();
+    void synchronizeEntitiesNetworkIdToClients();
     bool stopGame()const;
 };
 
