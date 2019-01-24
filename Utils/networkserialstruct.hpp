@@ -15,7 +15,6 @@ struct NetworkData
 
 struct NetworkLevelData
 {
-
     uint8_t mLenght, mHeight;
     uint8_t mLenghtTile, mHeightTile;
     uint8_t mLevelArray[LEVEL_MAX_SIZE];

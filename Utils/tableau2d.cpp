@@ -31,7 +31,6 @@ bool Tableau2D::bAttribuerTab(const std::vector<unsigned char> &vect,
 {
     if(uiLargeurTab * uiHauteurTab != vect.size())
     {
-        std::cerr << uiLargeurTab * uiHauteurTab << " ddfs " << vect.size() << std::endl;
         assert(false && "bAttribuerTab fail");
         return false;
     }

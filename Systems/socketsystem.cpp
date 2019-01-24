@@ -39,14 +39,15 @@ bool SocketSystem::clientSyncNetworkID()
             ecs::PositionComponent *posComp = stairwayToComponentManager().searchComponentByType <ecs::PositionComponent>
                     (mVectNumEntity[j], ecs::POSITION_COMPONENT);
             assert(posComp && "posComp == NULL");
-            if(networkData.mEntityType == flagComp->muiNumFlag )
+            NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
+                    (mVectNumEntity[j], NETWORK_BOMBER_COMPONENT);
+            assert(netComp && "netComp == NULL");
+            if(networkData.mEntityType == flagComp->muiNumFlag && netComp->mNetworkId == 0)
             {
                 posComp->vect2DPosComp.mfX = networkData.mPosX;
                 posComp->vect2DPosComp.mfY = networkData.mPosY;
-                NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
-                        (mVectNumEntity[j], NETWORK_BOMBER_COMPONENT);
-                assert(netComp && "netComp == NULL");
                 netComp->mNetworkId = networkData.mNetworkID;
+                break;
             }
         }
     }
@@ -98,19 +99,7 @@ void SocketSystem::serializeLevelData(const Niveau &level)
     levelData.mHeightTile= level.getLargeurTile() / SIZE_SCALE;
     std::copy(tileComp->mTabTilemap.getTab().begin(), tileComp->mTabTilemap.getTab().end(),
               &levelData.mLevelArray[0]);
-
-    for(size_t i = 0; i < levelData.mHeight ;++i)
-    {
-        for(size_t j = 0; j < levelData.mLenght; ++j)
-        {
-            std::cerr << static_cast<unsigned int>(tileComp->mTabTilemap.getValAt(i, j));
-        }
-        std::cerr << std::endl << std::endl;
-    }
-
     clearBuffer();
-    std::cerr << "ssd "<< sizeof (levelData) << std::endl;
-//    std::cerr << levelData.mLevelArray.size()<<  " qqq "<< sizeof (levelData.mLevelArray) << std::endl;
     addSerializeData(&levelData, sizeof (levelData));
 }
 

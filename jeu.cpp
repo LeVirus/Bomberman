@@ -23,7 +23,9 @@ bool Jeu::chargerNiveau(unsigned int numNiv)
     else if(mGameMode == GameMode::CLIENT)
     {
         mMoteurPrincipal.waitServerSync(mNiveau);
+        mMoteurPrincipal.loadLevelWall(mNiveau);
     }
+
     return true;
 }
 

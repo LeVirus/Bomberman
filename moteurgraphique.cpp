@@ -92,10 +92,10 @@ void MoteurGraphique::displayECSSprite()
         if(! (* mVectComponentDisplaySystem )[ i ].first->mVisible)continue;
         unsigned int uiNumSprite = (* mVectComponentDisplaySystem )[ i ].first -> muiNumSprite;
         const ecs::Vector2D vector2DPos = (* mVectComponentDisplaySystem )[ i ].second -> vect2DPosComp;
-        assert( ( uiNumSprite < mVectSprite.size() ) && "mVectSprite overflow\n");
+        assert((uiNumSprite < mVectSprite.size()) && "mVectSprite overflow\n");
 
-        mVectSprite[ uiNumSprite ] . setPosition( vector2DPos . mfX, vector2DPos . mfY );
-        mFenetre.draw( mVectSprite[ uiNumSprite ] );
+        mVectSprite[uiNumSprite].setPosition(vector2DPos.mfX, vector2DPos.mfY);
+        mFenetre.draw(mVectSprite[uiNumSprite]);
     }
 }
 
