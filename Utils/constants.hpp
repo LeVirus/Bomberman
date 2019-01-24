@@ -1,5 +1,4 @@
-#ifndef CONSTANTS_HPP
-#define CONSTANTS_HPP
+#pragma once
 
 #include "ECSconstantes.hpp"
 
@@ -29,6 +28,8 @@ const unsigned int SOCKET_DATA_SIZE = 500;
 
 
 const unsigned int SPRITE_INVISIBLE = 5000;
+const unsigned int LEVEL_MAX_SIZE = 200;
+
 enum
 {
     TEXTURE_BOMBERMAN, TEXTURE_EXPLOSION, TEXTURE_LEVEL
@@ -89,5 +90,3 @@ enum
 {
     INPUT_PLAYER_A, INPUT_PLAYER_B, INPUT_PLAYER_C, INPUT_PLAYER_D
 };
-
-#endif // CONSTANTS_HPP

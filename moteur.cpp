@@ -137,8 +137,10 @@ void Moteur::loadLevelTileMapFromServer(Niveau &niv, const NetworkLevelData &dat
     unsigned int memEntity = initLevel();
     TilemapBombermanComponent *tmc = mGestECS.getECSComponentManager() ->
             searchComponentByType<TilemapBombermanComponent>(memEntity, TILEMAP_BOMBER_COMPONENT);
-    assert(tmc && "Moteur::loadTileMap TilemapBombermanComponent == null\n");
-    niv.loadLevelFromServer(memEntity, *tmc, dataLevel);
+    assert(tmc && "Moteur::loadTileMap TilemapBombermanComponent == null");
+    bool res = niv.loadLevelFromServer(memEntity, *tmc, dataLevel);
+    assert(res && "loadLevelFromServer fail");
+
 
     niv.adaptToScale(SIZE_SCALE, SIZE_SCALE);
     //récupération et modification des composants
@@ -353,6 +355,7 @@ void Moteur::synchronizeEntitiesNetworkIdToClients()
 void Moteur::waitServerSync(Niveau &niv)
 {
     SocketSystem * sss = getSocketSystem();
+    assert(sss && "SocketSystem == nullptr");
     sss->receiveData(true);
     NetworkLevelData levelData;
     sss->clientSyncNetworkLevel(levelData);

@@ -26,13 +26,17 @@ Tableau2D::Tableau2D(unsigned int largeur, unsigned int hauteur)
  * largeur ne correspondent pas avec la taille du vector
  * true sinon.
  */
-bool Tableau2D::bAttribuerTab(const std::vector< unsigned char > &vect,
+bool Tableau2D::bAttribuerTab(const std::vector<unsigned char> &vect,
                                unsigned int uiLargeurTab, unsigned int uiHauteurTab)
 {
     if(uiLargeurTab * uiHauteurTab != vect.size())
-		return false;
+    {
+        std::cerr << uiLargeurTab * uiHauteurTab << " ddfs " << vect.size() << std::endl;
+        assert(false && "bAttribuerTab fail");
+        return false;
+    }
     resize(uiLargeurTab, uiHauteurTab);
-    std::copy (vect.begin(), vect.end(), mVectChar.begin());
+    std::copy(vect.begin(), vect.end(), &mVectChar[0]);
 	return true;
 }
 
@@ -41,10 +45,8 @@ bool Tableau2D::bAttribuerTab(std::ifstream &flux, unsigned int uiLargeurTab, un
 	bool final = true;
 	unsigned int uiMemTile, cmpt = 0;
     if(! flux)return false;
-    muiLargeurTab = uiLargeurTab;
-    muiHauteurTab = uiHauteurTab;
 
-    mVectChar.resize( muiLargeurTab * muiHauteurTab );
+    resize(uiLargeurTab, uiHauteurTab);
 	//resize du tableau
 	for( unsigned int i = 0; i < mVectChar.size();++i )
 	{
@@ -54,13 +56,11 @@ bool Tableau2D::bAttribuerTab(std::ifstream &flux, unsigned int uiLargeurTab, un
 			final = false;
 			break;
 		}
-
-		mVectChar[ cmpt ] = static_cast< unsigned char >( uiMemTile ) ;
+        mVectChar[cmpt] = static_cast<unsigned char>(uiMemTile);
 		++cmpt;
 	}
 	flux.close();
 	return final;
-
 }
 
 

@@ -19,9 +19,9 @@ private:
     static unsigned int mNumEntityLevel, mMaxPlayer, mCurrentNumberPlayer;
     static vectPairUi_t mInitBombermanPosition;
     static Tableau2D mTabPositionDestructWall;
-
     void setPositionPair(TilemapBombermanComponent &levelTileComp, unsigned int numLevel);
     bool setInitPositionBomberman(std::ifstream &flux);
+    bool setInitPositionBombermanFromLevel();
     void setTilemapLevelData(TilemapBombermanComponent &levelTileComp);
 public:
 	Niveau();

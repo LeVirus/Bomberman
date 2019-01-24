@@ -63,6 +63,19 @@ bool Niveau::setInitPositionBomberman(std::ifstream &flux)
     return true;
 }
 
+bool Niveau::setInitPositionBombermanFromLevel()
+{
+    mMaxPlayer = 2;//TEST
+    mCurrentNumberPlayer = mMaxPlayer;
+
+    mInitBombermanPosition.resize(mMaxPlayer);
+    mInitBombermanPosition[0].first = 2;
+    mInitBombermanPosition[0].second = 2;
+    mInitBombermanPosition[1].first = 10;
+    mInitBombermanPosition[1].second = 2;
+    return true;
+}
+
 void Niveau::setTilemapLevelData(TilemapBombermanComponent &levelTileComp)
 {
     levelTileComp.mNumAssociateTexture = TEXTURE_LEVEL;
@@ -131,33 +144,23 @@ bool Niveau::loadLevel(unsigned int uiNumNiveau, unsigned int numEntityLevel, Ti
 bool Niveau::loadLevelFromServer(unsigned int numEntityLevel, TilemapBombermanComponent &levelTileComp,
                                  const NetworkLevelData &dataLevel)
 {
+    mPathToTexture = "../Bomberman/Ressources/Texture/textLevelTileMap.png";
     mNumEntityLevel = numEntityLevel;
-
-//    levelTileComp.mNumAssociateTexture = TEXTURE_LEVEL;
-
-//    mTabPositionDestructWall.resize(muiLongueurNiveau, muiLargeurNiveau);
-
     muiLongueurNiveau = dataLevel.mLenght;
     muiLargeurNiveau = dataLevel.mHeight;
     muiLongueurTile = dataLevel.mLenghtTile;
     muiLargeurTile = dataLevel.mHeightTile;
-
     setTilemapLevelData(levelTileComp);
-
-//    levelTileComp.mTabTilemap.resize(muiLongueurNiveau, muiLargeurNiveau);
-//    levelTileComp.mPersistant = true;
-//    levelTileComp.mHeightTile = muiLargeurTile;
-//    levelTileComp.mLenghtTile = muiLongueurTile;
-
     setPositionPair(levelTileComp, 0);//SALE
-
-//    if(! setInitPositionBomberman(flux))//Définis dans la sync des entités
-//    {
-//        return false;
-//    }
-    //si tout se passe correctement le flux est fermé dans la fonction bAttribuerTab.
-    if(! levelTileComp.mTabTilemap.bAttribuerTab(dataLevel.mLevelArray, muiLongueurNiveau , muiLargeurNiveau))
+    if(! setInitPositionBombermanFromLevel())//Définis dans la sync des entités
     {
+        return false;
+    }
+    if(! levelTileComp.mTabTilemap.bAttribuerTab(std::vector<uint8_t>(&dataLevel.mLevelArray[0],
+                                                                      &dataLevel.mLevelArray[muiLongueurNiveau * muiLargeurNiveau]),
+                                                 muiLongueurNiveau , muiLargeurNiveau))
+    {
+        assert(false && "err attribuerTab");
         return false;
     }
     return true;
@@ -200,7 +203,7 @@ void Niveau::decrementCurrentNumberPlayers()
     --mCurrentNumberPlayer;
 }
 
-const std::__cxx11::string &Niveau::getPathToTexture() const
+const std::string &Niveau::getPathToTexture() const
 {
 	return mPathToTexture;
 }

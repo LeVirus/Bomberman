@@ -59,7 +59,7 @@ bool BaseSocket::receiveData(bool waitForServer)
     setListener();
     //wait while receive data CLIENT
     std::cout << "Waiting for receiving... " << std::endl;
-    if (m_socket.receive(m_data, 500, sizeReceived, ipSender, senderPort) != sf::Socket::Done)
+    if (m_socket.receive(m_data, sizeof(m_data), sizeReceived, ipSender, senderPort) != sf::Socket::Done)
     {
         return false;
     }

@@ -41,23 +41,12 @@ bool SocketSystem::clientSyncNetworkID()
             assert(posComp && "posComp == NULL");
             if(networkData.mEntityType == flagComp->muiNumFlag )
             {
-
-                int posX = static_cast<int>(posComp->vect2DPosComp.mfX);
-                int posXNetwork = static_cast<int>(networkData.mPosX);
-                int posY = static_cast<int>(posComp->vect2DPosComp.mfY);
-                int posYNetwork = static_cast<int>(networkData.mPosY);
-                if(posX == posXNetwork && posY == posYNetwork)
-                {
-                    NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
-                            (mVectNumEntity[j], NETWORK_BOMBER_COMPONENT);
-                    assert(netComp && "netComp == NULL");
-                    //Synch num entity
-                    netComp->mNetworkId = networkData.mNetworkID;
-                    std::cerr << posX << std::endl;
-                    std::cerr << posY << std::endl;
-                    std::cerr << netComp->mNetworkId << std::endl;
-                    break;
-                }
+                posComp->vect2DPosComp.mfX = networkData.mPosX;
+                posComp->vect2DPosComp.mfY = networkData.mPosY;
+                NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
+                        (mVectNumEntity[j], NETWORK_BOMBER_COMPONENT);
+                assert(netComp && "netComp == NULL");
+                netComp->mNetworkId = networkData.mNetworkID;
             }
         }
     }
@@ -66,6 +55,7 @@ bool SocketSystem::clientSyncNetworkID()
 
 bool SocketSystem::clientSyncNetworkLevel(NetworkLevelData &levelData)
 {
+    assert(sizeof(NetworkLevelData) != sizeof (m_data) && "Incoherent buffer size for level conf");
     if(!sizeof (m_data))
     {
         return false;
@@ -98,13 +88,29 @@ void SocketSystem::serializeEntitiesData()
 
 void SocketSystem::serializeLevelData(const Niveau &level)
 {
+    TilemapBombermanComponent* tileComp = stairwayToComponentManager().
+            searchComponentByType<TilemapBombermanComponent>(Niveau::getNumEntityLevel(), TILEMAP_BOMBER_COMPONENT);
+    assert(tileComp && "tileComp == nullptr");
     NetworkLevelData levelData;
     levelData.mHeight = level.getLongueurNiveau();
     levelData.mLenght = level.getLargeurNiveau();
-    levelData.mLenghtTile = level.getLongueurTile();
-    levelData.mHeightTile= level.getLargeurTile();
-    levelData.mLevelArray = level.getLevelArray().getTab();
+    levelData.mLenghtTile = level.getLongueurTile() / SIZE_SCALE;
+    levelData.mHeightTile= level.getLargeurTile() / SIZE_SCALE;
+    std::copy(tileComp->mTabTilemap.getTab().begin(), tileComp->mTabTilemap.getTab().end(),
+              &levelData.mLevelArray[0]);
+
+    for(size_t i = 0; i < levelData.mHeight ;++i)
+    {
+        for(size_t j = 0; j < levelData.mLenght; ++j)
+        {
+            std::cerr << static_cast<unsigned int>(tileComp->mTabTilemap.getValAt(i, j));
+        }
+        std::cerr << std::endl << std::endl;
+    }
+
     clearBuffer();
+    std::cerr << "ssd "<< sizeof (levelData) << std::endl;
+//    std::cerr << levelData.mLevelArray.size()<<  " qqq "<< sizeof (levelData.mLevelArray) << std::endl;
     addSerializeData(&levelData, sizeof (levelData));
 }
 
