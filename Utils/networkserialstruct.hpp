@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <array>
 
+using pairUi = std::pair<uint32_t, uint32_t>;
 
 
 struct NetworkData
@@ -18,4 +19,6 @@ struct NetworkLevelData
     uint8_t mLenght, mHeight;
     uint8_t mLenghtTile, mHeightTile;
     uint8_t mLevelArray[LEVEL_MAX_SIZE];
+    uint8_t mNumPlayers;
+    std::array<pairUi, MAX_PLAYER> mPlayersInitPos;
 };

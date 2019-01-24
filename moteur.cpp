@@ -127,7 +127,6 @@ void Moteur::loadLevelTileMap(Niveau &niv, unsigned int numNiv)
     assert(tmc && "Moteur::loadTileMap TilemapBombermanComponent == null\n");
     niv.loadLevel(numNiv, memEntity, *tmc);
     niv.adaptToScale(SIZE_SCALE, SIZE_SCALE);
-
     //récupération et modification des composants
     mMoteurGraphique.memorizeSizeTile(niv.getLongueurTile(), niv.getLargeurTile());
 }
@@ -358,9 +357,7 @@ void Moteur::waitServerSync(Niveau &niv)
     NetworkLevelData levelData;
     sss->clientSyncNetworkLevel(levelData);
     loadLevelTileMapFromServer(niv, levelData);
-
     loadPlayersAndBot(2, 0);
-
     sss->receiveData(true);
     sss->clientSyncNetworkID();
 }

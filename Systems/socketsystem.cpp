@@ -99,8 +99,20 @@ void SocketSystem::serializeLevelData(const Niveau &level)
     levelData.mHeightTile= level.getLargeurTile() / SIZE_SCALE;
     std::copy(tileComp->mTabTilemap.getTab().begin(), tileComp->mTabTilemap.getTab().end(),
               &levelData.mLevelArray[0]);
+    addPlayersConf(levelData);
     clearBuffer();
     addSerializeData(&levelData, sizeof (levelData));
+}
+
+void SocketSystem::addPlayersConf(NetworkLevelData &levelData)
+{
+    levelData.mNumPlayers = Niveau::getNumCurrentNumberPlayer();
+    for(size_t i = 0; i < levelData.mNumPlayers; ++i)
+    {
+        const vectPairUi_t &initPos = Niveau::static_getVectInitPositionBomberman();
+        assert(levelData.mNumPlayers == initPos.size() && "Incoherent size from init position players");
+        levelData.mPlayersInitPos[i] = initPos[i];
+    }
 }
 
 void SocketSystem::serializeBombermanEntity(unsigned int entityNum, unsigned int networkID)
@@ -113,7 +125,6 @@ void SocketSystem::serializeBombermanEntity(unsigned int entityNum, unsigned int
     assert(posComp && "posComp == NULL\n");
     bombermanData.mPosX = posComp->vect2DPosComp.mfX;
     bombermanData.mPosY = posComp->vect2DPosComp.mfY;
-
     addSerializeData(&bombermanData, sizeof (bombermanData));
 }
 

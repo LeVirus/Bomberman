@@ -116,12 +116,9 @@ void MoteurGraphique::static_positionComponentCenterCurrentCase(ecs::PositionCom
 {
 //    float thirdCaseLenght = mCaseLenght / 3 ;
 //    float thirdCaseHeight = mCaseHeight / 3 ;
-
     unsigned int caseX;
     unsigned int caseY;
-
     static_getPositionsCurrentCase(positionComp, caseX, caseY);
-
     positionComp.vect2DPosComp.mfX = POSITION_LEVEL_X + caseX * mCaseLenght/* + thirdCaseLenght*/;
     positionComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + caseY * mCaseHeight /*+ thirdCaseHeight*/;
 }

@@ -21,7 +21,7 @@ private:
     static Tableau2D mTabPositionDestructWall;
     void setPositionPair(TilemapBombermanComponent &levelTileComp, unsigned int numLevel);
     bool setInitPositionBomberman(std::ifstream &flux);
-    bool setInitPositionBombermanFromLevel();
+    bool setInitPositionBombermanFromServer(const NetworkLevelData &dataLevel);
     void setTilemapLevelData(TilemapBombermanComponent &levelTileComp);
 public:
 	Niveau();

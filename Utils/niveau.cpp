@@ -63,16 +63,15 @@ bool Niveau::setInitPositionBomberman(std::ifstream &flux)
     return true;
 }
 
-bool Niveau::setInitPositionBombermanFromLevel()
+bool Niveau::setInitPositionBombermanFromServer(const NetworkLevelData &dataLevel)
 {
-    mMaxPlayer = 2;//TEST
-    mCurrentNumberPlayer = mMaxPlayer;
-
-    mInitBombermanPosition.resize(mMaxPlayer);
-    mInitBombermanPosition[0].first = 2;
-    mInitBombermanPosition[0].second = 2;
-    mInitBombermanPosition[1].first = 10;
-    mInitBombermanPosition[1].second = 2;
+    mMaxPlayer = MAX_PLAYER;
+    mCurrentNumberPlayer = dataLevel.mNumPlayers;
+    mInitBombermanPosition.resize(mCurrentNumberPlayer);
+    for(size_t i = 0; i < mCurrentNumberPlayer; ++i)
+    {
+        mInitBombermanPosition[i] = dataLevel.mPlayersInitPos[i];
+    }
     return true;
 }
 
@@ -152,7 +151,7 @@ bool Niveau::loadLevelFromServer(unsigned int numEntityLevel, TilemapBombermanCo
     muiLargeurTile = dataLevel.mHeightTile;
     setTilemapLevelData(levelTileComp);
     setPositionPair(levelTileComp, 0);//SALE
-    if(! setInitPositionBombermanFromLevel())//Définis dans la sync des entités
+    if(! setInitPositionBombermanFromServer(dataLevel))
     {
         return false;
     }

@@ -25,7 +25,6 @@ bool Jeu::chargerNiveau(unsigned int numNiv)
         mMoteurPrincipal.waitServerSync(mNiveau);
         mMoteurPrincipal.loadLevelWall(mNiveau);
     }
-
     return true;
 }
 
