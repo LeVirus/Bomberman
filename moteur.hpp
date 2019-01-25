@@ -27,6 +27,9 @@ private:
     uint32_t instanciateBombermanComponents(std::vector<bool> &bombermanBitset);
     void configBombermanComponents(uint32_t numEntity, uint32_t numPlayer,
                                    const std::vector<bool> &bombermanBitset);
+    void synchLevelFromServer(SocketSystem &socketSystem, Niveau &niv);
+    void synchPlayersFromServer(SocketSystem &socketSystem);
+
 public:
 	Moteur(const Jeu &jeu);
     uint32_t initLevel();
