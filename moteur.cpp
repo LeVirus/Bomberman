@@ -148,8 +148,7 @@ void Moteur::loadLevelTileMapFromServer(Niveau &niv, const NetworkLevelData &dat
 bool Moteur::loadPlayersAndBot(uint32_t uiNumPlayer, uint32_t uiNumBot)
 {
     if(MAX_PLAYER < uiNumPlayer + uiNumBot)return false;
-    loadBombermanSprite();
-    LoadBomBSprite();
+    mMoteurGraphique.loadBaseSprites();
     for(uint32_t i = 0 ; i < uiNumPlayer ; ++i)
 	{
         createBomberman(i);
@@ -406,29 +405,4 @@ void Moteur::positionnerComponent(ecs::PositionComponent &posComp, uint32_t posX
     posComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + posY * mPtrJeu.getNiveau().getLargeurTile();
 //	std::cout << "XX " << posX << " posComp.X " <<posComp.vect2DPosComp.mfX
     //			  << " YY " << posY << " posComp.Y " <<posComp.vect2DPosComp.mfY<< std::endl;
-}
-
-void Moteur::loadBombermanSprite()
-{
-    uint32_t cursorX = 3, cursorY = 19;
-    for(uint32_t i = 0 ; i < 18; ++i)
-    {
-        if(i == 3 || i == 12)
-        {
-            cursorY += 26;
-            cursorX = 3;
-        }
-        mMoteurGraphique.loadSprite(TEXTURE_BOMBERMAN, sf::IntRect(cursorX, cursorY, 16, 25));
-        cursorX += 17;
-    }
-}
-
-void Moteur::LoadBomBSprite()
-{
-    uint32_t cursorX = 0, cursorY = 0;
-    for(uint32_t i = 0 ; i < 3; ++i)
-    {
-        mMoteurGraphique.loadSprite(TEXTURE_EXPLOSION, sf::IntRect(cursorX, cursorY, 16, 16));
-        cursorX += 17;
-    }
 }

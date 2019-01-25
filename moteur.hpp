@@ -20,8 +20,6 @@ private:
     bool mLetMeOut = false;
 
     void positionnerComponent(ecs::PositionComponent &posComp, uint32_t posX, uint32_t posY);
-    void loadBombermanSprite();
-    void LoadBomBSprite();
     SocketSystem *getSocketSystem();
     uint32_t initLevel();
     void createBomberman(uint32_t numPlayer);

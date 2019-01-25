@@ -15,6 +15,8 @@ namespace ecs
 class MoteurGraphique
 {
 private:
+    void loadBombermanSprite();
+    void loadBomBSprite();
 	std::vector< sf::Sprite > mVectSprite;
 	sf::RenderWindow mFenetre;
     static std::vector<sf::Texture> mVectTexture;
@@ -26,6 +28,7 @@ private:
     static float mCaseLenght, mCaseHeight;
 public:
 	MoteurGraphique();
+    void loadBaseSprites();
     void getEventFromWindows(sf::Event &event);
     const std::vector<TileMap> &getTileMap()const;
 	void initialiserFenetre();

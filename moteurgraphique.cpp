@@ -22,6 +22,12 @@ MoteurGraphique::MoteurGraphique()
     mVectTexture[2].loadFromFile("../Bomberman/Ressources/Texture/textLevelTileMap.png");
 }
 
+void MoteurGraphique::loadBaseSprites()
+{
+    loadBombermanSprite();
+    loadBomBSprite();
+}
+
 void MoteurGraphique::getEventFromWindows(sf::Event &event)
 {
     mFenetre.pollEvent(event);
@@ -30,6 +36,31 @@ void MoteurGraphique::getEventFromWindows(sf::Event &event)
 const std::vector<TileMap> &MoteurGraphique::getTileMap()const
 {
     return mVectTileMap;
+}
+
+void MoteurGraphique::loadBombermanSprite()
+{
+    uint32_t cursorX = 3, cursorY = 19;
+    for(uint32_t i = 0 ; i < 18; ++i)
+    {
+        if(i == 3 || i == 12)
+        {
+            cursorY += 26;
+            cursorX = 3;
+        }
+        loadSprite(TEXTURE_BOMBERMAN, sf::IntRect(cursorX, cursorY, 16, 25));
+        cursorX += 17;
+    }
+}
+
+void MoteurGraphique::loadBomBSprite()
+{
+    uint32_t cursorX = 0, cursorY = 0;
+    for(uint32_t i = 0 ; i < 3; ++i)
+    {
+        loadSprite(TEXTURE_EXPLOSION, sf::IntRect(cursorX, cursorY, 16, 16));
+        cursorX += 17;
+    }
 }
 
 void MoteurGraphique::initialiserFenetre()
