@@ -21,7 +21,6 @@ private:
 
     void positionnerComponent(ecs::PositionComponent &posComp, uint32_t posX, uint32_t posY);
     SocketSystem *getSocketSystem();
-    uint32_t initLevel();
     void createBomberman(uint32_t numPlayer);
     void fillBombermanEntityBitset(std::vector<bool> &bombermanBitset,
                                    uint32_t uiNumPlayer);
@@ -30,16 +29,15 @@ private:
                                    const std::vector<bool> &bombermanBitset);
 public:
 	Moteur(const Jeu &jeu);
+    uint32_t initLevel();
 	const Jeu &getJeu()const;
 	void lancerBoucle();
 	void getInput();
-	GestionnaireECS &getGestionnaireECS();
     void loadLevelTileMap(Niveau &niv, uint32_t numNiv);
-    void loadLevelTileMapFromServer(Niveau &niv, const NetworkLevelData &dataLevel);
+	GestionnaireECS &getGestionnaireECS();
     bool loadPlayersAndBot(uint32_t uiNumPlayer, uint32_t uiNumBot);
     void loadLevelWall(const Niveau &niv);
     void waitServerSync(Niveau &niv);
-
     void synchronizeLevelToClients(const Niveau &level);
 
     /**

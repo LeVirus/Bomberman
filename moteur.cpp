@@ -92,7 +92,12 @@ void Moteur::getInput()
         if(sf::Keyboard::isKeyPressed(left))ic->mBitsetInput[MOVE_LEFT] = true;
         if(sf::Keyboard::isKeyPressed(right))ic->mBitsetInput[MOVE_RIGHT] = true;
         if(sf::Keyboard::isKeyPressed(launchBomb))ic->mBitsetInput[LAUNCH_BOMB] = true;
-	}
+    }
+}
+
+void Moteur::loadLevelTileMap(Niveau &niv, uint32_t numNiv)
+{
+    mMoteurGraphique.loadLevelTileMap(niv, numNiv);
 }
 
 GestionnaireECS &Moteur::getGestionnaireECS()
@@ -113,35 +118,10 @@ uint32_t Moteur::initLevel()
 
     ecs::PositionComponent *pc = mGestECS.getECSComponentManager() ->
             searchComponentByType< ecs::PositionComponent >(memEntity, ecs::POSITION_COMPONENT);
-    assert(pc && "Moteur::loadTileMap PositionComponent == null\n");
+    assert(pc && "Moteur::initLevel PositionComponent == null\n");
     pc->vect2DPosComp.mfX = POSITION_LEVEL_X;
     pc->vect2DPosComp.mfY = POSITION_LEVEL_Y;
     return memEntity;
-}
-
-void Moteur::loadLevelTileMap(Niveau &niv, uint32_t numNiv)
-{
-    uint32_t memEntity = initLevel();
-    TilemapBombermanComponent *tmc = mGestECS.getECSComponentManager() ->
-            searchComponentByType<TilemapBombermanComponent>(memEntity, TILEMAP_BOMBER_COMPONENT);
-    assert(tmc && "Moteur::loadTileMap TilemapBombermanComponent == null\n");
-    niv.loadLevel(numNiv, memEntity, *tmc);
-    niv.adaptToScale(SIZE_SCALE, SIZE_SCALE);
-    //récupération et modification des composants
-    mMoteurGraphique.memorizeSizeTile(niv.getLongueurTile(), niv.getLargeurTile());
-}
-
-void Moteur::loadLevelTileMapFromServer(Niveau &niv, const NetworkLevelData &dataLevel)
-{
-    uint32_t memEntity = initLevel();
-    TilemapBombermanComponent *tmc = mGestECS.getECSComponentManager() ->
-            searchComponentByType<TilemapBombermanComponent>(memEntity, TILEMAP_BOMBER_COMPONENT);
-    assert(tmc && "Moteur::loadTileMap TilemapBombermanComponent == null");
-    bool res = niv.loadLevelFromServer(memEntity, *tmc, dataLevel);
-    assert(res && "loadLevelFromServer fail");
-    niv.adaptToScale(SIZE_SCALE, SIZE_SCALE);
-    //récupération et modification des composants
-    mMoteurGraphique.memorizeSizeTile(niv.getLongueurTile(), niv.getLargeurTile());
 }
 
 
@@ -373,7 +353,7 @@ void Moteur::waitServerSync(Niveau &niv)
     sss->receiveData(true);
     NetworkLevelData levelData;
     sss->clientSyncNetworkLevel(levelData);
-    loadLevelTileMapFromServer(niv, levelData);
+    mMoteurGraphique.loadLevelTileMapFromServer(niv, levelData);
     loadPlayersAndBot(2, 0);
     sss->receiveData(true);
     sss->clientSyncNetworkID();

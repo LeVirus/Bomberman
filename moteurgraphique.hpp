@@ -47,6 +47,8 @@ public:
     static float getCaseHeight(){return mCaseHeight;}
 
     void memorizeSizeTile(unsigned int lenghtTile, unsigned int heightTile);
+    void loadLevelTileMapFromServer(Niveau &niv, const NetworkLevelData &dataLevel);
+    void loadLevelTileMap(Niveau &niv, uint32_t numNiv);
 };
 
 #endif // MOTEURGRAPHIQUE_H

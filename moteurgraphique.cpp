@@ -33,6 +33,32 @@ void MoteurGraphique::getEventFromWindows(sf::Event &event)
     mFenetre.pollEvent(event);
 }
 
+void MoteurGraphique::loadLevelTileMap(Niveau &niv, uint32_t numNiv)
+{
+    uint32_t memEntity = mPtrMoteurPrincipal->initLevel();
+
+    TilemapBombermanComponent *tmc = mPtrMoteurPrincipal->getGestionnaireECS().getECSComponentManager() ->
+            searchComponentByType<TilemapBombermanComponent>(memEntity, TILEMAP_BOMBER_COMPONENT);
+    assert(tmc && "Moteur::loadTileMap TilemapBombermanComponent == null\n");
+    niv.loadLevel(numNiv, memEntity, *tmc);
+    niv.adaptToScale(SIZE_SCALE, SIZE_SCALE);
+    //récupération et modification des composants
+    memorizeSizeTile(niv.getLongueurTile(), niv.getLargeurTile());
+}
+
+void MoteurGraphique::loadLevelTileMapFromServer(Niveau &niv, const NetworkLevelData &dataLevel)
+{
+    uint32_t memEntity = mPtrMoteurPrincipal->initLevel();
+    TilemapBombermanComponent *tmc = mPtrMoteurPrincipal->getGestionnaireECS().getECSComponentManager() ->
+            searchComponentByType<TilemapBombermanComponent>(memEntity, TILEMAP_BOMBER_COMPONENT);
+    assert(tmc && "Moteur::loadTileMap TilemapBombermanComponent == null");
+    bool res = niv.loadLevelFromServer(memEntity, *tmc, dataLevel);
+    assert(res && "loadLevelFromServer fail");
+    niv.adaptToScale(SIZE_SCALE, SIZE_SCALE);
+    //récupération et modification des composants
+    memorizeSizeTile(niv.getLongueurTile(), niv.getLargeurTile());
+}
+
 const std::vector<TileMap> &MoteurGraphique::getTileMap()const
 {
     return mVectTileMap;
