@@ -1,10 +1,15 @@
 #include "basesocket.hpp"
 #include "networkserialstruct.hpp"
+#include "jeu.hpp"
 #include <iostream>
 #include <string.h>
 
-BaseSocket::BaseSocket(): m_port(54000)
+BaseSocket::BaseSocket(): m_port(SERVER_PORT)
 {
+    if(Jeu::getGameMode() == GameMode::CLIENT)
+    {
+        m_port = CLIENT_PORT;
+    }
     //m_socket.setBlocking(false);
 }
 
@@ -50,6 +55,7 @@ bool BaseSocket::setListener()
 bool BaseSocket::receiveData(bool waitForServer)
 {
     mMutex.lock();
+    clearReceptBuffer();
     size_t sizeReceived;
     sf::IpAddress ipSender;
     unsigned short senderPort;

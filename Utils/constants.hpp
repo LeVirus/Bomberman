@@ -30,6 +30,9 @@ const unsigned int SOCKET_DATA_SIZE = 500;
 const unsigned int SPRITE_INVISIBLE = 5000;
 const unsigned int LEVEL_MAX_SIZE = 200;
 
+const unsigned int SERVER_PORT = 54000;
+const unsigned int CLIENT_PORT = 54008;
+
 enum
 {
     TEXTURE_BOMBERMAN, TEXTURE_EXPLOSION, TEXTURE_LEVEL

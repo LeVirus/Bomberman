@@ -10,7 +10,7 @@ using pairUi = std::pair<uint32_t, uint32_t>;
 struct NetworkData
 {
     TypeEntityFlag mEntityType;
-    uint8_t mNetworkID;
+    uint32_t mNetworkID;
     float mPosX, mPosY;
 };
 

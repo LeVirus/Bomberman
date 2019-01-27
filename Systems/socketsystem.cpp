@@ -20,7 +20,7 @@ SocketSystem::SocketSystem()
     {
         std::cout << "Erreur SocketSystem ajout BOMB_CONFIG_BOMBER_COMPONENT.\n";
     }
-    if(Jeu::getGameMode() == SERVER)
+    if(Jeu::getGameMode() == GameMode::SERVER)
     {
         launchReceptThread();
     }
@@ -94,7 +94,7 @@ bool SocketSystem::clientSyncNetworkLevel(NetworkLevelData &levelData)
 
 void SocketSystem::serializeEntitiesData()
 {
-    clearReceptBuffer();
+    clearSendBuffer();
     for(size_t i = 0; i < mVectNumEntity.size(); ++i)
     {
         NetworkBombermanComponent* networkComp = stairwayToComponentManager().
@@ -151,6 +151,8 @@ void SocketSystem::serializeBombermanEntity(unsigned int entityNum, unsigned int
     NetworkData bombermanData;
     bombermanData.mEntityType = TypeEntityFlag::FLAG_BOMBERMAN;
     bombermanData.mNetworkID = networkID;
+    std::cerr << bombermanData.mNetworkID << " send \n";
+
     ecs::PositionComponent* posComp = stairwayToComponentManager().
             searchComponentByType<ecs::PositionComponent>(entityNum, ecs::POSITION_COMPONENT);
     assert(posComp && "posComp == NULL\n");
@@ -161,9 +163,8 @@ void SocketSystem::serializeBombermanEntity(unsigned int entityNum, unsigned int
 
 void SocketSystem::clientUpdateEntitiesFromServer()
 {
-    if(!sizeof (m_ReceptData))
+    if(!m_bufferReceptCursor)
     {
-        std::cerr << "fail\n";
         return;
     }
     for(size_t i = 0; i < m_bufferReceptCursor; i += sizeof(NetworkData))
@@ -176,6 +177,8 @@ void SocketSystem::clientUpdateEntitiesFromServer()
             NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
                     (mVectNumEntity[j], NETWORK_BOMBER_COMPONENT);
             assert(netComp && "netComp == NULL");
+
+            std::cerr << networkData.mNetworkID << " recept \n";
 
             if(netComp->mNetworkId == networkData.mNetworkID)
             {
@@ -192,29 +195,28 @@ void SocketSystem::clientUpdateEntitiesFromServer()
 
 void SocketSystem::execSystem()
 {
+    clearSendBuffer();
     System::execSystem();
     if(Jeu::getGameMode() == GameMode::SERVER)
     {
         clientUpdateEntitiesFromServer();
         serializeEntitiesData();
-        sendData("127.0.0.1", 54000);
+        sendData("127.0.0.1", CLIENT_PORT);
     }
     else if(Jeu::getGameMode() == GameMode::CLIENT)
     {
 //        std::this_thread::sleep_for(200ms);
         clientUpdateEntitiesFromServer();
         serializeEntitiesData();
-        sendData("127.0.0.1", 54000);
+        sendData("127.0.0.1", SERVER_PORT);
     }
-    clearSendBuffer();
     clearReceptBuffer();
-
 }
 
 void SocketSystem::synchronizeLevelToClients(const Niveau &level)
 {
     serializeLevelData(level);
-    sendData("127.0.0.1", 54000);
+    sendData("127.0.0.1", CLIENT_PORT);
     clearSendBuffer();
 }
 
