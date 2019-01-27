@@ -11,7 +11,7 @@ INCLUDEPATH += Systems/
 INCLUDEPATH += Components/
 INCLUDEPATH += Utils/
 
-LIBS += -L../Bomberman/Lib -lsfml-graphics -lsfml-window -lsfml-system -lECS  -lsfml-network#  -lsfml-audio
+LIBS += -L../Bomberman/Lib -lsfml-graphics -lsfml-window -lsfml-system -lECS  -lsfml-network -lpthread #-lsfml-audio
 
 SOURCES += main.cpp \
     jeu.cpp \

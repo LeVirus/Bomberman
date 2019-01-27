@@ -204,10 +204,17 @@ void Moteur::configBombermanComponents(uint32_t numEntity, uint32_t numPlayer,
         NetworkBombermanComponent *nb = mGestECS.getECSComponentManager()->
                 searchComponentByType<NetworkBombermanComponent> (numEntity, NETWORK_BOMBER_COMPONENT);
         nb->mEntityType = TypeEntityFlag::FLAG_BOMBERMAN;
-        if(Jeu::getGameMode() == GameMode::SERVER)
+        nb->mNetworkId = NetworkBombermanComponent::attributeNum();
+        //PLAYER 0 == SERVER PLAYER
+        if(numPlayer == 0)
         {
-            nb->mNetworkId = NetworkBombermanComponent::attributeNum();
+            nb->mServerEntity = true;
         }
+        else
+        {
+            nb->mServerEntity = false;
+        }
+
     }
     FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
             searchComponentByType <FlagBombermanComponent> (numEntity, FLAG_BOMBER_COMPONENT);
@@ -353,6 +360,7 @@ void Moteur::waitServerSync(Niveau &niv)
     synchLevelFromServer(*sss, niv);
     loadPlayersAndBot(2, 0);
     synchPlayersFromServer(*sss);
+    sss->launchReceptThread();
 }
 
 void Moteur::synchLevelFromServer(SocketSystem &socketSystem, Niveau &niv)

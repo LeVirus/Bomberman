@@ -12,11 +12,10 @@ struct NetworkBombermanComponent : public ecs::Component
     }
 
     void displayComponent()const override
-    {
-        //Component::displayComponent();
-    }
+    {}
     unsigned int mNetworkId;
     TypeEntityFlag mEntityType;
+    bool mServerEntity;
     virtual ~NetworkBombermanComponent() = default;
     static unsigned int attributeNum()
     {

@@ -35,7 +35,7 @@ bool BaseSocket::sendData(unsigned int num)
 
 bool BaseSocket::sendData(const sf::IpAddress &ipAdress, unsigned short port)
 {
-    if(m_socket.send(m_data, m_bufferCursor, ipAdress, port) != sf::Socket::Done)
+    if(m_socket.send(m_SendData, m_bufferSendCursor, ipAdress, port) != sf::Socket::Done)
     {
         return false;
     }
@@ -49,22 +49,30 @@ bool BaseSocket::setListener()
 
 bool BaseSocket::receiveData(bool waitForServer)
 {
+    mMutex.lock();
     size_t sizeReceived;
     sf::IpAddress ipSender;
     unsigned short senderPort;
+    //clearBuffer();
     if(waitForServer)
     {
         m_socket.setBlocking(true);
     }
+    else
+    {
+        m_socket.setBlocking(false);
+    }
     setListener();
     //wait while receive data CLIENT
     std::cout << "Waiting for receiving... " << std::endl;
-    if (m_socket.receive(m_data, sizeof(m_data), sizeReceived, ipSender, senderPort) != sf::Socket::Done)
+    if (m_socket.receive(m_ReceptData, sizeof(m_ReceptData), sizeReceived, ipSender, senderPort) != sf::Socket::Done)
     {
+        mMutex.unlock();
         return false;
     }
-    m_bufferCursor = sizeReceived;
+    m_bufferReceptCursor = sizeReceived;
     std::cout << "Received " << sizeReceived << " bytes from " << ipSender << " on port " << senderPort << std::endl;
+    mMutex.unlock();
     return true;
 }
 

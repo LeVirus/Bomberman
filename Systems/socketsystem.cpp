@@ -9,6 +9,10 @@
 #include "jeu.hpp"
 #include <cstring>
 #include <cassert>
+#include <thread>
+#include <chrono>
+
+using namespace std::chrono_literals;
 
 SocketSystem::SocketSystem()
 {
@@ -16,21 +20,42 @@ SocketSystem::SocketSystem()
     {
         std::cout << "Erreur SocketSystem ajout BOMB_CONFIG_BOMBER_COMPONENT.\n";
     }
+    if(Jeu::getGameMode() == SERVER)
+    {
+        launchReceptThread();
+    }
+}
+
+void SocketSystem::launchReceptThread()
+{
+    mDataReceptThread = std::thread(&SocketSystem::threadReception, this);
+}
+
+void SocketSystem::threadReception()
+{
+    mThreadContinue = true;
+    do
+    {
+        if(!m_bufferReceptCursor)
+        {
+            receiveData(true);
+        }
+    }while(mThreadContinue);
 }
 
 bool SocketSystem::clientSyncNetworkID()
 {
-    if(!sizeof (m_data))
+    if(!sizeof (m_ReceptData))
     {
         return false;
     }
     System::execSystem();
 
-    for(size_t i = 0; i < m_bufferCursor; i += sizeof(NetworkData))
+    for(size_t i = 0; i < m_bufferReceptCursor; i += sizeof(NetworkData))
     {
         NetworkData networkData;
         assert(i + sizeof(NetworkData) < SOCKET_DATA_SIZE);
-        memcpy(&networkData, &m_data[i], sizeof(NetworkData));
+        memcpy(&networkData, &m_ReceptData[i], sizeof(NetworkData));
         for(size_t j = 0; j < mVectNumEntity.size(); ++j)
         {
             FlagBombermanComponent* flagComp  = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
@@ -51,29 +76,35 @@ bool SocketSystem::clientSyncNetworkID()
             }
         }
     }
+    clearReceptBuffer();
     return true;
 }
 
 bool SocketSystem::clientSyncNetworkLevel(NetworkLevelData &levelData)
 {
-    assert(sizeof(NetworkLevelData) != sizeof (m_data) && "Incoherent buffer size for level conf");
-    if(!sizeof (m_data))
+    assert(sizeof(NetworkLevelData) != sizeof (m_ReceptData) && "Incoherent buffer size for level conf");
+    if(!sizeof (m_ReceptData))
     {
         return false;
     }
-    memcpy(&levelData, &m_data[0], sizeof(NetworkLevelData));
+    memcpy(&levelData, &m_ReceptData[0], sizeof(NetworkLevelData));
+    clearReceptBuffer();
     return true;
 }
 
 void SocketSystem::serializeEntitiesData()
 {
-    this->m_bufferCursor = 0;
+    clearReceptBuffer();
     for(size_t i = 0; i < mVectNumEntity.size(); ++i)
     {
         NetworkBombermanComponent* networkComp = stairwayToComponentManager().
                 searchComponentByType<NetworkBombermanComponent>(mVectNumEntity[i], NETWORK_BOMBER_COMPONENT);
         assert(networkComp && "BombBombermanSystem::execSystem :: timerComp == NULL\n");
-
+        if((Jeu::getGameMode() == SERVER && !networkComp->mServerEntity) ||
+                (Jeu::getGameMode() == CLIENT && networkComp->mServerEntity))
+        {
+            continue;
+        }
         if(networkComp->mEntityType == TypeEntityFlag::FLAG_BOMBERMAN)
         {
 //        case TypeEntityFlag::FLAG_BOMBERMAN:
@@ -100,7 +131,7 @@ void SocketSystem::serializeLevelData(const Niveau &level)
     std::copy(tileComp->mTabTilemap.getTab().begin(), tileComp->mTabTilemap.getTab().end(),
               &levelData.mLevelArray[0]);
     addPlayersConf(levelData);
-    clearBuffer();
+    clearReceptBuffer();
     addSerializeData(&levelData, sizeof (levelData));
 }
 
@@ -130,15 +161,16 @@ void SocketSystem::serializeBombermanEntity(unsigned int entityNum, unsigned int
 
 void SocketSystem::clientUpdateEntitiesFromServer()
 {
-    if(!sizeof (m_data))
+    if(!sizeof (m_ReceptData))
     {
+        std::cerr << "fail\n";
         return;
     }
-    for(size_t i = 0; i < m_bufferCursor; i += sizeof(NetworkData))
+    for(size_t i = 0; i < m_bufferReceptCursor; i += sizeof(NetworkData))
     {
         NetworkData networkData;
         assert(i + sizeof(NetworkData) < SOCKET_DATA_SIZE);
-        memcpy(&networkData, &m_data[i], sizeof(NetworkData));
+        memcpy(&networkData, &m_ReceptData[i], sizeof(NetworkData));
         for(size_t j = 0; j < mVectNumEntity.size(); ++j)
         {
             NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
@@ -163,14 +195,19 @@ void SocketSystem::execSystem()
     System::execSystem();
     if(Jeu::getGameMode() == GameMode::SERVER)
     {
+        clientUpdateEntitiesFromServer();
         serializeEntitiesData();
         sendData("127.0.0.1", 54000);
     }
     else if(Jeu::getGameMode() == GameMode::CLIENT)
     {
-        receiveData();
+//        std::this_thread::sleep_for(200ms);
         clientUpdateEntitiesFromServer();
+        serializeEntitiesData();
+        sendData("127.0.0.1", 54000);
     }
+    clearSendBuffer();
+    clearReceptBuffer();
 
 }
 
@@ -178,4 +215,11 @@ void SocketSystem::synchronizeLevelToClients(const Niveau &level)
 {
     serializeLevelData(level);
     sendData("127.0.0.1", 54000);
+    clearSendBuffer();
+}
+
+SocketSystem::~SocketSystem()
+{
+    mDataReceptThread.detach();
+//    mDataReceptThread.join();
 }

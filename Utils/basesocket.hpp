@@ -3,6 +3,7 @@
 
 #include <SFML/Network.hpp>
 #include "NetworkDataUtils.hpp"
+#include <mutex>
 
 using vectPairIpPort = std::vector<std::pair<sf::IpAddress, unsigned short>>;
 
@@ -12,6 +13,7 @@ protected:
     unsigned short m_port;
     sf::UdpSocket m_socket;
     vectPairIpPort m_vectDestination;
+    std::mutex mMutex;
 public:
     BaseSocket();
     BaseSocket(unsigned short port);

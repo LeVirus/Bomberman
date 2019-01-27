@@ -15,19 +15,14 @@ bool NetworkDataUtils::addSerializeData(const void *newData, unsigned int size)
     {
         return false;
     }
-    assert(m_bufferCursor + size < SOCKET_DATA_SIZE && "SOCKET BUFFER OVERFLOW");
-    memcpy(&m_data[m_bufferCursor], newData, size);
-    m_bufferCursor += size;
+    assert(m_bufferSendCursor + size < SOCKET_DATA_SIZE && "SOCKET BUFFER OVERFLOW");
+    memcpy(&m_SendData[m_bufferSendCursor], newData, size);
+    m_bufferSendCursor += size;
     return true;
-}
-
-void NetworkDataUtils::clearBuffer()
-{
-    m_bufferCursor = 0;
 }
 
 const uint8_t* NetworkDataUtils::getBuffer() const
 {
-    return m_data;
+    return m_ReceptData;
 }
 
