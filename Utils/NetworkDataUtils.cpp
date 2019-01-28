@@ -21,8 +21,3 @@ bool NetworkDataUtils::addSerializeData(const void *newData, unsigned int size)
     return true;
 }
 
-const uint8_t* NetworkDataUtils::getBuffer() const
-{
-    return m_ReceptData;
-}
-

@@ -10,6 +10,7 @@ private:
 	Moteur mMoteurPrincipal;
 	Niveau mNiveau;
     static GameMode mGameMode;
+    void waitForClientsConnect();
 public:
     Jeu(GameMode gm);
     bool chargerNiveau(unsigned int numNiv);

@@ -16,29 +16,35 @@ using namespace std::chrono_literals;
 
 SocketSystem::SocketSystem()
 {
+
     if(!bAddComponentToSystem(NETWORK_BOMBER_COMPONENT))
     {
         std::cout << "Erreur SocketSystem ajout BOMB_CONFIG_BOMBER_COMPONENT.\n";
     }
     if(Jeu::getGameMode() == GameMode::SERVER)
     {
-        launchReceptThread();
+        //launch thread to get ip and port from client
+        launchReceptThread(true);
     }
 }
 
-void SocketSystem::launchReceptThread()
+void SocketSystem::launchReceptThread(bool memMetaData)
 {
-    mDataReceptThread = std::thread(&SocketSystem::threadReception, this);
+    if(mDataReceptThread.joinable())
+    {
+        mDataReceptThread.detach();
+    }
+    mDataReceptThread = std::thread(&SocketSystem::threadReception, this, memMetaData);
 }
 
-void SocketSystem::threadReception()
+void SocketSystem::threadReception(bool memMetaData)
 {
     mThreadContinue = true;
     do
     {
         if(!m_bufferReceptCursor)
         {
-            receiveData(true);
+            receiveData(memMetaData, true);
         }
     }while(mThreadContinue);
 }
@@ -151,8 +157,6 @@ void SocketSystem::serializeBombermanEntity(unsigned int entityNum, unsigned int
     NetworkData bombermanData;
     bombermanData.mEntityType = TypeEntityFlag::FLAG_BOMBERMAN;
     bombermanData.mNetworkID = networkID;
-    std::cerr << bombermanData.mNetworkID << " send \n";
-
     ecs::PositionComponent* posComp = stairwayToComponentManager().
             searchComponentByType<ecs::PositionComponent>(entityNum, ecs::POSITION_COMPONENT);
     assert(posComp && "posComp == NULL\n");
@@ -177,8 +181,6 @@ void SocketSystem::clientUpdateEntitiesFromServer()
             NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
                     (mVectNumEntity[j], NETWORK_BOMBER_COMPONENT);
             assert(netComp && "netComp == NULL");
-
-            std::cerr << networkData.mNetworkID << " recept \n";
 
             if(netComp->mNetworkId == networkData.mNetworkID)
             {

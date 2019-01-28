@@ -357,6 +357,7 @@ void Moteur::waitServerSync(Niveau &niv)
 {
     SocketSystem * sss = getSocketSystem();
     assert(sss && "SocketSystem == nullptr");
+    sss->sendData("127.0.0.1", SERVER_PORT);
     synchLevelFromServer(*sss, niv);
     loadPlayersAndBot(2, 0);
     synchPlayersFromServer(*sss);
@@ -365,7 +366,7 @@ void Moteur::waitServerSync(Niveau &niv)
 
 void Moteur::synchLevelFromServer(SocketSystem &socketSystem, Niveau &niv)
 {
-    socketSystem.receiveData(true);
+    socketSystem.receiveData(false, true);
     NetworkLevelData levelData;
     socketSystem.clientSyncNetworkLevel(levelData);
     mMoteurGraphique.loadLevelTileMapFromServer(niv, levelData);
@@ -373,7 +374,7 @@ void Moteur::synchLevelFromServer(SocketSystem &socketSystem, Niveau &niv)
 
 void Moteur::synchPlayersFromServer(SocketSystem &socketSystem)
 {
-    socketSystem.receiveData(true);
+    socketSystem.receiveData(false, true);
     socketSystem.clientSyncNetworkID();
 }
 

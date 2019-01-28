@@ -4,12 +4,15 @@
 #include <iostream>
 #include <string.h>
 
+
 BaseSocket::BaseSocket(): m_port(SERVER_PORT)
 {
     if(Jeu::getGameMode() == GameMode::CLIENT)
     {
         m_port = CLIENT_PORT;
     }
+    setListener();
+
     //m_socket.setBlocking(false);
 }
 
@@ -52,7 +55,19 @@ bool BaseSocket::setListener()
     return m_socket.bind(m_port) != sf::Socket::Done;
 }
 
-bool BaseSocket::receiveData(bool waitForServer)
+bool BaseSocket::checkExistingClient(const pairIpPort &clientMetadata)
+{
+    for(size_t i = 0 ; i < m_vectDestination.size(); ++i)
+    {
+        if(clientMetadata == m_vectDestination[i])
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool BaseSocket::receiveData(bool memMetaData, bool waitForServer)
 {
     mMutex.lock();
     clearReceptBuffer();
@@ -68,7 +83,6 @@ bool BaseSocket::receiveData(bool waitForServer)
     {
         m_socket.setBlocking(false);
     }
-    setListener();
     //wait while receive data CLIENT
     std::cout << "Waiting for receiving... " << std::endl;
     if (m_socket.receive(m_ReceptData, sizeof(m_ReceptData), sizeReceived, ipSender, senderPort) != sf::Socket::Done)
@@ -76,13 +90,15 @@ bool BaseSocket::receiveData(bool waitForServer)
         mMutex.unlock();
         return false;
     }
+    //MAX_PLAYER - 1 for SERVER
+    if(memMetaData && m_vectDestination.size() < MAX_PLAYER - 1 &&
+            !checkExistingClient({ipSender, senderPort}))
+    {
+        m_vectDestination.push_back({ipSender, senderPort});
+        std::cout << "Client ip :: " << ipSender << " senderPort " << senderPort << std::endl;
+    }
     m_bufferReceptCursor = sizeReceived;
     std::cout << "Received " << sizeReceived << " bytes from " << ipSender << " on port " << senderPort << std::endl;
     mMutex.unlock();
     return true;
-}
-
-void BaseSocket::addDestination(const sf::IpAddress &ipAdress, unsigned short port)
-{
-    m_vectDestination.push_back({ipAdress, port});
 }

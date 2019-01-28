@@ -16,8 +16,8 @@ public:
     bool addSerializeData(const void *newData, unsigned int size);
     inline void clearReceptBuffer(){m_bufferReceptCursor = 0;}
     inline void clearSendBuffer(){m_bufferSendCursor = 0;}
-    const uint8_t* getBuffer() const;
-    inline unsigned long getBufferSize()const{return m_bufferReceptCursor;}
+    inline const uint8_t* getReceptBuffer()const{return m_ReceptData;}
+    inline unsigned long getBufferReceptSize()const{return m_bufferReceptCursor;}
 };
 
 #endif // NETWORKDATAUTILS_H
