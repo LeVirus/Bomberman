@@ -361,7 +361,7 @@ void Moteur::waitServerSync(Niveau &niv)
     synchLevelFromServer(*sss, niv);
     loadPlayersAndBot(2, 0);
     synchPlayersFromServer(*sss);
-    sss->launchReceptThread();
+    sss->launchReceptThread(false, false);
 }
 
 void Moteur::synchLevelFromServer(SocketSystem &socketSystem, Niveau &niv)

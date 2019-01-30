@@ -74,17 +74,15 @@ bool BaseSocket::receiveData(bool memMetaData, bool waitForServer)
     size_t sizeReceived;
     sf::IpAddress ipSender;
     unsigned short senderPort;
-    //clearBuffer();
     if(waitForServer)
     {
         m_socket.setBlocking(true);
     }
-    else
-    {
-        m_socket.setBlocking(false);
-    }
     //wait while receive data CLIENT
-    std::cout << "Waiting for receiving... " << std::endl;
+    if(waitForServer)
+    {
+        std::cout << "Waiting for receiving... " << std::endl;
+    }
     if (m_socket.receive(m_ReceptData, sizeof(m_ReceptData), sizeReceived, ipSender, senderPort) != sf::Socket::Done)
     {
         mMutex.unlock();

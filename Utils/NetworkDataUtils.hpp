@@ -2,6 +2,7 @@
 #define NETWORKDATAUTILS_H
 
 #include <cstdint>
+#include <iostream>
 #include "constants.hpp"
 
 class NetworkDataUtils

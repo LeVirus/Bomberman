@@ -18,12 +18,12 @@ private:
     void addPlayersConf(NetworkLevelData &levelData);
     void serializeBombermanEntity(unsigned int entityNum, unsigned int networkID);
     void clientUpdateEntitiesFromServer();
-    void threadReception(bool memMetaData);
+    void threadReception(bool memMetaData, bool waitForServer = true);
     std::thread mDataReceptThread;
     bool mThreadContinue = true;
 public:
     SocketSystem();
-    void launchReceptThread(bool memMetaData = false);
+    void launchReceptThread(bool memMetaData = false, bool waitForServer = true);
     bool clientSyncNetworkID();
     bool clientSyncNetworkLevel(NetworkLevelData &levelData);
     virtual void execSystem();

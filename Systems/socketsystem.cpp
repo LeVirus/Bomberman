@@ -24,27 +24,30 @@ SocketSystem::SocketSystem()
     if(Jeu::getGameMode() == GameMode::SERVER)
     {
         //launch thread to get ip and port from client
-        launchReceptThread(true);
+
+        launchReceptThread(true, true);
     }
 }
 
-void SocketSystem::launchReceptThread(bool memMetaData)
+void SocketSystem::launchReceptThread(bool memMetaData, bool waitForServer)
 {
     if(mDataReceptThread.joinable())
     {
-        mDataReceptThread.detach();
+        mThreadContinue = false;
+        mDataReceptThread.join();
+        mThreadContinue = true;
     }
-    mDataReceptThread = std::thread(&SocketSystem::threadReception, this, memMetaData);
+    mDataReceptThread = std::thread(&SocketSystem::threadReception, this, memMetaData, waitForServer);
 }
 
-void SocketSystem::threadReception(bool memMetaData)
+void SocketSystem::threadReception(bool memMetaData, bool waitForServer)
 {
     mThreadContinue = true;
     do
     {
         if(!m_bufferReceptCursor)
         {
-            receiveData(memMetaData, true);
+            receiveData(memMetaData, waitForServer);
         }
     }while(mThreadContinue);
 }
@@ -56,7 +59,6 @@ bool SocketSystem::clientSyncNetworkID()
         return false;
     }
     System::execSystem();
-
     for(size_t i = 0; i < m_bufferReceptCursor; i += sizeof(NetworkData))
     {
         NetworkData networkData;
