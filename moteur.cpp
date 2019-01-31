@@ -157,8 +157,9 @@ void Moteur::fillBombermanEntityBitset(std::vector<bool> &bombermanBitset,
     bombermanBitset[FLAG_BOMBER_COMPONENT]           = true;
     bombermanBitset[PLAYER_CONFIG_BOMBER_COMPONENT]  = true;
     bombermanBitset[TIMER_BOMBER_COMPONENT]          = true;
-    if((uiNumPlayer == 0 && Jeu::getGameMode() != GameMode::CLIENT) ||
-            (uiNumPlayer == 1 && Jeu::getGameMode() != GameMode::SERVER))
+
+    if((uiNumPlayer == Players::P_SERVER && Jeu::getGameMode() != GameMode::CLIENT) ||
+            (uiNumPlayer > Players::P_SERVER && Jeu::getGameMode() != GameMode::SERVER))
     {
         bombermanBitset[INPUT_BOMBER_COMPONENT]          = true;
     }
@@ -206,7 +207,7 @@ void Moteur::configBombermanComponents(uint32_t numEntity, uint32_t numPlayer,
         nb->mEntityType = TypeEntityFlag::FLAG_BOMBERMAN;
         nb->mNetworkId = NetworkBombermanComponent::attributeNum();
         //PLAYER 0 == SERVER PLAYER
-        if(numPlayer == 0)
+        if(numPlayer == Players::P_SERVER)
         {
             nb->mServerEntity = true;
         }
@@ -214,7 +215,6 @@ void Moteur::configBombermanComponents(uint32_t numEntity, uint32_t numPlayer,
         {
             nb->mServerEntity = false;
         }
-
     }
     FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
             searchComponentByType <FlagBombermanComponent> (numEntity, FLAG_BOMBER_COMPONENT);
@@ -231,7 +231,7 @@ void Moteur::configBombermanComponents(uint32_t numEntity, uint32_t numPlayer,
     cc->mVect2dVectOrigins.mfY = 56;
     cc->mRectBox.mSetHeightRectBox(largeurTile - 10);
     ecs::DisplayComponent * dc = mGestECS.getECSComponentManager() ->
-            searchComponentByType< ecs::DisplayComponent >( numEntity, ecs::DISPLAY_COMPONENT );
+            searchComponentByType< ecs::DisplayComponent >(numEntity, ecs::DISPLAY_COMPONENT);
     assert(dc && "dc == null\n");
     dc->muiNumSprite = memBombermanSprite;
 
@@ -263,11 +263,8 @@ void Moteur::configBombermanComponents(uint32_t numEntity, uint32_t numPlayer,
         {
             inputComp->mNumInput = INPUT_PLAYER_A;
         }
-    }
-    if(bombermanBitset[INPUT_BOMBER_COMPONENT])
-    {
         // == 1 pour les tests
-        if(numPlayer == 1 && Jeu::getGameMode() != GameMode::SERVER)
+        else if(numPlayer == 1 && Jeu::getGameMode() != GameMode::SERVER)
         {
             inputComp->mNumInput = INPUT_PLAYER_B;
         }
@@ -359,14 +356,14 @@ void Moteur::waitServerSync(Niveau &niv)
     assert(sss && "SocketSystem == nullptr");
     sss->sendData("127.0.0.1", SERVER_PORT);
     synchLevelFromServer(*sss, niv);
-    loadPlayersAndBot(2, 0);
+//    loadPlayersAndBot(2, 0);
     synchPlayersFromServer(*sss);
-    sss->launchReceptThread(false, false);
+    sss->launchReceptThread(false);
 }
 
 void Moteur::synchLevelFromServer(SocketSystem &socketSystem, Niveau &niv)
 {
-    socketSystem.receiveData(false, true);
+    socketSystem.receiveData(false);
     NetworkLevelData levelData;
     socketSystem.clientSyncNetworkLevel(levelData);
     mMoteurGraphique.loadLevelTileMapFromServer(niv, levelData);
@@ -374,7 +371,13 @@ void Moteur::synchLevelFromServer(SocketSystem &socketSystem, Niveau &niv)
 
 void Moteur::synchPlayersFromServer(SocketSystem &socketSystem)
 {
-    socketSystem.receiveData(false, true);
+    socketSystem.receiveData(false);
+
+    uint32_t numPlayers = socketSystem.getBufferReceptSize() / sizeof(NetworkData);
+    //create players from number of players received
+    assert(numPlayers + 1 < MAX_PLAYER);
+    loadPlayersAndBot(numPlayers + 1, 0);
+    std::cout << "Number of players :: " << numPlayers + 1 << std::endl;
     socketSystem.clientSyncNetworkID();
 }
 

@@ -23,7 +23,8 @@ public:
     bool sendData(unsigned int num);
     bool sendData(const sf::IpAddress &ipAdress, unsigned short port);
     bool setListener();
-    bool receiveData(bool memMetaData = false, bool waitForServer = false);
+    bool receiveData(bool memMetaData = false);
+    inline size_t getDestinationsNumber()const{return m_vectDestination.size();}
 };
 
 #endif // BASESOCKET_HPP

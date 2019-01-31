@@ -13,15 +13,20 @@ bool Jeu::chargerNiveau(unsigned int numNiv)
     if(mGameMode != GameMode::CLIENT)
     {
         mMoteurPrincipal.loadLevelTileMap(mNiveau, numNiv);
-        mMoteurPrincipal.loadPlayersAndBot(2, 0);
+        if(mGameMode == GameMode::SOLO)
+        {
+            mMoteurPrincipal.loadPlayersAndBot(2, 0);
+        }
         mMoteurPrincipal.loadLevelWall(mNiveau);
     }
     if(mGameMode == GameMode::SERVER)
     {
+        SocketSystem *sockSys = mMoteurPrincipal.getSocketSystem();
         waitForClientsConnect();
+        mMoteurPrincipal.loadPlayersAndBot(sockSys->getDestinationsNumber() + 1, 0);
         mMoteurPrincipal.synchronizeLevelToClients(mNiveau);
         mMoteurPrincipal.synchronizeEntitiesNetworkIdToClients();
-        mMoteurPrincipal.getSocketSystem()->launchReceptThread(false, false);
+        sockSys->launchReceptThread(false);
     }
     else if(mGameMode == GameMode::CLIENT)
     {

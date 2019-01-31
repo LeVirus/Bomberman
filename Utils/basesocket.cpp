@@ -12,13 +12,12 @@ BaseSocket::BaseSocket(): m_port(SERVER_PORT)
         m_port = CLIENT_PORT;
     }
     setListener();
-
-    //m_socket.setBlocking(false);
+    m_socket.setBlocking(true);
 }
 
 BaseSocket::BaseSocket(unsigned short port): m_port(port)
 {
-    //m_socket.setBlocking(false);
+    m_socket.setBlocking(true);
 }
 
 void BaseSocket::broadcastData()
@@ -52,7 +51,18 @@ bool BaseSocket::sendData(const sf::IpAddress &ipAdress, unsigned short port)
 
 bool BaseSocket::setListener()
 {
-    return m_socket.bind(m_port) != sf::Socket::Done;
+    if(Jeu::getGameMode() == GameMode::SERVER)
+    {
+        return m_socket.bind(m_port) != sf::Socket::Done;
+    }
+    else if(Jeu::getGameMode() == GameMode::CLIENT)
+    {
+        while(m_socket.bind(m_port) != sf::Socket::Done)
+        {
+            ++m_port;
+        }
+    }
+    return true;
 }
 
 bool BaseSocket::checkExistingClient(const pairIpPort &clientMetadata)
@@ -67,22 +77,15 @@ bool BaseSocket::checkExistingClient(const pairIpPort &clientMetadata)
     return false;
 }
 
-bool BaseSocket::receiveData(bool memMetaData, bool waitForServer)
+bool BaseSocket::receiveData(bool memMetaData)
 {
     mMutex.lock();
-    clearReceptBuffer();
+//    clearReceptBuffer();
     size_t sizeReceived;
     sf::IpAddress ipSender;
     unsigned short senderPort;
-    if(waitForServer)
-    {
-        m_socket.setBlocking(true);
-    }
     //wait while receive data CLIENT
-    if(waitForServer)
-    {
-        std::cout << "Waiting for receiving... " << std::endl;
-    }
+    std::cout << "Waiting for receiving... " << std::endl;
     if (m_socket.receive(m_ReceptData, sizeof(m_ReceptData), sizeReceived, ipSender, senderPort) != sf::Socket::Done)
     {
         mMutex.unlock();
