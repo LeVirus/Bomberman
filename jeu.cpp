@@ -27,6 +27,7 @@ bool Jeu::chargerNiveau(unsigned int numNiv)
         mMoteurPrincipal.synchronizeLevelToClients(mNiveau);
         mMoteurPrincipal.synchronizeEntitiesNetworkIdToClients();
         sockSys->launchReceptThread(false);
+        sockSys->setPlayerID(Players::P_SERVER);
     }
     else if(mGameMode == GameMode::CLIENT)
     {

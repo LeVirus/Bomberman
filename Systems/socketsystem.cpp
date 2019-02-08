@@ -56,15 +56,19 @@ void SocketSystem::delThread()
     mThreadContinue = true;
 }
 
+void SocketSystem::syncPlayerID()
+{
+    receiveData(false);
+    assert(m_bufferReceptCursor == sizeof(mPlayerIdentity));
+    memcpy(&mPlayerIdentity, &m_ReceptData[0], sizeof(mPlayerIdentity));
+}
+
 bool SocketSystem::clientSyncNetworkID()
 {
     if(!sizeof (m_ReceptData))
     {
         return false;
     }
-
-
-
     System::execSystem();
     for(size_t i = 0; i < m_bufferReceptCursor; i += sizeof(NetworkData))
     {
@@ -95,6 +99,11 @@ bool SocketSystem::clientSyncNetworkID()
     return true;
 }
 
+void SocketSystem::attributePlayerNetworkID(uint32_t networkID)
+{
+    mNetworkIdPlayer = networkID;
+}
+
 bool SocketSystem::clientSyncNetworkLevel(NetworkLevelData &levelData)
 {
     assert(sizeof(NetworkLevelData) != sizeof (m_ReceptData) && "Incoherent buffer size for level conf");
@@ -105,6 +114,11 @@ bool SocketSystem::clientSyncNetworkLevel(NetworkLevelData &levelData)
     memcpy(&levelData, &m_ReceptData[0], sizeof(NetworkLevelData));
     clearReceptBuffer();
     return true;
+}
+
+void SocketSystem::setPlayerID(Players playerId)
+{
+    mPlayerIdentity = playerId;
 }
 
 void SocketSystem::serializeEntitiesData()

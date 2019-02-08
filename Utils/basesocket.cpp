@@ -2,6 +2,7 @@
 #include "networkserialstruct.hpp"
 #include "jeu.hpp"
 #include <iostream>
+#include <cassert>
 #include <string.h>
 
 
@@ -24,9 +25,9 @@ void BaseSocket::broadcastData()
 {
     for(size_t i = 0; i < m_vectDestination.size(); ++i)
     {
-        if(sendData(m_vectDestination[i].first, m_vectDestination[i].second))
+        if(!sendData(m_vectDestination[i].first, m_vectDestination[i].second))
         {
-            // error...
+            assert(false && "data send failed");
         }
     }
 }

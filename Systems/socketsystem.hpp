@@ -22,11 +22,16 @@ private:
     void delThread();
     std::thread mDataReceptThread;
     bool mThreadContinue = true;
+    uint32_t mNetworkIdPlayer;
+    Players mPlayerIdentity;
 public:
     SocketSystem();
     void launchReceptThread(bool memMetaData = false);
     bool clientSyncNetworkID();
+    void attributePlayerNetworkID(uint32_t networkID);
     bool clientSyncNetworkLevel(NetworkLevelData &levelData);
+    void setPlayerID(Players playerId);
+    void syncPlayerID();
     virtual void execSystem();
     void synchronizeLevelToClients(const Niveau &level);
     virtual void displaySystem()const{}

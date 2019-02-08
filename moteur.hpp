@@ -20,7 +20,7 @@ private:
     bool mLetMeOut = false;
 
     void positionnerComponent(ecs::PositionComponent &posComp, uint32_t posX, uint32_t posY);
-    void createBomberman(uint32_t numPlayer);
+    uint32_t createBomberman(uint32_t numPlayer);
     void fillBombermanEntityBitset(std::vector<bool> &bombermanBitset,
                                    uint32_t uiNumPlayer);
     uint32_t instanciateBombermanComponents(std::vector<bool> &bombermanBitset);

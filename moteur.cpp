@@ -131,19 +131,28 @@ bool Moteur::loadPlayersAndBot(uint32_t uiNumPlayer, uint32_t uiNumBot)
     mMoteurGraphique.loadBaseSprites();
     for(uint32_t i = 0 ; i < uiNumPlayer ; ++i)
 	{
-        createBomberman(i);
+        uint32_t numEntity = createBomberman(i);
+        if(Jeu::getGameMode() == GameMode::SERVER && i == 0 /*||
+                Jeu::getGameMode() == GameMode::CLIENT && i != 0*/)
+        {
+            NetworkBombermanComponent *nc = mGestECS.getECSComponentManager()->
+                        searchComponentByType<NetworkBombermanComponent>(numEntity, NETWORK_BOMBER_COMPONENT);
+            assert(nc && "ss null");
+            getSocketSystem()->attributePlayerNetworkID(nc->mNetworkId);
+        }
 	}
 	return true;
     //uiNumBot a implémenter ultérieurement
 }
 
-void Moteur::createBomberman(uint32_t numPlayer)
+uint32_t Moteur::createBomberman(uint32_t numPlayer)
 {
     assert(numPlayer < MAX_PLAYER && "Player number out of bound.");
     std::vector<bool> bitsetComp;
     fillBombermanEntityBitset(bitsetComp, numPlayer);
     uint32_t memEntity = instanciateBombermanComponents(bitsetComp);
     configBombermanComponents(memEntity, numPlayer, bitsetComp);
+    return memEntity;
 }
 
 void Moteur::fillBombermanEntityBitset(std::vector<bool> &bombermanBitset,
@@ -355,6 +364,7 @@ void Moteur::waitServerSync(Niveau &niv)
     SocketSystem * sss = getSocketSystem();
     assert(sss && "SocketSystem == nullptr");
     sss->sendData("127.0.0.1", SERVER_PORT);
+    sss->syncPlayerID();
     synchLevelFromServer(*sss, niv);
 //    loadPlayersAndBot(2, 0);
     synchPlayersFromServer(*sss);
@@ -372,12 +382,12 @@ void Moteur::synchLevelFromServer(SocketSystem &socketSystem, Niveau &niv)
 void Moteur::synchPlayersFromServer(SocketSystem &socketSystem)
 {
     socketSystem.receiveData(false);
-
     uint32_t numPlayers = socketSystem.getBufferReceptSize() / sizeof(NetworkData);
+    ++numPlayers;
     //create players from number of players received
-    assert(numPlayers + 1 < MAX_PLAYER);
-    loadPlayersAndBot(numPlayers + 1, 0);
-    std::cout << "Number of players :: " << numPlayers + 1 << std::endl;
+    assert(numPlayers < MAX_PLAYER);
+    loadPlayersAndBot(numPlayers, 0);
+    std::cout << "Number of players :: " << numPlayers << std::endl;
     socketSystem.clientSyncNetworkID();
 }
 
