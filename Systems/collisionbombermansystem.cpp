@@ -179,6 +179,7 @@ void CollisionBombermanSystem::execSystem()
             }
             if(! bCheckFlag(flagBombermanComponent->muiNumFlag, flagBombermanComponentB->muiNumFlag))
             {
+
                 continue;
             }
             if(bIsInCollision(collRectBoxComponent->mRectBox, collRectBoxComponentB->mRectBox))

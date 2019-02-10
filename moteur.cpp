@@ -132,8 +132,8 @@ bool Moteur::loadPlayersAndBot(uint32_t uiNumPlayer, uint32_t uiNumBot)
     for(uint32_t i = 0 ; i < uiNumPlayer ; ++i)
 	{
         uint32_t numEntity = createBomberman(i);
-        if(Jeu::getGameMode() == GameMode::SERVER && i == 0 /*||
-                Jeu::getGameMode() == GameMode::CLIENT && i != 0*/)
+        Players PlayerId = getSocketSystem()->getProcessPlayerID();
+        if(PlayerId == i)
         {
             NetworkBombermanComponent *nc = mGestECS.getECSComponentManager()->
                         searchComponentByType<NetworkBombermanComponent>(numEntity, NETWORK_BOMBER_COMPONENT);
@@ -168,10 +168,7 @@ void Moteur::fillBombermanEntityBitset(std::vector<bool> &bombermanBitset,
     bombermanBitset[TIMER_BOMBER_COMPONENT]          = true;
 
     Players playerID = getSocketSystem()->getProcessPlayerID();
-    if((playerID == Players::P_SERVER && uiNumPlayer == Players::P_SERVER) ||
-            (playerID == Players::P_CLIENT_A && uiNumPlayer == Players::P_CLIENT_A) ||
-            (playerID == Players::P_CLIENT_B && uiNumPlayer == Players::P_CLIENT_B) ||
-            (playerID == Players::P_CLIENT_C && uiNumPlayer == Players::P_CLIENT_C))
+    if(playerID == uiNumPlayer)
     {
         bombermanBitset[INPUT_BOMBER_COMPONENT]          = true;
     }
@@ -218,15 +215,6 @@ void Moteur::configBombermanComponents(uint32_t numEntity, uint32_t numPlayer,
                 searchComponentByType<NetworkBombermanComponent> (numEntity, NETWORK_BOMBER_COMPONENT);
         nb->mEntityType = TypeEntityFlag::FLAG_BOMBERMAN;
         nb->mNetworkId = NetworkBombermanComponent::attributeNum();
-        //PLAYER 0 == SERVER PLAYER
-        if(numPlayer == Players::P_SERVER)
-        {
-            nb->mServerEntity = true;
-        }
-        else
-        {
-            nb->mServerEntity = false;
-        }
     }
     FlagBombermanComponent *fc = mGestECS.getECSComponentManager()->
             searchComponentByType <FlagBombermanComponent> (numEntity, FLAG_BOMBER_COMPONENT);
@@ -380,7 +368,6 @@ void Moteur::synchPlayersFromServer(SocketSystem &socketSystem)
 {
     socketSystem.receiveData(false);
     uint32_t numPlayers = socketSystem.getBufferReceptSize() / sizeof(NetworkData);
-    ++numPlayers;
     //create players from number of players received
     assert(numPlayers < MAX_PLAYER);
     loadPlayersAndBot(numPlayers, 0);

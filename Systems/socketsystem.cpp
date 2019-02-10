@@ -56,6 +56,18 @@ void SocketSystem::delThread()
     mThreadContinue = true;
 }
 
+void SocketSystem::serverSyncInitPlayersEntityToClient()
+{
+    if(Jeu::getGameMode() != GameMode::SERVER)
+    {
+        return;
+    }
+    System::execSystem();
+    serializeEntitiesData(true);
+    broadcastData();
+    clearSendBuffer();
+}
+
 void SocketSystem::clientSyncPlayerID()
 {
     receiveData(false);
@@ -67,7 +79,7 @@ void SocketSystem::serverSyncClientsGlobal(const Niveau &level)
 {
     synchronizeProcessPlayersNetworkID();
     synchronizeLevelToClients(level); // send level info to client(s)
-    execSystem(); // send players info to client(s)
+    serverSyncInitPlayersEntityToClient(); // send players info to client(s)
     launchReceptThread(false);
     mProcessPlayerIdentity = Players::P_SERVER;
 }
@@ -125,7 +137,7 @@ bool SocketSystem::clientSyncNetworkLevel(NetworkLevelData &levelData)
     return true;
 }
 
-void SocketSystem::serializeEntitiesData()
+void SocketSystem::serializeEntitiesData(bool sendAllPlayersEntities = false)
 {
     clearSendBuffer();
     for(size_t i = 0; i < mVectNumEntity.size(); ++i)
@@ -134,10 +146,14 @@ void SocketSystem::serializeEntitiesData()
                 searchComponentByType<NetworkBombermanComponent>(mVectNumEntity[i], NETWORK_BOMBER_COMPONENT);
         assert(networkComp && "BombBombermanSystem::execSystem :: timerComp == NULL\n");
 
-        if((Jeu::getGameMode() == GameMode::SERVER && !networkComp->mServerEntity) ||
-                (Jeu::getGameMode() == GameMode::CLIENT && networkComp->mServerEntity))
+        if(!sendAllPlayersEntities)
         {
-            continue;
+            if(/*(Jeu::getGameMode() == GameMode::SERVER && mProcessPlayerIdentity != i) ||*/
+                    (Jeu::getGameMode() == GameMode::CLIENT && mProcessPlayerIdentity != i))
+                //A modifier pour les clients a b ou c cerr
+            {
+                continue;
+            }
         }
         if(networkComp->mEntityType == TypeEntityFlag::FLAG_BOMBERMAN)
         {

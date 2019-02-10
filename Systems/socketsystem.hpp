@@ -13,13 +13,14 @@ class Niveau;
 class SocketSystem : public ecs::System, public BaseSocket
 {
 private:
-    void serializeEntitiesData();
+    void serializeEntitiesData(bool sendAllPlayersEntities);
     void serializeLevelData(const Niveau &level);
     void addPlayersConf(NetworkLevelData &levelData);
     void serializeBombermanEntity(unsigned int entityNum, unsigned int networkID);
     void clientUpdateEntitiesFromServer();
     void threadReception(bool memMetaData);
     void delThread();
+    void serverSyncInitPlayersEntityToClient();
 
     /**
      * @brief synchronizeProcessPlayersNetworkID

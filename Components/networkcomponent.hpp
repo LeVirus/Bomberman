@@ -15,7 +15,6 @@ struct NetworkBombermanComponent : public ecs::Component
     {}
     unsigned int mNetworkId;
     TypeEntityFlag mEntityType;
-    bool mServerEntity;
     virtual ~NetworkBombermanComponent() = default;
     static unsigned int attributeNum()
     {
