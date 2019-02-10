@@ -20,20 +20,28 @@ private:
     void clientUpdateEntitiesFromServer();
     void threadReception(bool memMetaData);
     void delThread();
+
+    /**
+     * @brief synchronizeProcessPlayersNetworkID
+     * Send process player ID to each connected client, in order of connections.
+     */
+    void synchronizeProcessPlayersNetworkID();
+    void synchronizeLevelToClients(const Niveau &level);
+
     std::thread mDataReceptThread;
     bool mThreadContinue = true;
     uint32_t mNetworkIdPlayer;
-    Players mPlayerIdentity;
+    Players mProcessPlayerIdentity;
 public:
     SocketSystem();
-    void launchReceptThread(bool memMetaData = false);
     bool clientSyncNetworkID();
     void attributePlayerNetworkID(uint32_t networkID);
     bool clientSyncNetworkLevel(NetworkLevelData &levelData);
-    void setPlayerID(Players playerId);
-    void syncPlayerID();
+    void clientSyncPlayerID();
+    void serverSyncClientsGlobal(const Niveau &level);
+    void launchReceptThread(bool memMetaData = false);
+    inline Players getProcessPlayerID()const{return mProcessPlayerIdentity;}
     virtual void execSystem();
-    void synchronizeLevelToClients(const Niveau &level);
     virtual void displaySystem()const{}
     virtual ~SocketSystem();
 };

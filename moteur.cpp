@@ -167,8 +167,11 @@ void Moteur::fillBombermanEntityBitset(std::vector<bool> &bombermanBitset,
     bombermanBitset[PLAYER_CONFIG_BOMBER_COMPONENT]  = true;
     bombermanBitset[TIMER_BOMBER_COMPONENT]          = true;
 
-    if((uiNumPlayer == Players::P_SERVER && Jeu::getGameMode() != GameMode::CLIENT) ||
-            (uiNumPlayer > Players::P_SERVER && Jeu::getGameMode() != GameMode::SERVER))
+    Players playerID = getSocketSystem()->getProcessPlayerID();
+    if((playerID == Players::P_SERVER && uiNumPlayer == Players::P_SERVER) ||
+            (playerID == Players::P_CLIENT_A && uiNumPlayer == Players::P_CLIENT_A) ||
+            (playerID == Players::P_CLIENT_B && uiNumPlayer == Players::P_CLIENT_B) ||
+            (playerID == Players::P_CLIENT_C && uiNumPlayer == Players::P_CLIENT_C))
     {
         bombermanBitset[INPUT_BOMBER_COMPONENT]          = true;
     }
@@ -353,18 +356,12 @@ void Moteur::loadLevelWall(const Niveau &niv)
     }
 }
 
-void Moteur::synchronizeEntitiesNetworkIdToClients()
-{
-    SocketSystem * sss = getSocketSystem();
-    sss->execSystem();
-}
-
 void Moteur::waitServerSync(Niveau &niv)
 {
     SocketSystem * sss = getSocketSystem();
     assert(sss && "SocketSystem == nullptr");
     sss->sendData("127.0.0.1", SERVER_PORT);
-    sss->syncPlayerID();
+    sss->clientSyncPlayerID();
     synchLevelFromServer(*sss, niv);
 //    loadPlayersAndBot(2, 0);
     synchPlayersFromServer(*sss);
@@ -389,13 +386,6 @@ void Moteur::synchPlayersFromServer(SocketSystem &socketSystem)
     loadPlayersAndBot(numPlayers, 0);
     std::cout << "Number of players :: " << numPlayers << std::endl;
     socketSystem.clientSyncNetworkID();
-}
-
-void Moteur::synchronizeLevelToClients(const Niveau &level)
-{
-    SocketSystem *sss = getSocketSystem();
-    assert(sss && "SocketSystem == nullptr");
-    sss->synchronizeLevelToClients(level);
 }
 
 SocketSystem *Moteur::getSocketSystem()

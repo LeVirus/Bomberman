@@ -56,11 +56,20 @@ void SocketSystem::delThread()
     mThreadContinue = true;
 }
 
-void SocketSystem::syncPlayerID()
+void SocketSystem::clientSyncPlayerID()
 {
     receiveData(false);
-    assert(m_bufferReceptCursor == sizeof(mPlayerIdentity));
-    memcpy(&mPlayerIdentity, &m_ReceptData[0], sizeof(mPlayerIdentity));
+    assert(m_bufferReceptCursor == sizeof(mProcessPlayerIdentity));
+    memcpy(&mProcessPlayerIdentity, &m_ReceptData[0], sizeof(mProcessPlayerIdentity));
+}
+
+void SocketSystem::serverSyncClientsGlobal(const Niveau &level)
+{
+    synchronizeProcessPlayersNetworkID();
+    synchronizeLevelToClients(level); // send level info to client(s)
+    execSystem(); // send players info to client(s)
+    launchReceptThread(false);
+    mProcessPlayerIdentity = Players::P_SERVER;
 }
 
 bool SocketSystem::clientSyncNetworkID()
@@ -116,21 +125,14 @@ bool SocketSystem::clientSyncNetworkLevel(NetworkLevelData &levelData)
     return true;
 }
 
-void SocketSystem::setPlayerID(Players playerId)
-{
-    mPlayerIdentity = playerId;
-}
-
 void SocketSystem::serializeEntitiesData()
 {
     clearSendBuffer();
-    std::cerr << "mVectNumEntity.size() " << mVectNumEntity.size() << "\n";
     for(size_t i = 0; i < mVectNumEntity.size(); ++i)
     {
         NetworkBombermanComponent* networkComp = stairwayToComponentManager().
                 searchComponentByType<NetworkBombermanComponent>(mVectNumEntity[i], NETWORK_BOMBER_COMPONENT);
         assert(networkComp && "BombBombermanSystem::execSystem :: timerComp == NULL\n");
-        std::cerr << " mVectNumEntity[i] " << networkComp->mServerEntity << "\n";
 
         if((Jeu::getGameMode() == GameMode::SERVER && !networkComp->mServerEntity) ||
                 (Jeu::getGameMode() == GameMode::CLIENT && networkComp->mServerEntity))
@@ -139,8 +141,6 @@ void SocketSystem::serializeEntitiesData()
         }
         if(networkComp->mEntityType == TypeEntityFlag::FLAG_BOMBERMAN)
         {
-            std::cerr << " IN mVectNumEntity[i] " << mVectNumEntity[i]  << "\n";
-
             //        case TypeEntityFlag::FLAG_BOMBERMAN:
             serializeBombermanEntity(mVectNumEntity[i], networkComp->mNetworkId);
             //            break;
@@ -227,18 +227,14 @@ void SocketSystem::execSystem()
 {
     clearSendBuffer();
     System::execSystem();
+    clientUpdateEntitiesFromServer();
+    serializeEntitiesData();
     if(Jeu::getGameMode() == GameMode::SERVER)
-    {
-        clientUpdateEntitiesFromServer();
-        serializeEntitiesData();
+    { 
         broadcastData();
-//        sendData("127.0.0.1", CLIENT_PORT);
     }
-    else if(Jeu::getGameMode() == GameMode::CLIENT)
+    else
     {
-//        std::this_thread::sleep_for(200ms);
-        clientUpdateEntitiesFromServer();
-        serializeEntitiesData();
         sendData("127.0.0.1", SERVER_PORT);
     }
     clearReceptBuffer();
@@ -248,8 +244,27 @@ void SocketSystem::synchronizeLevelToClients(const Niveau &level)
 {
     serializeLevelData(level);
     broadcastData();
-//    sendData("127.0.0.1", CLIENT_PORT);
     clearSendBuffer();
+}
+
+void SocketSystem::synchronizeProcessPlayersNetworkID()
+{
+    assert(getDestinationsNumber() < MAX_PLAYER - 1);
+    Players id = Players::P_CLIENT_A;
+    for(uint32_t i = 0; i < getDestinationsNumber(); ++i)
+    {
+        addSerializeData(&id, sizeof (Players));
+        sendData(i);
+        clearSendBuffer();
+        if(id == Players::P_CLIENT_A)
+        {
+            id = Players::P_CLIENT_B;
+        }
+        else if(id == Players::P_CLIENT_B)
+        {
+            id = Players::P_CLIENT_C;
+        }
+    }
 }
 
 SocketSystem::~SocketSystem()

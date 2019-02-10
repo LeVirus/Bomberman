@@ -41,14 +41,7 @@ public:
     void loadLevelWall(const Niveau &niv);
     void waitForClientsConnect();
     void waitServerSync(Niveau &niv);
-    void synchronizeLevelToClients(const Niveau &level);
 
-    /**
-     * @brief synchronizeEntitiesNetworkId
-     * Send data from server to client. This for synch
-     * entities network id to client and server.
-     */
-    void synchronizeEntitiesNetworkIdToClients();
     bool stopGame()const;
 };
 
