@@ -147,9 +147,7 @@ void SocketSystem::serializeEntitiesData(bool sendAllPlayersEntities = false)
 
         if(!sendAllPlayersEntities)
         {
-            if((Jeu::getGameMode() == GameMode::SERVER && mProcessPlayerIdentity != i) ||
-                    (Jeu::getGameMode() == GameMode::CLIENT && mProcessPlayerIdentity != i))
-                //A modifier pour les clients a b ou c cerr
+            if(Jeu::getGameMode() == GameMode::CLIENT && mProcessPlayerIdentity != i)
             {
                 continue;
             }
@@ -216,9 +214,15 @@ void SocketSystem::clientUpdateEntitiesFromServer()
     }
     for(size_t i = 0; i < m_bufferReceptCursor; i += sizeof(NetworkData))
     {
+
         NetworkData networkData;
         assert(i + sizeof(NetworkData) < SOCKET_DATA_SIZE);
         memcpy(&networkData, &m_ReceptData[i], sizeof(NetworkData));
+        //ignore sent of process player from server
+        if(Jeu::getGameMode() == GameMode::CLIENT && mNetworkIdPlayer == networkData.mNetworkID)
+        {
+            continue;
+        }
         for(size_t j = 0; j < mVectNumEntity.size(); ++j)
         {
             NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
