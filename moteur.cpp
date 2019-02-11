@@ -71,8 +71,8 @@ void Moteur::getInput()
     for( uint32_t i = 0 ; i < vectNumEntitySystem.size() ; ++i )
 	{
 
-		InputBombermanComponent *ic = mGestECS.getECSComponentManager() ->
-				searchComponentByType< InputBombermanComponent >(
+        InputBombermanComponent *ic = mGestECS.getECSComponentManager() ->
+                searchComponentByType< InputBombermanComponent >(
                     vectNumEntitySystem[i], INPUT_BOMBER_COMPONENT );
         if(! ic)continue;
         //default INPUT_PLAYER_A
@@ -84,7 +84,6 @@ void Moteur::getInput()
         switch(ic->mNumInput)
         {
         case INPUT_PLAYER_A:
-            std::cerr << "server\n";
             break;
         case INPUT_PLAYER_B:
             up = sf::Keyboard::Up;
@@ -161,6 +160,11 @@ bool Moteur::loadPlayersAndBot(uint32_t uiNumPlayer, uint32_t uiNumBot)
             assert(nc && "ss null");
             getSocketSystem()->attributePlayerNetworkID(nc->mNetworkId);
         }
+        if(i == 0 && Jeu::getGameMode() == SERVER)
+        {
+            getSocketSystem()->setProcessPlayerID(Players::P_SERVER);
+        }
+
 	}
 	return true;
     //uiNumBot a implémenter ultérieurement

@@ -81,7 +81,6 @@ void SocketSystem::serverSyncClientsGlobal(const Niveau &level)
     synchronizeLevelToClients(level); // send level info to client(s)
     serverSyncInitPlayersEntityToClient(); // send players info to client(s)
     launchReceptThread(false);
-    mProcessPlayerIdentity = Players::P_SERVER;
 }
 
 bool SocketSystem::clientSyncNetworkID()

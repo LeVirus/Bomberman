@@ -42,6 +42,7 @@ public:
     void serverSyncClientsGlobal(const Niveau &level);
     void launchReceptThread(bool memMetaData = false);
     inline Players getProcessPlayerID()const{return mProcessPlayerIdentity;}
+    inline void setProcessPlayerID(Players newID){mProcessPlayerIdentity = newID;}
     virtual void execSystem();
     virtual void displaySystem()const{}
     virtual ~SocketSystem();
