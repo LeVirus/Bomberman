@@ -86,7 +86,7 @@ bool BaseSocket::receiveData(bool memMetaData)
     sf::IpAddress ipSender;
     unsigned short senderPort;
     //wait while receive data CLIENT
-    std::cout << "Waiting for receiving... " << std::endl;
+//    std::cout << "Waiting for receiving... " << std::endl;
     if (m_socket.receive(m_ReceptData, sizeof(m_ReceptData), sizeReceived, ipSender, senderPort) != sf::Socket::Done)
     {
         mMutex.unlock();
@@ -100,7 +100,7 @@ bool BaseSocket::receiveData(bool memMetaData)
         std::cout << "Client ip :: " << ipSender << " senderPort " << senderPort << std::endl;
     }
     m_bufferReceptCursor = sizeReceived;
-    std::cout << "Received " << sizeReceived << " bytes from " << ipSender << " on port " << senderPort << std::endl;
+//    std::cout << "Received " << sizeReceived << " bytes from " << ipSender << " on port " << senderPort << std::endl;
     mMutex.unlock();
     return true;
 }

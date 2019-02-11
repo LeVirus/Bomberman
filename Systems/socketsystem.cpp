@@ -148,7 +148,7 @@ void SocketSystem::serializeEntitiesData(bool sendAllPlayersEntities = false)
 
         if(!sendAllPlayersEntities)
         {
-            if(/*(Jeu::getGameMode() == GameMode::SERVER && mProcessPlayerIdentity != i) ||*/
+            if((Jeu::getGameMode() == GameMode::SERVER && mProcessPlayerIdentity != i) ||
                     (Jeu::getGameMode() == GameMode::CLIENT && mProcessPlayerIdentity != i))
                 //A modifier pour les clients a b ou c cerr
             {

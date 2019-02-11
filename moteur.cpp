@@ -75,16 +75,37 @@ void Moteur::getInput()
 				searchComponentByType< InputBombermanComponent >(
                     vectNumEntitySystem[i], INPUT_BOMBER_COMPONENT );
         if(! ic)continue;
-        sf::Keyboard::Key up = sf::Keyboard::Z, down = sf::Keyboard::S, left = sf::Keyboard::Q,
-                right = sf::Keyboard::D, launchBomb = sf::Keyboard::Space;
+        //default INPUT_PLAYER_A
+        sf::Keyboard::Key up = sf::Keyboard::Z,
+        down = sf::Keyboard::S,
+        left = sf::Keyboard::Q,
+        right = sf::Keyboard::D,
+        launchBomb = sf::Keyboard::Space;
         switch(ic->mNumInput)
         {
-            case INPUT_PLAYER_B:
+        case INPUT_PLAYER_A:
+            std::cerr << "server\n";
+            break;
+        case INPUT_PLAYER_B:
             up = sf::Keyboard::Up;
             down = sf::Keyboard::Down;
             left = sf::Keyboard::Left;
             right = sf::Keyboard::Right;
             launchBomb = sf::Keyboard::RControl;
+            break;
+        case INPUT_PLAYER_C:
+            up = sf::Keyboard::Numpad8;
+            down = sf::Keyboard::Numpad5;
+            left = sf::Keyboard::Numpad4;
+            right = sf::Keyboard::Numpad6;
+            launchBomb = sf::Keyboard::Numpad0;
+            break;
+        case INPUT_PLAYER_D:
+            up = sf::Keyboard::O;
+            down = sf::Keyboard::L;
+            left = sf::Keyboard::K;
+            right = sf::Keyboard::M;
+            launchBomb = sf::Keyboard::Enter;
             break;
         }
         if(sf::Keyboard::isKeyPressed(up))ic->mBitsetInput[MOVE_UP] = true;
@@ -259,14 +280,36 @@ void Moteur::configBombermanComponents(uint32_t numEntity, uint32_t numPlayer,
 
     if(bombermanBitset[INPUT_BOMBER_COMPONENT])
     {
-        if(numPlayer == 0 && Jeu::getGameMode() != GameMode::CLIENT)
+        if(Jeu::getGameMode() != GameMode::SOLO)
         {
-            inputComp->mNumInput = INPUT_PLAYER_A;
+            Players playerID = getSocketSystem()->getProcessPlayerID();
+            switch(playerID)
+            {
+            case Players::P_SERVER:
+                inputComp->mNumInput = INPUT_PLAYER_A;
+                break;
+            case Players::P_CLIENT_A:
+                inputComp->mNumInput = INPUT_PLAYER_B;
+                break;
+            case Players::P_CLIENT_B:
+                inputComp->mNumInput = INPUT_PLAYER_C;
+                break;
+            case Players::P_CLIENT_C:
+                inputComp->mNumInput = INPUT_PLAYER_D;
+                break;
+            }
         }
-        // == 1 pour les tests
-        else if(numPlayer == 1 && Jeu::getGameMode() != GameMode::SERVER)
+        else
         {
-            inputComp->mNumInput = INPUT_PLAYER_B;
+            if(numPlayer == 0 && Jeu::getGameMode() != GameMode::CLIENT)
+            {
+                inputComp->mNumInput = INPUT_PLAYER_A;
+            }
+            // == 1 pour les tests
+            else if(numPlayer == 1 && Jeu::getGameMode() != GameMode::SERVER)
+            {
+                inputComp->mNumInput = INPUT_PLAYER_B;
+            }
         }
     }
 }
