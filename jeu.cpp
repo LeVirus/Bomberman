@@ -21,6 +21,7 @@ bool Jeu::chargerNiveau(unsigned int numNiv)
     if(mGameMode == GameMode::SERVER)
     {
         SocketSystem *sockSys = mMoteurPrincipal.getSocketSystem();
+        sockSys->setProcessPlayerID(Players::P_SERVER);
         waitForClientsConnect();
         mMoteurPrincipal.loadPlayersAndBot(sockSys->getDestinationsNumber() + 1, 0);
         mMoteurPrincipal.loadLevelWall(mNiveau);

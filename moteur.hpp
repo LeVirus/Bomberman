@@ -41,7 +41,6 @@ public:
     void loadLevelWall(const Niveau &niv);
     void waitForClientsConnect();
     void waitServerSync(Niveau &niv);
-
     bool stopGame()const;
 };
 

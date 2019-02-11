@@ -160,11 +160,6 @@ bool Moteur::loadPlayersAndBot(uint32_t uiNumPlayer, uint32_t uiNumBot)
             assert(nc && "ss null");
             getSocketSystem()->attributePlayerNetworkID(nc->mNetworkId);
         }
-        if(i == 0 && Jeu::getGameMode() == SERVER)
-        {
-            getSocketSystem()->setProcessPlayerID(Players::P_SERVER);
-        }
-
 	}
 	return true;
     //uiNumBot a implémenter ultérieurement
@@ -417,6 +412,7 @@ void Moteur::synchPlayersFromServer(SocketSystem &socketSystem)
     uint32_t numPlayers = socketSystem.getBufferReceptSize() / sizeof(NetworkData);
     //create players from number of players received
     assert(numPlayers < MAX_PLAYER);
+
     loadPlayersAndBot(numPlayers, 0);
     std::cout << "Number of players :: " << numPlayers << std::endl;
     socketSystem.clientSyncNetworkID();
