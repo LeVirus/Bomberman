@@ -21,6 +21,8 @@ private:
     void serializeCommonDataEntity(uint32_t entityNum, uint32_t networkID, NetworkData &bombData);
     void delThread();
     void serverSyncInitPlayersEntityToClient();
+    void updateBombermanEntity(NetworkData &networkData);
+    void updateBombEntity(NetworkData &networkData);
 
     /**
      * @brief synchronizeProcessPlayersNetworkID
@@ -40,7 +42,7 @@ public:
     void clientSyncPlayerID();
     void serverSyncClientsGlobal(const Niveau &level);
     void launchReceptThread(bool memMetaData = false);
-    void clientUpdateEntitiesFromRemote();
+    void updateEntitiesFromRemote();
     inline Players getProcessPlayerID()const{return mProcessPlayerIdentity;}
     inline void setProcessPlayerID(Players newID){mProcessPlayerIdentity = newID;}
     virtual void execSystem();

@@ -105,7 +105,7 @@ bool BaseSocket::receiveData(bool memMetaData, bool loop)
         m_bufferReceptCursor += sizeReceived;
         if(mThreadContinue)
         {
-            mSockSys->clientUpdateEntitiesFromRemote();//dégueulasse
+            mSockSys->updateEntitiesFromRemote();//dégueulasse
         }
     }while(mThreadContinue);
 

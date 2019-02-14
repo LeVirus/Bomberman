@@ -227,42 +227,73 @@ void SocketSystem::serializeCommonDataEntity(uint32_t entityNum, uint32_t networ
     bombData.mPosY = posComp->vect2DPosComp.mfY;
 }
 
-void SocketSystem::clientUpdateEntitiesFromRemote()
+void SocketSystem::updateEntitiesFromRemote()
 {
 //    GameMode game = Jeu::getGameMode();
     if(!m_bufferReceptCursor)
     {
         return;
     }
+    NetworkData networkData;
     for(size_t i = 0; i < m_bufferReceptCursor; i += sizeof(NetworkData))
     {
-        NetworkData networkData;
         assert(i + sizeof(NetworkData) < SOCKET_DATA_SIZE);
         memcpy(&networkData, &m_ReceptData[i], sizeof(NetworkData));
-        //ignore sent of process player from server
-        if(Jeu::getGameMode() == GameMode::CLIENT && mNetworkIdPlayer == networkData.mNetworkID)
+        if(networkData.mEntityType == TypeEntityFlag::FLAG_BOMBERMAN)
         {
-            continue;
+            updateBombermanEntity(networkData);
         }
-
-        for(size_t j = 0; j < mVectNumEntity.size(); ++j)
+        else if (networkData.mEntityType == TypeEntityFlag::FLAG_BOMB)
         {
-            NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
-                    (mVectNumEntity[j], NETWORK_BOMBER_COMPONENT);
-            assert(netComp && "netComp == NULL");
-
-            if(netComp->mNetworkId == networkData.mNetworkID)
-            {
-                ecs::PositionComponent *posComp = stairwayToComponentManager().searchComponentByType <ecs::PositionComponent>
-                        (mVectNumEntity[j], ecs::POSITION_COMPONENT);
-                assert(posComp && "posComp == NULL");
-                posComp->vect2DPosComp.mfX = networkData.mPosX;
-                posComp->vect2DPosComp.mfY = networkData.mPosY;
-                break;
-            }
+            updateBombEntity(networkData);
         }
     }
     clearReceptBuffer();
+}
+
+void SocketSystem::updateBombermanEntity(NetworkData &networkData)
+{
+    //ignore sent of process player from server
+    if(Jeu::getGameMode() == GameMode::CLIENT && mNetworkIdPlayer == networkData.mNetworkID)
+    {
+        return;
+    }
+    for(size_t j = 0; j < mVectNumEntity.size(); ++j)
+    {
+        NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
+                (mVectNumEntity[j], NETWORK_BOMBER_COMPONENT);
+        assert(netComp && "netComp == NULL");
+
+        if(netComp->mNetworkId == networkData.mNetworkID)
+        {
+            ecs::PositionComponent *posComp = stairwayToComponentManager().searchComponentByType <ecs::PositionComponent>
+                    (mVectNumEntity[j], ecs::POSITION_COMPONENT);
+            assert(posComp && "posComp == NULL");
+            posComp->vect2DPosComp.mfX = networkData.mPosX;
+            posComp->vect2DPosComp.mfY = networkData.mPosY;
+            break;
+        }
+    }
+}
+
+void SocketSystem::updateBombEntity(NetworkData &networkData)
+{
+//    for(size_t j = 0; j < mVectNumEntity.size(); ++j)
+//    {
+//        NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
+//                (mVectNumEntity[j], NETWORK_BOMBER_COMPONENT);
+//        assert(netComp && "netComp == NULL");
+
+//        if(netComp->mNetworkId == networkData.mNetworkID)
+//        {
+//            ecs::PositionComponent *posComp = stairwayToComponentManager().searchComponentByType <ecs::PositionComponent>
+//                    (mVectNumEntity[j], ecs::POSITION_COMPONENT);
+//            assert(posComp && "posComp == NULL");
+//            posComp->vect2DPosComp.mfX = networkData.mPosX;
+//            posComp->vect2DPosComp.mfY = networkData.mPosY;
+//            break;
+//        }
+//    }
 }
 
 void SocketSystem::execSystem()
