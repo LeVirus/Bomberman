@@ -11,6 +11,7 @@ struct NetworkBombermanComponent : public ecs::Component
         muiTypeComponent = NETWORK_BOMBER_COMPONENT;
     }
 
+    inline uint32_t getEntityAssociated(){return muiIDEntityAssociated;}
     void displayComponent()const override
     {}
     unsigned int mNetworkId;

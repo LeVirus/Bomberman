@@ -132,7 +132,7 @@ void BombBombermanSystem::changeSpriteBomb(unsigned int numEntity, bool &previou
     }
 }
 
-void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionComponent &posA, bool network)
+void BombBombermanSystem::lauchBomb(unsigned int numPlayerEntity, const ecs::PositionComponent &posA, bool network)
 {
 //    bool network = Jeu::getGameMode() != GameMode::SOLO;
     unsigned int numCreatedEntity = createBombEntity(network);
@@ -148,7 +148,7 @@ void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionC
     BombConfigBombermanComponent *bombConfComponent = stairwayToComponentManager().searchComponentByType<BombConfigBombermanComponent>
             (numCreatedEntity, BOMB_CONFIG_BOMBER_COMPONENT);
     assert(bombConfComponent && "BombBombermanSystem::lauchBomb bombConfComponent is null\n");
-    bombConfComponent->mNumPlayerEntity = numEntity;
+    bombConfComponent->mNumPlayerEntity = numPlayerEntity;
 
     ecs::DisplayComponent *dispComponent = stairwayToComponentManager().searchComponentByType < ecs::DisplayComponent >
             (numCreatedEntity, ecs::DISPLAY_COMPONENT);
@@ -166,14 +166,14 @@ void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionC
         NetworkBombermanComponent *networkComp = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
                 (numCreatedEntity, NETWORK_BOMBER_COMPONENT);
         assert(networkComp && "BombBombermanSystem::lauchBomb flagComponent is null\n");
-        if(Jeu::getGameMode() == GameMode::SERVER)
-        {
-            networkComp->mNetworkId = NetworkBombermanComponent::attributeNum();
-        }
-        else
-        {
-            networkComp->mNetworkId = UNDEFINED_NETWORK_ID;
-        }
+//        if(Jeu::getGameMode() == GameMode::SERVER)
+//        {
+//            networkComp->mNetworkId = NetworkBombermanComponent::attributeNum();
+//        }
+//        else
+//        {
+//            networkComp->mNetworkId = UNDEFINED_NETWORK_ID;
+//        }
         networkComp->mEntityType = TypeEntityFlag::FLAG_BOMB;
     }
 }

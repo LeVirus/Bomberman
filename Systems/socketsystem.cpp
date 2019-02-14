@@ -6,10 +6,10 @@
 #include "ECSconstantes.hpp"
 #include "constants.hpp"
 #include "networkserialstruct.hpp"
+#include "bombbombermansystem.hpp"
 #include "flagcomponent.hpp"
 #include "jeu.hpp"
 #include <cstring>
-#include <csignal>
 #include <cassert>
 #include <thread>
 #include <chrono>
@@ -55,7 +55,7 @@ void SocketSystem::serverSyncInitPlayersEntityToClient()
         return;
     }
     System::execSystem();
-    serializeEntitiesData(true);
+    serializeEntitiesData();
     broadcastData();
     clearSendBuffer();
 }
@@ -129,29 +129,22 @@ bool SocketSystem::clientSyncNetworkLevel(NetworkLevelData &levelData)
     return true;
 }
 
-void SocketSystem::serializeEntitiesData(bool sendAllPlayersEntities = false)
+void SocketSystem::serializeEntitiesData()
 {
     clearSendBuffer();
     for(size_t i = 0; i < mVectNumEntity.size(); ++i)
     {
+
         NetworkBombermanComponent* networkComp = stairwayToComponentManager().
                 searchComponentByType<NetworkBombermanComponent>(mVectNumEntity[i], NETWORK_BOMBER_COMPONENT);
         assert(networkComp && "BombBombermanSystem::execSystem :: timerComp == NULL\n");
-
-        if(!sendAllPlayersEntities)
-        {
-            if(Jeu::getGameMode() == GameMode::CLIENT && mProcessPlayerIdentity != i)
-            {
-                continue;
-            }
-        }
         switch (networkComp->mEntityType)
         {
         case TypeEntityFlag::FLAG_BOMBERMAN:
             serializeBombermanEntity(mVectNumEntity[i], networkComp->mNetworkId);
             break;
         case TypeEntityFlag::FLAG_BOMB:
-            serializeBombEntity(mVectNumEntity[i], networkComp->mNetworkId);
+            serializeBombEntity(mVectNumEntity[i]);
             break;
         case TypeEntityFlag::FLAG_SOLID_WALL:
             break;
@@ -205,21 +198,18 @@ void SocketSystem::serializeBombermanEntity(uint32_t entityNum, uint32_t network
     addSerializeData(&bombermanData, sizeof (bombermanData));
 }
 
-void SocketSystem::serializeBombEntity(uint32_t entityNum, uint32_t networkID)
+void SocketSystem::serializeBombEntity(uint32_t entityNum)
 {
     NetworkData bombData;
     bombData.mEntityType = TypeEntityFlag::FLAG_BOMB;
-    serializeCommonDataEntity(entityNum, networkID, bombData);
-    BombConfigBombermanComponent* bombComp = stairwayToComponentManager().
-            searchComponentByType<BombConfigBombermanComponent>(entityNum, BOMB_CONFIG_BOMBER_COMPONENT);
-    assert(bombComp && "netComp == NULL\n");
-    bombData.mConfData = bombComp->mNumPlayerEntity;
+    serializeCommonDataEntity(entityNum, mNetworkIdPlayer, bombData);
     addSerializeData(&bombData, sizeof (bombData));
+    mptrSystemManager->getptrEngine()->bRmComponentToEntity(entityNum, NETWORK_BOMBER_COMPONENT);
 }
 
 void SocketSystem::serializeCommonDataEntity(uint32_t entityNum, uint32_t networkID, NetworkData &bombData)
 {
-    bombData.mNetworkID = networkID;
+    bombData.mNetworkID = networkID;// set player network id
     ecs::PositionComponent* posComp = stairwayToComponentManager().
             searchComponentByType<ecs::PositionComponent>(entityNum, ecs::POSITION_COMPONENT);
     assert(posComp && "posComp == NULL\n");
@@ -278,22 +268,21 @@ void SocketSystem::updateBombermanEntity(NetworkData &networkData)
 
 void SocketSystem::updateBombEntity(NetworkData &networkData)
 {
-//    for(size_t j = 0; j < mVectNumEntity.size(); ++j)
-//    {
-//        NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
-//                (mVectNumEntity[j], NETWORK_BOMBER_COMPONENT);
-//        assert(netComp && "netComp == NULL");
-
-//        if(netComp->mNetworkId == networkData.mNetworkID)
-//        {
-//            ecs::PositionComponent *posComp = stairwayToComponentManager().searchComponentByType <ecs::PositionComponent>
-//                    (mVectNumEntity[j], ecs::POSITION_COMPONENT);
-//            assert(posComp && "posComp == NULL");
-//            posComp->vect2DPosComp.mfX = networkData.mPosX;
-//            posComp->vect2DPosComp.mfY = networkData.mPosY;
-//            break;
-//        }
-//    }
+    for(size_t j = mVectNumEntity.size() - 1; j < mVectNumEntity.size(); --j)
+    {
+        NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
+                (mVectNumEntity[j], NETWORK_BOMBER_COMPONENT);
+        assert(netComp && "netComp == NULL");
+        if(netComp->mNetworkId == networkData.mNetworkID)
+        {
+            ecs::PositionComponent posA;
+            posA.vect2DPosComp.mfX = networkData.mPosX;
+            posA.vect2DPosComp.mfY = networkData.mPosY;
+            mptrSystemManager->searchSystemByType<BombBombermanSystem>(BOMB_BOMBER_SYSTEM)->
+                    lauchBomb(mVectNumEntity[j], posA);
+            break;
+        }
+    }
 }
 
 void SocketSystem::execSystem()
