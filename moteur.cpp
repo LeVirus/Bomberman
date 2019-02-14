@@ -400,7 +400,7 @@ void Moteur::waitServerSync(Niveau &niv)
 
 void Moteur::synchLevelFromServer(SocketSystem &socketSystem, Niveau &niv)
 {
-    socketSystem.receiveData(false);
+    socketSystem.receiveData(false, false);
     NetworkLevelData levelData;
     socketSystem.clientSyncNetworkLevel(levelData);
     mMoteurGraphique.loadLevelTileMapFromServer(niv, levelData);
@@ -408,7 +408,7 @@ void Moteur::synchLevelFromServer(SocketSystem &socketSystem, Niveau &niv)
 
 void Moteur::synchPlayersFromServer(SocketSystem &socketSystem)
 {
-    socketSystem.receiveData(false);
+    socketSystem.receiveData(false, false);
     uint32_t numPlayers = socketSystem.getBufferReceptSize() / sizeof(NetworkData);
     //create players from number of players received
     assert(numPlayers < MAX_PLAYER);

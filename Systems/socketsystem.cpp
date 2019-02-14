@@ -8,15 +8,16 @@
 #include "flagcomponent.hpp"
 #include "jeu.hpp"
 #include <cstring>
+#include <csignal>
 #include <cassert>
 #include <thread>
 #include <chrono>
+#include <functional>
 
 using namespace std::chrono_literals;
 
 SocketSystem::SocketSystem()
 {
-
     if(!bAddComponentToSystem(NETWORK_BOMBER_COMPONENT))
     {
         std::cout << "Erreur SocketSystem ajout BOMB_CONFIG_BOMBER_COMPONENT.\n";
@@ -26,6 +27,7 @@ SocketSystem::SocketSystem()
         //launch thread to get ip and port from client
         launchReceptThread(true);
     }
+    memPtrSocketSystem(this);
 }
 
 void SocketSystem::launchReceptThread(bool memMetaData)
@@ -34,19 +36,8 @@ void SocketSystem::launchReceptThread(bool memMetaData)
     {
         delThread();
     }
-    mDataReceptThread = std::thread(&SocketSystem::threadReception, this, memMetaData);
-}
-
-void SocketSystem::threadReception(bool memMetaData)
-{
-    mThreadContinue = true;
-    do
-    {
-        if(!m_bufferReceptCursor)
-        {
-            receiveData(memMetaData);
-        }
-    }while(mThreadContinue);
+    //loop on method
+    mDataReceptThread = std::thread(&SocketSystem::receiveData, this, memMetaData, true);
 }
 
 void SocketSystem::delThread()
@@ -70,9 +61,10 @@ void SocketSystem::serverSyncInitPlayersEntityToClient()
 
 void SocketSystem::clientSyncPlayerID()
 {
-    receiveData(false);
+    receiveData(false, false);
     assert(m_bufferReceptCursor == sizeof(mProcessPlayerIdentity));
     memcpy(&mProcessPlayerIdentity, &m_ReceptData[0], sizeof(mProcessPlayerIdentity));
+    clearReceptBuffer();
 }
 
 void SocketSystem::serverSyncClientsGlobal(const Niveau &level)
@@ -208,6 +200,7 @@ void SocketSystem::serializeBombermanEntity(unsigned int entityNum, unsigned int
 
 void SocketSystem::clientUpdateEntitiesFromServer()
 {
+//    GameMode game = Jeu::getGameMode();
     if(!m_bufferReceptCursor)
     {
         return;
@@ -223,6 +216,7 @@ void SocketSystem::clientUpdateEntitiesFromServer()
         {
             continue;
         }
+
         for(size_t j = 0; j < mVectNumEntity.size(); ++j)
         {
             NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
@@ -236,17 +230,18 @@ void SocketSystem::clientUpdateEntitiesFromServer()
                 assert(posComp && "posComp == NULL");
                 posComp->vect2DPosComp.mfX = networkData.mPosX;
                 posComp->vect2DPosComp.mfY = networkData.mPosY;
+
                 break;
             }
         }
     }
+    clearReceptBuffer();
 }
 
 void SocketSystem::execSystem()
 {
     clearSendBuffer();
     System::execSystem();
-    clientUpdateEntitiesFromServer();
     serializeEntitiesData();
     if(Jeu::getGameMode() == GameMode::SERVER)
     { 
@@ -256,7 +251,6 @@ void SocketSystem::execSystem()
     {
         sendData("127.0.0.1", SERVER_PORT);
     }
-    clearReceptBuffer();
 }
 
 void SocketSystem::synchronizeLevelToClients(const Niveau &level)

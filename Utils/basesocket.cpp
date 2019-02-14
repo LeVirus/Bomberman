@@ -1,6 +1,7 @@
 #include "basesocket.hpp"
 #include "networkserialstruct.hpp"
 #include "jeu.hpp"
+#include "socketsystem.hpp"
 #include <iostream>
 #include <cassert>
 #include <string.h>
@@ -78,7 +79,7 @@ bool BaseSocket::checkExistingClient(const pairIpPort &clientMetadata)
     return false;
 }
 
-bool BaseSocket::receiveData(bool memMetaData)
+bool BaseSocket::receiveData(bool memMetaData, bool loop)
 {
     mMutex.lock();
 //    clearReceptBuffer();
@@ -87,19 +88,37 @@ bool BaseSocket::receiveData(bool memMetaData)
     unsigned short senderPort;
     //wait while receive data CLIENT
 //    std::cout << "Waiting for receiving... " << std::endl;
-    if (m_socket.receive(m_ReceptData, sizeof(m_ReceptData), sizeReceived, ipSender, senderPort) != sf::Socket::Done)
+    mThreadContinue = loop;
+    if(!mThreadContinue)
     {
-        mMutex.unlock();
-        return false;
+        if(m_socket.receive(&m_ReceptData[m_bufferReceptCursor], sizeof(m_ReceptData), sizeReceived, ipSender, senderPort) != sf::Socket::Done)
+        {
+            mMutex.unlock();
+            return false;
+        }
+        //MAX_PLAYER - 1 for SERVER
+        m_bufferReceptCursor += sizeReceived;
     }
-    //MAX_PLAYER - 1 for SERVER
-    if(memMetaData && m_vectDestination.size() < MAX_PLAYER - 1 &&
-            !checkExistingClient({ipSender, senderPort}))
+    else
     {
-        m_vectDestination.push_back({ipSender, senderPort});
-        std::cout << "Client ip :: " << ipSender << " senderPort " << senderPort << std::endl;
+        do
+        {
+            if(m_socket.receive(&m_ReceptData[m_bufferReceptCursor], sizeof(m_ReceptData), sizeReceived, ipSender, senderPort) != sf::Socket::Done)
+            {
+                mMutex.unlock();
+                return false;
+            }
+            if(memMetaData && m_vectDestination.size() < MAX_PLAYER - 1 &&
+                    !checkExistingClient({ipSender, senderPort}))
+            {
+                m_vectDestination.push_back({ipSender, senderPort});
+                std::cout << "Client ip :: " << ipSender << " senderPort " << senderPort << std::endl;
+            }
+            m_bufferReceptCursor += sizeReceived;
+            mSockSys->clientUpdateEntitiesFromServer();//dégueulasse
+        }while(mThreadContinue);
     }
-    m_bufferReceptCursor = sizeReceived;
+
 //    std::cout << "Received " << sizeReceived << " bytes from " << ipSender << " on port " << senderPort << std::endl;
     mMutex.unlock();
     return true;

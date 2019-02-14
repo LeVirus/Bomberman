@@ -17,8 +17,6 @@ private:
     void serializeLevelData(const Niveau &level);
     void addPlayersConf(NetworkLevelData &levelData);
     void serializeBombermanEntity(unsigned int entityNum, unsigned int networkID);
-    void clientUpdateEntitiesFromServer();
-    void threadReception(bool memMetaData);
     void delThread();
     void serverSyncInitPlayersEntityToClient();
 
@@ -30,7 +28,6 @@ private:
     void synchronizeLevelToClients(const Niveau &level);
 
     std::thread mDataReceptThread;
-    bool mThreadContinue = true;
     uint32_t mNetworkIdPlayer;
     Players mProcessPlayerIdentity;
 public:
@@ -41,6 +38,7 @@ public:
     void clientSyncPlayerID();
     void serverSyncClientsGlobal(const Niveau &level);
     void launchReceptThread(bool memMetaData = false);
+    void clientUpdateEntitiesFromServer();
     inline Players getProcessPlayerID()const{return mProcessPlayerIdentity;}
     inline void setProcessPlayerID(Players newID){mProcessPlayerIdentity = newID;}
     virtual void execSystem();

@@ -20,4 +20,3 @@ bool NetworkDataUtils::addSerializeData(const void *newData, unsigned int size)
     m_bufferSendCursor += size;
     return true;
 }
-
