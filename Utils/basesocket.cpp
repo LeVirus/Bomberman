@@ -89,35 +89,25 @@ bool BaseSocket::receiveData(bool memMetaData, bool loop)
     //wait while receive data CLIENT
 //    std::cout << "Waiting for receiving... " << std::endl;
     mThreadContinue = loop;
-    if(!mThreadContinue)
+    do
     {
         if(m_socket.receive(&m_ReceptData[m_bufferReceptCursor], sizeof(m_ReceptData), sizeReceived, ipSender, senderPort) != sf::Socket::Done)
         {
             mMutex.unlock();
             return false;
         }
-        //MAX_PLAYER - 1 for SERVER
-        m_bufferReceptCursor += sizeReceived;
-    }
-    else
-    {
-        do
+        if(memMetaData && m_vectDestination.size() < MAX_PLAYER - 1 &&
+                !checkExistingClient({ipSender, senderPort}))
         {
-            if(m_socket.receive(&m_ReceptData[m_bufferReceptCursor], sizeof(m_ReceptData), sizeReceived, ipSender, senderPort) != sf::Socket::Done)
-            {
-                mMutex.unlock();
-                return false;
-            }
-            if(memMetaData && m_vectDestination.size() < MAX_PLAYER - 1 &&
-                    !checkExistingClient({ipSender, senderPort}))
-            {
-                m_vectDestination.push_back({ipSender, senderPort});
-                std::cout << "Client ip :: " << ipSender << " senderPort " << senderPort << std::endl;
-            }
-            m_bufferReceptCursor += sizeReceived;
-            mSockSys->clientUpdateEntitiesFromServer();//dégueulasse
-        }while(mThreadContinue);
-    }
+            m_vectDestination.push_back({ipSender, senderPort});
+            std::cout << "Client ip :: " << ipSender << " senderPort " << senderPort << std::endl;
+        }
+        m_bufferReceptCursor += sizeReceived;
+        if(mThreadContinue)
+        {
+            mSockSys->clientUpdateEntitiesFromRemote();//dégueulasse
+        }
+    }while(mThreadContinue);
 
 //    std::cout << "Received " << sizeReceived << " bytes from " << ipSender << " on port " << senderPort << std::endl;
     mMutex.unlock();

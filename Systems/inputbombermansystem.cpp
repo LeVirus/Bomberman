@@ -7,6 +7,7 @@
 #include "moveablebombermancomponent.hpp"
 #include "constants.hpp"
 #include "flagcomponent.hpp"
+#include "jeu.hpp"
 #include "displaycomponent.hpp"
 
 InputBombermanSystem::InputBombermanSystem()
@@ -207,7 +208,7 @@ void InputBombermanSystem::execSystem()
                 BombBombermanSystem *bombSystem = mptrSystemManager->searchSystemByType
                                                   <BombBombermanSystem>( BOMB_BOMBER_SYSTEM );
                 //send notification to bomb system
-                bombSystem->lauchBomb(mVectNumEntity[i], *positionComp);
+                bombSystem->lauchBomb(mVectNumEntity[i], *positionComp, Jeu::getGameMode() != GameMode::SOLO);
                 timerComp->mBombClock.restart();
                 timerComp->mLaunched = true;
 

@@ -5,8 +5,10 @@
 #include "positioncomponent.hpp"
 #include "bombconfigbombermancomponent.hpp"
 #include "displaycomponent.hpp"
+#include "networkcomponent.hpp"
 #include "moteurgraphique.hpp"
 #include "engine.hpp"
+#include "jeu.hpp"
 #include <cassert>
 #include "explosionbombermansystem.hpp"
 
@@ -83,7 +85,7 @@ void BombBombermanSystem::execSystem()
 void BombBombermanSystem::displaySystem() const
 {}
 
-unsigned int BombBombermanSystem::createBombEntity()
+unsigned int BombBombermanSystem::createBombEntity(bool network)
 {
     //create entity
     unsigned int numCreatedEntity = mptrSystemManager->getptrEngine()->AddEntity();
@@ -93,10 +95,19 @@ unsigned int BombBombermanSystem::createBombEntity()
     ECSEngine->bAddComponentToEntity(numCreatedEntity, FLAG_BOMBER_COMPONENT);
     ECSEngine->bAddComponentToEntity(numCreatedEntity, TIMER_BOMBER_COMPONENT);
     ECSEngine->bAddComponentToEntity(numCreatedEntity, BOMB_CONFIG_BOMBER_COMPONENT);
+    if(network)
+    {
+        ECSEngine->bAddComponentToEntity(numCreatedEntity, NETWORK_BOMBER_COMPONENT);
+    }
+
     stairwayToComponentManager().updateComponentFromEntity();
     stairwayToComponentManager().instanciateExternComponent(numCreatedEntity, std::make_unique<FlagBombermanComponent>());
     stairwayToComponentManager().instanciateExternComponent(numCreatedEntity, std::make_unique<TimerBombermanComponent>());
     stairwayToComponentManager().instanciateExternComponent(numCreatedEntity, std::make_unique<BombConfigBombermanComponent>());
+    if(network)
+    {
+        stairwayToComponentManager().instanciateExternComponent(numCreatedEntity, std::make_unique<NetworkBombermanComponent>());
+    }
     return numCreatedEntity;
 }
 
@@ -121,9 +132,11 @@ void BombBombermanSystem::changeSpriteBomb(unsigned int numEntity, bool &previou
     }
 }
 
-void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionComponent &posA)
+void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionComponent &posA, bool network)
 {
-    unsigned int numCreatedEntity = createBombEntity();
+//    bool network = Jeu::getGameMode() != GameMode::SOLO;
+    unsigned int numCreatedEntity = createBombEntity(network);
+
     //position entity
     ecs::PositionComponent *posComponent = stairwayToComponentManager().searchComponentByType < ecs::PositionComponent >
             (numCreatedEntity, ecs::POSITION_COMPONENT);
@@ -147,4 +160,20 @@ void BombBombermanSystem::lauchBomb(unsigned int numEntity, const ecs::PositionC
             (numCreatedEntity, FLAG_BOMBER_COMPONENT);
     assert(flagComponent && "BombBombermanSystem::lauchBomb flagComponent is null\n");
     flagComponent->muiNumFlag = FLAG_BOMB;
+
+    if(network)
+    {
+        NetworkBombermanComponent *networkComp = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
+                (numCreatedEntity, NETWORK_BOMBER_COMPONENT);
+        assert(networkComp && "BombBombermanSystem::lauchBomb flagComponent is null\n");
+        if(Jeu::getGameMode() == GameMode::SERVER)
+        {
+            networkComp->mNetworkId = NetworkBombermanComponent::attributeNum();
+        }
+        else
+        {
+            networkComp->mNetworkId = UNDEFINED_NETWORK_ID;
+        }
+        networkComp->mEntityType = TypeEntityFlag::FLAG_BOMB;
+    }
 }

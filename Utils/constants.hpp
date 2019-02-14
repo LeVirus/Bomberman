@@ -33,6 +33,8 @@ const unsigned int LEVEL_MAX_SIZE = 200;
 const unsigned int SERVER_PORT = 54000;
 const unsigned int CLIENT_PORT = 54008;
 
+const unsigned int UNDEFINED_NETWORK_ID = 999999;
+
 enum
 {
     TEXTURE_BOMBERMAN, TEXTURE_EXPLOSION, TEXTURE_LEVEL

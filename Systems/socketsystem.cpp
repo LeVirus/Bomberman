@@ -1,6 +1,7 @@
 #include "socketsystem.hpp"
 #include "networkcomponent.hpp"
 #include "positioncomponent.hpp"
+#include "bombconfigbombermancomponent.hpp"
 #include "networkserialstruct.hpp"
 #include "ECSconstantes.hpp"
 #include "constants.hpp"
@@ -144,16 +145,27 @@ void SocketSystem::serializeEntitiesData(bool sendAllPlayersEntities = false)
                 continue;
             }
         }
-        if(networkComp->mEntityType == TypeEntityFlag::FLAG_BOMBERMAN)
+        switch (networkComp->mEntityType)
         {
-            //        case TypeEntityFlag::FLAG_BOMBERMAN:
+        case TypeEntityFlag::FLAG_BOMBERMAN:
             serializeBombermanEntity(mVectNumEntity[i], networkComp->mNetworkId);
-            //            break;
-            //        case TypeEntityFlag::FLAG_BOMB:
-            //            break;
-            //        case TypeEntityFlag::FLAG_SOLID_WALL:
-            //            break;
+            break;
+        case TypeEntityFlag::FLAG_BOMB:
+            serializeBombEntity(mVectNumEntity[i], networkComp->mNetworkId);
+            break;
+        case TypeEntityFlag::FLAG_SOLID_WALL:
+            break;
+        case TypeEntityFlag::FLAG_OBJECT:
+            break;
+        case TypeEntityFlag::FLAG_EXPLOSION:
+            break;
+        case TypeEntityFlag::FLAG_DESTRUCTIBLE_WALL:
+            break;
         }
+//        if(networkComp->mEntityType == TypeEntityFlag::FLAG_BOMBERMAN)
+//        {
+
+//        }
     }
 }
 
@@ -185,20 +197,37 @@ void SocketSystem::addPlayersConf(NetworkLevelData &levelData)
     }
 }
 
-void SocketSystem::serializeBombermanEntity(unsigned int entityNum, unsigned int networkID)
+void SocketSystem::serializeBombermanEntity(uint32_t entityNum, uint32_t networkID)
 {
     NetworkData bombermanData;
     bombermanData.mEntityType = TypeEntityFlag::FLAG_BOMBERMAN;
-    bombermanData.mNetworkID = networkID;
-    ecs::PositionComponent* posComp = stairwayToComponentManager().
-            searchComponentByType<ecs::PositionComponent>(entityNum, ecs::POSITION_COMPONENT);
-    assert(posComp && "posComp == NULL\n");
-    bombermanData.mPosX = posComp->vect2DPosComp.mfX;
-    bombermanData.mPosY = posComp->vect2DPosComp.mfY;
+    serializeCommonDataEntity(entityNum, networkID, bombermanData);
     addSerializeData(&bombermanData, sizeof (bombermanData));
 }
 
-void SocketSystem::clientUpdateEntitiesFromServer()
+void SocketSystem::serializeBombEntity(uint32_t entityNum, uint32_t networkID)
+{
+    NetworkData bombData;
+    bombData.mEntityType = TypeEntityFlag::FLAG_BOMB;
+    serializeCommonDataEntity(entityNum, networkID, bombData);
+    BombConfigBombermanComponent* bombComp = stairwayToComponentManager().
+            searchComponentByType<BombConfigBombermanComponent>(entityNum, BOMB_CONFIG_BOMBER_COMPONENT);
+    assert(bombComp && "netComp == NULL\n");
+    bombData.mConfData = bombComp->mNumPlayerEntity;
+    addSerializeData(&bombData, sizeof (bombData));
+}
+
+void SocketSystem::serializeCommonDataEntity(uint32_t entityNum, uint32_t networkID, NetworkData &bombData)
+{
+    bombData.mNetworkID = networkID;
+    ecs::PositionComponent* posComp = stairwayToComponentManager().
+            searchComponentByType<ecs::PositionComponent>(entityNum, ecs::POSITION_COMPONENT);
+    assert(posComp && "posComp == NULL\n");
+    bombData.mPosX = posComp->vect2DPosComp.mfX;
+    bombData.mPosY = posComp->vect2DPosComp.mfY;
+}
+
+void SocketSystem::clientUpdateEntitiesFromRemote()
 {
 //    GameMode game = Jeu::getGameMode();
     if(!m_bufferReceptCursor)
@@ -207,7 +236,6 @@ void SocketSystem::clientUpdateEntitiesFromServer()
     }
     for(size_t i = 0; i < m_bufferReceptCursor; i += sizeof(NetworkData))
     {
-
         NetworkData networkData;
         assert(i + sizeof(NetworkData) < SOCKET_DATA_SIZE);
         memcpy(&networkData, &m_ReceptData[i], sizeof(NetworkData));
@@ -230,7 +258,6 @@ void SocketSystem::clientUpdateEntitiesFromServer()
                 assert(posComp && "posComp == NULL");
                 posComp->vect2DPosComp.mfX = networkData.mPosX;
                 posComp->vect2DPosComp.mfY = networkData.mPosY;
-
                 break;
             }
         }

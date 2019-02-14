@@ -12,6 +12,7 @@ struct NetworkData
     TypeEntityFlag mEntityType;
     uint32_t mNetworkID;
     float mPosX, mPosY;
+    uint32_t mConfData;
 };
 
 struct NetworkLevelData
