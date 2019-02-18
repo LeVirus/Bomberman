@@ -24,14 +24,14 @@ bool Jeu::chargerNiveau(unsigned int numNiv)
         sockSys->setProcessPlayerID(Players::P_SERVER);
         waitForClientsConnect();
         mMoteurPrincipal.loadPlayersAndBot(sockSys->getDestinationsNumber() + 1, 0);
-        mMoteurPrincipal.loadLevelWall(mNiveau);
         sockSys->serverSyncClientsGlobal(mNiveau);
     }
     else if(mGameMode == GameMode::CLIENT)
     {
         mMoteurPrincipal.waitServerSync(mNiveau);
-        mMoteurPrincipal.loadLevelWall(mNiveau);
     }
+    mMoteurPrincipal.loadLevelWall(mNiveau);
+
     return true;
 }
 

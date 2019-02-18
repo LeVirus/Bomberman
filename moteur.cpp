@@ -104,7 +104,7 @@ void Moteur::getInput()
             down = sf::Keyboard::L;
             left = sf::Keyboard::K;
             right = sf::Keyboard::M;
-            launchBomb = sf::Keyboard::Enter;
+            launchBomb = sf::Keyboard::P;
             break;
         }
         if(sf::Keyboard::isKeyPressed(up))ic->mBitsetInput[MOVE_UP] = true;
@@ -152,13 +152,16 @@ bool Moteur::loadPlayersAndBot(uint32_t uiNumPlayer, uint32_t uiNumBot)
     for(uint32_t i = 0 ; i < uiNumPlayer ; ++i)
 	{
         uint32_t numEntity = createBomberman(i);
-        Players PlayerId = getSocketSystem()->getProcessPlayerID();
-        if(PlayerId == i)
+        if(Jeu::getGameMode() != GameMode::SOLO)
         {
-            NetworkBombermanComponent *nc = mGestECS.getECSComponentManager()->
+            Players PlayerId = getSocketSystem()->getProcessPlayerID();
+            if(PlayerId == i)
+            {
+                NetworkBombermanComponent *nc = mGestECS.getECSComponentManager()->
                         searchComponentByType<NetworkBombermanComponent>(numEntity, NETWORK_BOMBER_COMPONENT);
-            assert(nc && "ss null");
-            getSocketSystem()->attributePlayerNetworkID(nc->mNetworkId);
+                assert(nc && "ss null");
+                getSocketSystem()->attributePlayerNetworkID(nc->mNetworkId);
+            }
         }
 	}
 	return true;
@@ -187,14 +190,18 @@ void Moteur::fillBombermanEntityBitset(std::vector<bool> &bombermanBitset,
     bombermanBitset[PLAYER_CONFIG_BOMBER_COMPONENT]  = true;
     bombermanBitset[TIMER_BOMBER_COMPONENT]          = true;
 
-    Players playerID = getSocketSystem()->getProcessPlayerID();
-    if(playerID == uiNumPlayer)
-    {
-        bombermanBitset[INPUT_BOMBER_COMPONENT]          = true;
-    }
     if(Jeu::getGameMode() != GameMode::SOLO)
     {
-        bombermanBitset[NETWORK_BOMBER_COMPONENT]        = true;
+        Players playerID = getSocketSystem()->getProcessPlayerID();
+        if(playerID == uiNumPlayer)
+        {
+            bombermanBitset[INPUT_BOMBER_COMPONENT]          = true;
+        }
+        bombermanBitset[NETWORK_BOMBER_COMPONENT]            = true;
+    }
+    else
+    {
+        bombermanBitset[INPUT_BOMBER_COMPONENT]              = true;
     }
 }
 
