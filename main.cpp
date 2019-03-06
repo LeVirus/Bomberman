@@ -7,11 +7,8 @@ GameMode setConfig();
 int main()
 {
     GameMode input = setConfig();
-
     Jeu jeu(input);
-
     jeu.initECS();
-
     do
     {
         jeu.chargerNiveau(0);
@@ -29,6 +26,7 @@ GameMode setConfig()
         std::cout << "(0) SERVER\n(1) CLIENT\n(2) SOLO\n";
         std::cin >> input;
     }while (input > 2);
+
     if(input == 0)
     {
         ret = GameMode::SERVER;

@@ -14,6 +14,7 @@ class SocketSystem : public ecs::System, public BaseSocket
 {
 private:
     void serializeEntitiesData();
+    void clientAddServerIPAndPort();
     void serializeLevelData(const Niveau &level);
     void addPlayersConf(NetworkLevelData &levelData);
     void serializeBombermanEntity(uint32_t entityNum, uint32_t networkID);

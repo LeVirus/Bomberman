@@ -28,6 +28,10 @@ SocketSystem::SocketSystem()
         //launch thread to get ip and port from client
         launchReceptThread(true);
     }
+    else
+    {
+        clientAddServerIPAndPort();
+    }
     memPtrSocketSystem(this);
 }
 
@@ -160,6 +164,12 @@ void SocketSystem::serializeEntitiesData()
 
 //        }
     }
+}
+
+void SocketSystem::clientAddServerIPAndPort()
+{
+//    sf::IpAddress
+    m_vectDestination.push_back({"127.0.0.1", SERVER_PORT});
 }
 
 void SocketSystem::serializeLevelData(const Niveau &level)
@@ -296,7 +306,9 @@ void SocketSystem::execSystem()
     }
     else
     {
-        sendData("127.0.0.1", SERVER_PORT);
+        bool res = sendData(0);
+        assert(res);
+//        sendData("127.0.0.1", SERVER_PORT);
     }
 }
 
@@ -309,6 +321,8 @@ void SocketSystem::synchronizeLevelToClients(const Niveau &level)
 
 void SocketSystem::synchronizeProcessPlayersNetworkID()
 {
+    std::cerr << "getDestinationsNumber() " << getDestinationsNumber() << "\n";
+    std::cerr << "MAX_PLAYER - 1() " << MAX_PLAYER<< "\n";
     assert(getDestinationsNumber() < MAX_PLAYER - 1);
     Players id = Players::P_CLIENT_A;
     for(uint32_t i = 0; i < getDestinationsNumber(); ++i)
