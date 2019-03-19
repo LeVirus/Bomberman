@@ -82,8 +82,6 @@ bool BaseSocket::checkExistingClient(const pairIpPort &clientMetadata)
 bool BaseSocket::receiveData(bool memMetaData, bool loop)
 {
     std::lock_guard<std::mutex> guard(mMutex);
-//    mMutex.lock();
-//    clearReceptBuffer();
     size_t sizeReceived;
     sf::IpAddress ipSender;
     unsigned short senderPort;
@@ -94,7 +92,6 @@ bool BaseSocket::receiveData(bool memMetaData, bool loop)
     {
         if(m_socket.receive(&m_ReceptData[m_bufferReceptCursor], sizeof(m_ReceptData), sizeReceived, ipSender, senderPort) != sf::Socket::Done)
         {
-//            mMutex.unlock();
             return false;
         }
         if(memMetaData && m_vectDestination.size() < MAX_PLAYER - 1 &&
@@ -111,6 +108,5 @@ bool BaseSocket::receiveData(bool memMetaData, bool loop)
     }while(mThreadContinue);
 
 //    std::cout << "Received " << sizeReceived << " bytes from " << ipSender << " on port " << senderPort << std::endl;
-//    mMutex.unlock();
     return true;
 }

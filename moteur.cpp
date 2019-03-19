@@ -400,7 +400,6 @@ void Moteur::waitServerSync(Niveau &niv)
     sss->sendData("127.0.0.1", SERVER_PORT);
     sss->clientSyncPlayerID();
     synchLevelFromServer(*sss, niv);
-//    loadPlayersAndBot(2, 0);
     synchPlayersFromServer(*sss);
     sss->launchReceptThread(false);
 }
@@ -442,6 +441,4 @@ void Moteur::positionnerComponent(ecs::PositionComponent &posComp, uint32_t posX
 {
     posComp.vect2DPosComp.mfX = POSITION_LEVEL_X + posX * mPtrJeu.getNiveau().getLongueurTile();
     posComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + posY * mPtrJeu.getNiveau().getLargeurTile();
-//	std::cout << "XX " << posX << " posComp.X " <<posComp.vect2DPosComp.mfX
-    //			  << " YY " << posY << " posComp.Y " <<posComp.vect2DPosComp.mfY<< std::endl;
 }
