@@ -145,24 +145,22 @@ void SocketSystem::serializeEntitiesData()
         switch (networkComp->mEntityType)
         {
         case TypeEntityFlag::FLAG_BOMBERMAN:
+            if(Jeu::getGameMode() == GameMode::CLIENT &&
+                    mNetworkIdPlayer != networkComp->mNetworkId)
+            {
+                break;
+            }
             serializeBombermanEntity(mVectNumEntity[i], networkComp->mNetworkId);
             break;
         case TypeEntityFlag::FLAG_BOMB:
             serializeBombEntity(mVectNumEntity[i]);
             break;
         case TypeEntityFlag::FLAG_SOLID_WALL:
-            break;
         case TypeEntityFlag::FLAG_OBJECT:
-            break;
         case TypeEntityFlag::FLAG_EXPLOSION:
-            break;
         case TypeEntityFlag::FLAG_DESTRUCTIBLE_WALL:
             break;
         }
-//        if(networkComp->mEntityType == TypeEntityFlag::FLAG_BOMBERMAN)
-//        {
-
-//        }
     }
 }
 
@@ -225,6 +223,8 @@ void SocketSystem::serializeCommonDataEntity(uint32_t entityNum, uint32_t networ
     assert(posComp && "posComp == NULL\n");
     bombData.mPosX = posComp->vect2DPosComp.mfX;
     bombData.mPosY = posComp->vect2DPosComp.mfY;
+//    std::cerr << "Network ID :: " << networkID << "\n";
+//    std::cerr << "SENT :: " << bombData.mPosX << "  " << bombData.mPosY << "\n";
 }
 
 void SocketSystem::updateEntitiesFromRemote()
@@ -321,8 +321,6 @@ void SocketSystem::synchronizeLevelToClients(const Niveau &level)
 
 void SocketSystem::synchronizeProcessPlayersNetworkID()
 {
-    std::cerr << "getDestinationsNumber() " << getDestinationsNumber() << "\n";
-    std::cerr << "MAX_PLAYER - 1() " << MAX_PLAYER<< "\n";
     assert(getDestinationsNumber() < MAX_PLAYER - 1);
     Players id = Players::P_CLIENT_A;
     for(uint32_t i = 0; i < getDestinationsNumber(); ++i)

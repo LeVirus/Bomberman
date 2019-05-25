@@ -96,125 +96,130 @@ void InputBombermanSystem::setSpriteForBomberman(unsigned int direction, ecs::Di
 
 void InputBombermanSystem::execSystem()
 {
-	System::execSystem();
-        for(unsigned int i = 0 ; i < mVectNumEntity.size() ; ++i)
+    System::execSystem();
+    for(unsigned int i = 0 ; i < mVectNumEntity.size() ; ++i)
+    {
+        PlayerConfigBombermanComponent *playerConfigComp = stairwayToComponentManager() .
+                searchComponentByType<PlayerConfigBombermanComponent>(mVectNumEntity[i],
+                                                                      PLAYER_CONFIG_BOMBER_COMPONENT);
+        if(! playerConfigComp || playerConfigComp->mMode == MODE_PLAYER_DEAD_TRANSITION)
         {
-            PlayerConfigBombermanComponent *playerConfigComp = stairwayToComponentManager() .
-                    searchComponentByType<PlayerConfigBombermanComponent>(mVectNumEntity[i],
-                                                                       PLAYER_CONFIG_BOMBER_COMPONENT);
-            if(! playerConfigComp || playerConfigComp->mMode == MODE_PLAYER_DEAD_TRANSITION)
-            {
-                continue;
-            }
-            InputBombermanComponent *inputComponent = stairwayToComponentManager() .
-                    searchComponentByType<InputBombermanComponent>(mVectNumEntity[i],
-                                                                    INPUT_BOMBER_COMPONENT);
-            if(! inputComponent)
-            {
-                std::cout << i << " InputBombermanSystem pointeur NULL inputComponent \n";
-				continue;
-			}
-            ecs::PositionComponent *positionComp = stairwayToComponentManager() .
-                    searchComponentByType<ecs::PositionComponent>(mVectNumEntity[i],
-                                                                       ecs::POSITION_COMPONENT);
-            if(! positionComp)
-            {
-				std::cout << " InputBombermanSystem pointeur NULL positionComponent \n";
-				continue;
-			}
-            MoveableBombermanComponent *moveableComponent = stairwayToComponentManager() .
-                    searchComponentByType<MoveableBombermanComponent>(mVectNumEntity[i],
-                                                                       MOVEABLE_BOMBER_COMPONENT);
-            if(! moveableComponent)
-            {
-				std::cout << " InputBombermanSystem pointeur NULL moveableComponent \n";
-				continue;
-			}
+            continue;
+        }
+        InputBombermanComponent *inputComponent = stairwayToComponentManager() .
+                searchComponentByType<InputBombermanComponent>(mVectNumEntity[i],
+                                                               INPUT_BOMBER_COMPONENT);
+        if(! inputComponent)
+        {
+            std::cout << i << " InputBombermanSystem pointeur NULL inputComponent \n";
+            continue;
+        }
+        //si aucune entré utilisateur entité suivante
+        if(inputComponent -> mBitsetInput.none())continue;
+        ecs::PositionComponent *positionComp = stairwayToComponentManager() .
+                searchComponentByType<ecs::PositionComponent>(mVectNumEntity[i],
+                                                              ecs::POSITION_COMPONENT);
+        if(! positionComp)
+        {
+            std::cout << " InputBombermanSystem pointeur NULL positionComponent \n";
+            continue;
+        }
+        MoveableBombermanComponent *moveableComponent = stairwayToComponentManager() .
+                searchComponentByType<MoveableBombermanComponent>(mVectNumEntity[i],
+                                                                  MOVEABLE_BOMBER_COMPONENT);
+        if(! moveableComponent)
+        {
+            std::cout << " InputBombermanSystem pointeur NULL moveableComponent \n";
+            continue;
+        }
 
-            TimerBombermanComponent *timerComp = stairwayToComponentManager() .
-                    searchComponentByType<TimerBombermanComponent>(mVectNumEntity[i],
-                                                                       TIMER_BOMBER_COMPONENT);
-            if(! timerComp)
-            {
-                std::cout << " TimerBombermanComponent pointeur NULL playerConfigComp \n";
-                continue;
-            }
+        TimerBombermanComponent *timerComp = stairwayToComponentManager() .
+                searchComponentByType<TimerBombermanComponent>(mVectNumEntity[i],
+                                                               TIMER_BOMBER_COMPONENT);
+        if(! timerComp)
+        {
+            std::cout << " TimerBombermanComponent pointeur NULL playerConfigComp \n";
+            continue;
+        }
 
-            ecs::DisplayComponent *displayComp = stairwayToComponentManager() .
-                    searchComponentByType<ecs::DisplayComponent>(mVectNumEntity[i], ecs::DISPLAY_COMPONENT);
-            if(! displayComp)
-            {
-                std::cout << " displayComp pointeur NULL playerConfigComp \n";
-                continue;
-            }
+        ecs::DisplayComponent *displayComp = stairwayToComponentManager() .
+                searchComponentByType<ecs::DisplayComponent>(mVectNumEntity[i], ecs::DISPLAY_COMPONENT);
+        if(! displayComp)
+        {
+            std::cout << " displayComp pointeur NULL playerConfigComp \n";
+            continue;
+        }
 
-			//si aucune entré utilisateur entité suivante
-            if(inputComponent -> mBitsetInput.none())continue;
 
-			//traitement évènement joueur
-            setMoveableDirection(moveableComponent->mBitsetDirection, inputComponent->mBitsetInput);
-            bool changeSprite = false;
 
-            if(timerComp->mBombClockC.getElapsedTime().asMilliseconds() > 200)
-            {
-                changeSprite =true;
-            }
+        //traitement évènement joueur
+        setMoveableDirection(moveableComponent->mBitsetDirection, inputComponent->mBitsetInput);
+        bool changeSprite = false;
 
-            if(inputComponent->mBitsetInput[MOVE_RIGHT])
-            {
-                positionComp->vect2DPosComp.mfX += moveableComponent->mfVelocite;
-                if(changeSprite)
-                {
-                    setSpriteForBomberman(MOVE_RIGHT, *displayComp, playerConfigComp->mPreviousStepA);
-                    timerComp->mBombClockC.restart();
-                    changeSprite = false;
-                }
-            }
-            else if(inputComponent->mBitsetInput[MOVE_LEFT])
-            {
-                positionComp->vect2DPosComp.mfX -= moveableComponent->mfVelocite;
-                if(changeSprite)
-                {
-                    setSpriteForBomberman(MOVE_LEFT, *displayComp, playerConfigComp->mPreviousStepA);
-                    timerComp->mBombClockC.restart();
-                    changeSprite = false;
-                }
-            }
+        if(timerComp->mBombClockC.getElapsedTime().asMilliseconds() > 200)
+        {
+            changeSprite =true;
+        }
 
-            if(inputComponent->mBitsetInput[MOVE_UP])
+        if(inputComponent->mBitsetInput[MOVE_RIGHT])
+        {
+            positionComp->vect2DPosComp.mfX += moveableComponent->mfVelocite;
+            if(changeSprite)
             {
-                positionComp->vect2DPosComp.mfY -=  moveableComponent->mfVelocite;
-                if(changeSprite)
-                {
-                    setSpriteForBomberman(MOVE_UP, *displayComp, playerConfigComp->mPreviousStepA);
-                    timerComp->mBombClockC.restart();
-                }
+                setSpriteForBomberman(MOVE_RIGHT, *displayComp, playerConfigComp->mPreviousStepA);
+                timerComp->mBombClockC.restart();
+                changeSprite = false;
             }
-            else if(inputComponent->mBitsetInput[MOVE_DOWN])
+        }
+        else if(inputComponent->mBitsetInput[MOVE_LEFT])
+        {
+            positionComp->vect2DPosComp.mfX -= moveableComponent->mfVelocite;
+            if(changeSprite)
             {
-                positionComp->vect2DPosComp.mfY +=  moveableComponent->mfVelocite;
-                if(changeSprite)
-                {
-                    setSpriteForBomberman(MOVE_DOWN, *displayComp, playerConfigComp->mPreviousStepA);
-                    timerComp->mBombClockC.restart();
-                }
+                setSpriteForBomberman(MOVE_LEFT, *displayComp, playerConfigComp->mPreviousStepA);
+                timerComp->mBombClockC.restart();
+                changeSprite = false;
             }
-            if(timerComp->mLaunched && timerComp->mBombClock.getElapsedTime().asMilliseconds() > playerConfigComp->mLatenceBetweenBomb)
-            {
-                timerComp->mLaunched = false;
-            }
-            if(inputComponent->mBitsetInput[LAUNCH_BOMB] && ! timerComp->mLaunched)
-            {
-                BombBombermanSystem *bombSystem = mptrSystemManager->searchSystemByType
-                                                  <BombBombermanSystem>( BOMB_BOMBER_SYSTEM );
-                //send notification to bomb system
-                bombSystem->lauchBomb(mVectNumEntity[i], *positionComp, Jeu::getGameMode() != GameMode::SOLO);
-                timerComp->mBombClock.restart();
-                timerComp->mLaunched = true;
+        }
 
+        if(inputComponent->mBitsetInput[MOVE_UP])
+        {
+            positionComp->vect2DPosComp.mfY -=  moveableComponent->mfVelocite;
+            if(changeSprite)
+            {
+                setSpriteForBomberman(MOVE_UP, *displayComp, playerConfigComp->mPreviousStepA);
+                timerComp->mBombClockC.restart();
             }
-            inputComponent->mBitsetInput.reset();
-		}
+        }
+        else if(inputComponent->mBitsetInput[MOVE_DOWN])
+        {
+            positionComp->vect2DPosComp.mfY +=  moveableComponent->mfVelocite;
+            if(changeSprite)
+            {
+                setSpriteForBomberman(MOVE_DOWN, *displayComp, playerConfigComp->mPreviousStepA);
+                timerComp->mBombClockC.restart();
+            }
+        }
+
+
+        if(timerComp->mLaunched && timerComp->mBombClock.getElapsedTime().asMilliseconds() > playerConfigComp->mLatenceBetweenBomb)
+        {
+            timerComp->mLaunched = false;
+        }
+        if(inputComponent->mBitsetInput[LAUNCH_BOMB] && ! timerComp->mLaunched)
+        {
+            BombBombermanSystem *bombSystem = mptrSystemManager->searchSystemByType
+                    <BombBombermanSystem>( BOMB_BOMBER_SYSTEM );
+            //send notification to bomb system
+            bombSystem->lauchBomb(mVectNumEntity[i], *positionComp, Jeu::getGameMode() != GameMode::SOLO);
+            timerComp->mBombClock.restart();
+            timerComp->mLaunched = true;
+
+        }
+        inputComponent->mBitsetInput.reset();
+//        std::cerr << "CURRENT pos :: " << positionComp->vect2DPosComp.mfX << "  "
+//                  << positionComp->vect2DPosComp.mfY << "\n";
+    }
 }
 
 void InputBombermanSystem::displaySystem() const
