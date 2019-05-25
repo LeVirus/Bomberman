@@ -91,8 +91,8 @@ void MoteurGraphique::loadBomBSprite()
 
 void MoteurGraphique::initialiserFenetre()
 {
-    mFenetre.create( sf::VideoMode( 1040, 640 ), "Bomber", sf::Style::/*Fullscreen*/Default);
-	mCamera.reset( sf::FloatRect( 0, 0, WIDTH_SCREEN , HEIGHT_SCREEN ) );
+    mFenetre.create( sf::VideoMode( 550, 590 ), "Bomber", sf::Style::/*Fullscreen*/Default);
+    mCamera.reset( sf::FloatRect( 130, 50, 1024/*WIDTH_SCREEN*/ , 930/*HEIGHT_SCREEN*/ ) );
 	mFenetre.setView( mCamera );
 	mFenetre.setFramerateLimit(60);
 }
