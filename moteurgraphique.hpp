@@ -39,7 +39,7 @@ public:
     void displayECSTilemap();
 	void displayECSSprite();
     static const std::vector<sf::Texture> &static_getTabTexture();
-    static void static_positionnerCaseTileMap(ecs::PositionComponent &posComp, unsigned int uiPositionX, unsigned int uiPositionY);
+    static void static_positionnerCaseTileMap(ecs::PositionComponent &posComp, unsigned int uiPositionX, unsigned int uiPositionY, bool bomberman = false);
     static void static_positionComponentCenterCurrentCase(ecs::PositionComponent &positionComp);
     static void static_getPositionsCurrentCase(const ecs::PositionComponent &positionComp,
                                                unsigned int &caseX, unsigned int &caseY, bool launchBomb = true);

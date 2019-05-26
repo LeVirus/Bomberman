@@ -161,11 +161,16 @@ const std::vector<sf::Texture> &MoteurGraphique::static_getTabTexture()
     return mVectTexture;
 }
 
-void MoteurGraphique::static_positionnerCaseTileMap(ecs::PositionComponent &posComp, unsigned int uiPositionX, unsigned int uiPositionY)
+void MoteurGraphique::static_positionnerCaseTileMap(ecs::PositionComponent &posComp,
+                                                    unsigned int uiPositionX,
+                                                    unsigned int uiPositionY, bool bomberman)
 {
     posComp.vect2DPosComp.mfX = POSITION_LEVEL_X + uiPositionX * mCaseLenght;
     posComp.vect2DPosComp.mfY = POSITION_LEVEL_Y + uiPositionY * mCaseHeight;
-
+    if(bomberman)
+    {
+        posComp.vect2DPosComp.mfY -= mCaseHeight / 1.6f ;
+    }
 }
 
 //a améliorer

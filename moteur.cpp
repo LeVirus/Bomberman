@@ -282,7 +282,7 @@ void Moteur::configBombermanComponents(uint32_t numEntity, uint32_t numPlayer,
         assert(inputComp && "inputComp == null\n");
     }
     mMoteurGraphique.static_positionnerCaseTileMap(*pc, Niveau::static_getVectInitPositionBomberman()[numPlayer].first,
-                                                   Niveau::static_getVectInitPositionBomberman()[numPlayer].second);
+                                                   Niveau::static_getVectInitPositionBomberman()[numPlayer].second, true);
 
     if(bombermanBitset[INPUT_BOMBER_COMPONENT])
     {
