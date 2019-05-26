@@ -417,7 +417,7 @@ void Moteur::synchPlayersFromServer(SocketSystem &socketSystem)
     socketSystem.receiveData(false, false);
     uint32_t numPlayers = socketSystem.getBufferReceptSize() / sizeof(NetworkData);
     //create players from number of players received
-    assert(numPlayers < MAX_PLAYER);
+    assert(numPlayers <= MAX_PLAYER);
 
     loadPlayersAndBot(numPlayers, 0);
     std::cout << "Number of players :: " << numPlayers << std::endl;

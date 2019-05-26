@@ -349,7 +349,7 @@ void SocketSystem::synchronizeLevelToClients(const Niveau &level)
 
 void SocketSystem::synchronizeProcessPlayersNetworkID()
 {
-    assert(getDestinationsNumber() < MAX_PLAYER - 1);
+    assert(getDestinationsNumber() < MAX_PLAYER);
     Players id = Players::P_CLIENT_A;
     for(uint32_t i = 0; i < getDestinationsNumber(); ++i)
     {
