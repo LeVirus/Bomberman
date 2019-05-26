@@ -75,7 +75,7 @@ void PlayerBomberSystem::execSystem()
                     ecs::PositionComponent *posComp = stairwayToComponentManager().searchComponentByType <ecs::PositionComponent>
                             (*it, ecs::POSITION_COMPONENT);
                     assert(posComp && "posComp is null\n");
-                    MoteurGraphique::static_positionnerCaseTileMap(*posComp, playerConfComponent->mInitX, playerConfComponent->mInitY);
+                    MoteurGraphique::static_positionnerCaseTileMap(*posComp, playerConfComponent->mInitX, playerConfComponent->mInitY, true);
                     playerConfComponent->mMode = MODE_PLAYER_AFTER_REPOP;
                     //restart chrono for invulnerability frames
                     timerComponent->mBombClockB.restart();

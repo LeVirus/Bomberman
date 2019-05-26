@@ -76,3 +76,5 @@ Bomberman.pro
 Utils/networkserialstruct.hpp
 Utils/NetworkDataUtils.hpp
 Utils/NetworkDataUtils.cpp
+Systems/playerbombersystem.hpp
+Systems/playerbombersystem.cpp
