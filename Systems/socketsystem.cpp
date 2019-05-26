@@ -1,5 +1,6 @@
 #include "socketsystem.hpp"
 #include "networkcomponent.hpp"
+#include "displaycomponent.hpp"
 #include "positioncomponent.hpp"
 #include "bombconfigbombermancomponent.hpp"
 #include "networkserialstruct.hpp"
@@ -203,6 +204,11 @@ void SocketSystem::serializeBombermanEntity(uint32_t entityNum, uint32_t network
     NetworkData bombermanData;
     bombermanData.mEntityType = TypeEntityFlag::FLAG_BOMBERMAN;
     serializeCommonDataEntity(entityNum, networkID, bombermanData);
+    ecs::DisplayComponent *dp = stairwayToComponentManager().searchComponentByType <ecs::DisplayComponent>
+            (entityNum, ecs::DISPLAY_COMPONENT);
+
+    assert(dp && "DisplayComp is NULL");
+    bombermanData.mConfData = dp->muiNumSprite;
     addSerializeData(&bombermanData, sizeof (bombermanData));
 }
 
@@ -279,8 +285,15 @@ void SocketSystem::updateBombermanEntity(NetworkData &networkData)
             ecs::PositionComponent *posComp = stairwayToComponentManager().searchComponentByType <ecs::PositionComponent>
                     (mVectNumEntity[j], ecs::POSITION_COMPONENT);
             assert(posComp && "posComp == NULL");
+            ecs::DisplayComponent *displayComp = stairwayToComponentManager().searchComponentByType <ecs::DisplayComponent>
+                    (mVectNumEntity[j], ecs::DISPLAY_COMPONENT);
+            assert(displayComp && "displayComp == NULL");
+
             posComp->vect2DPosComp.mfX = networkData.mPosX;
             posComp->vect2DPosComp.mfY = networkData.mPosY;
+
+            displayComp->muiNumSprite = networkData.mConfData;
+
             break;
         }
     }
