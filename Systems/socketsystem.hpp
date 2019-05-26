@@ -19,7 +19,8 @@ private:
     void addPlayersConf(NetworkLevelData &levelData);
     void serializeBombermanEntity(uint32_t entityNum, uint32_t networkID);
     void serializeBombEntity(uint32_t entityNum);
-    void serializeCommonDataEntity(uint32_t entityNum, uint32_t networkID, NetworkData &bombData);
+    void serializeCommonDataEntity(uint32_t entityNum, uint32_t networkID,
+                                   NetworkData &bombData);
     void delThread();
     void serverSyncInitPlayersEntityToClient();
     void updateBombermanEntity(NetworkData &networkData);

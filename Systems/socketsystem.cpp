@@ -212,7 +212,17 @@ void SocketSystem::serializeBombEntity(uint32_t entityNum)
     bombData.mEntityType = TypeEntityFlag::FLAG_BOMB;
     serializeCommonDataEntity(entityNum, mNetworkIdPlayer, bombData);
     addSerializeData(&bombData, sizeof (bombData));
-    mptrSystemManager->getptrEngine()->bRmComponentToEntity(entityNum, NETWORK_BOMBER_COMPONENT);
+    if(Jeu::getGameMode() == GameMode::CLIENT)
+    {
+        if(mptrSystemManager->getptrEngine()->bRmEntity(entityNum))
+        {
+            std::cerr << "WARNING :: Entity " << entityNum << " doesn't exists" << std::endl;
+        }
+    }
+    else // SERVER
+    {
+        mptrSystemManager->getptrEngine()->bRmComponentToEntity(entityNum, NETWORK_BOMBER_COMPONENT);
+    }
 }
 
 void SocketSystem::serializeCommonDataEntity(uint32_t entityNum, uint32_t networkID, NetworkData &bombData)
@@ -278,6 +288,7 @@ void SocketSystem::updateBombermanEntity(NetworkData &networkData)
 
 void SocketSystem::updateBombEntity(NetworkData &networkData)
 {
+    bool server = false;
     for(size_t j = mVectNumEntity.size() - 1; j < mVectNumEntity.size(); --j)
     {
         NetworkBombermanComponent* netComp  = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
@@ -288,8 +299,12 @@ void SocketSystem::updateBombEntity(NetworkData &networkData)
             ecs::PositionComponent posA;
             posA.vect2DPosComp.mfX = networkData.mPosX;
             posA.vect2DPosComp.mfY = networkData.mPosY;
+            if(Jeu::getGameMode() == GameMode::SERVER)
+            {
+                server = true;
+            }
             mptrSystemManager->searchSystemByType<BombBombermanSystem>(BOMB_BOMBER_SYSTEM)->
-                    lauchBomb(mVectNumEntity[j], posA);
+                    lauchBomb(mVectNumEntity[j], posA, server);
             break;
         }
     }

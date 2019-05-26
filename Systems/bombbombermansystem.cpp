@@ -132,7 +132,8 @@ void BombBombermanSystem::changeSpriteBomb(unsigned int numEntity, bool &previou
     }
 }
 
-void BombBombermanSystem::lauchBomb(unsigned int numPlayerEntity, const ecs::PositionComponent &posA, bool network)
+void BombBombermanSystem::lauchBomb(unsigned int numPlayerEntity,
+                                    const ecs::PositionComponent &posA, bool network)
 {
 //    bool network = Jeu::getGameMode() != GameMode::SOLO;
     unsigned int numCreatedEntity = createBombEntity(network);
