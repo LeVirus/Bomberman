@@ -33,7 +33,6 @@ public:
     const std::vector<TileMap> &getTileMap()const;
 	void initialiserFenetre();
 	void linkMainEngine( Moteur* ptrMoteur );
-    //void loadLevelTileMap(const Niveau &level, unsigned int uiNumEntity );
 	unsigned int loadSprite(unsigned int uiNumTexture, const sf::IntRect &positionSprite );
 	void raffraichirEcran();
     void displayECSTilemap();

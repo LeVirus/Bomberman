@@ -32,6 +32,7 @@ SOURCES += main.cpp \
     Systems/socketsystem.cpp
 
 HEADERS += \
+    Systems/explosionbombermansystem.hpp \
     jeu.hpp \
     moteur.hpp \
     moteurgraphique.hpp \
