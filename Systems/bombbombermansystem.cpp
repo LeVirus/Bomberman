@@ -138,7 +138,6 @@ void BombBombermanSystem::changeSpriteBomb(unsigned int numEntity, bool &previou
 void BombBombermanSystem::lauchBomb(unsigned int numPlayerEntity,
                                     const ecs::PositionComponent &posA, bool network)
 {
-//    bool network = Jeu::getGameMode() != GameMode::SOLO;
     unsigned int numCreatedEntity = createBombEntity(network);
 
     //position entity
@@ -147,17 +146,19 @@ void BombBombermanSystem::lauchBomb(unsigned int numPlayerEntity,
     assert(posComponent && "BombBombermanSystem::lauchBomb posComponent is null\n");
     posComponent->vect2DPosComp.mfX = posA.vect2DPosComp.mfX;
     posComponent->vect2DPosComp.mfY = posA.vect2DPosComp.mfY;
+    MoteurGraphique::static_positionComponentCenterCurrentCase(*posComponent);
 
     ecs::CollRectBoxComponent *colComponent = stairwayToComponentManager().searchComponentByType<ecs::CollRectBoxComponent>
             (numCreatedEntity, ecs::COLL_RECTBOX_COMPONENT);
     assert(colComponent && "BombBombermanSystem::lauchBomb colComponent is null\n");
-    colComponent->mRectBox.mSetHeightRectBox(Niveau::getLargeurTile());
-    colComponent->mRectBox.mSetLenghtRectBox(Niveau::getLongueurTile());
-    colComponent->mVect2dVectOrigins.mfX = 0;
-    colComponent->mVect2dVectOrigins.mfY = 0;
+    uint32_t largeurTile = Niveau::getLargeurTile();
+    uint32_t longueurTile = Niveau::getLongueurTile();
+    colComponent->mRectBox.mSetHeightRectBox(largeurTile - 20);
+    colComponent->mRectBox.mSetLenghtRectBox(longueurTile - 20);
+    colComponent->mVect2dVectOrigins.mfX = 10;
+    colComponent->mVect2dVectOrigins.mfY = 10;
     colComponent->mRectBox.mSetOriginsRectBox(posComponent->vect2DPosComp);
 
-    MoteurGraphique::static_positionComponentCenterCurrentCase(*posComponent);
 
     PlayerConfigBombermanComponent *playerConfComponent = stairwayToComponentManager().searchComponentByType<PlayerConfigBombermanComponent>
             (numPlayerEntity, PLAYER_CONFIG_BOMBER_COMPONENT);

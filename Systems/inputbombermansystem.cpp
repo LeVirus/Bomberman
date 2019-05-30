@@ -217,8 +217,6 @@ void InputBombermanSystem::execSystem()
 
         }
         inputComponent->mBitsetInput.reset();
-//        std::cerr << "CURRENT pos :: " << positionComp->vect2DPosComp.mfX << "  "
-//                  << positionComp->vect2DPosComp.mfY << "\n";
     }
 }
 
