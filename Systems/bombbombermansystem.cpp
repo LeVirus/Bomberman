@@ -5,6 +5,7 @@
 #include "positioncomponent.hpp"
 #include "bombconfigbombermancomponent.hpp"
 #include "collrectboxcomponent.hpp"
+#include "playerconfigbombermancomponent.hpp"
 #include "displaycomponent.hpp"
 #include "networkcomponent.hpp"
 #include "moteurgraphique.hpp"
@@ -158,10 +159,14 @@ void BombBombermanSystem::lauchBomb(unsigned int numPlayerEntity,
 
     MoteurGraphique::static_positionComponentCenterCurrentCase(*posComponent);
 
+    PlayerConfigBombermanComponent *playerConfComponent = stairwayToComponentManager().searchComponentByType<PlayerConfigBombermanComponent>
+            (numPlayerEntity, PLAYER_CONFIG_BOMBER_COMPONENT);
+    assert(playerConfComponent && "BombBombermanSystem::lauchBomb playerConfComponent is null\n");
     BombConfigBombermanComponent *bombConfComponent = stairwayToComponentManager().searchComponentByType<BombConfigBombermanComponent>
             (numCreatedEntity, BOMB_CONFIG_BOMBER_COMPONENT);
     assert(bombConfComponent && "BombBombermanSystem::lauchBomb bombConfComponent is null\n");
-    bombConfComponent->mNumPlayerEntity = numPlayerEntity;
+
+    bombConfComponent->mRadiusExplosion = playerConfComponent->mRadiusExplosion;
 
     ecs::DisplayComponent *dispComponent = stairwayToComponentManager().searchComponentByType < ecs::DisplayComponent >
             (numCreatedEntity, ecs::DISPLAY_COMPONENT);

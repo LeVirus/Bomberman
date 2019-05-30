@@ -123,10 +123,7 @@ void ExplosionBombermanSystem::makeBombExplode(unsigned int numEntityBomb)
             (numEntityBomb, BOMB_CONFIG_BOMBER_COMPONENT);
     assert(bombConfComponent && "BombBombermanSystem::lauchBomb posComponent is null\n");
 
-    PlayerConfigBombermanComponent *playerConfComponent = stairwayToComponentManager().searchComponentByType<PlayerConfigBombermanComponent>
-            (bombConfComponent->mNumPlayerEntity, PLAYER_CONFIG_BOMBER_COMPONENT);
-    assert(playerConfComponent && "BombBombermanSystem::lauchBomb playerConfComponent is null\n");
-    createExplosions(caseX, caseY,  playerConfComponent->mRadiusExplosion);
+    createExplosions(caseX, caseY,  bombConfComponent->mRadiusExplosion);
 }
 
 void ExplosionBombermanSystem::destructWall(unsigned int x, unsigned int y,

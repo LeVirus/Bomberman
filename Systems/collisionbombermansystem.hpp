@@ -23,6 +23,7 @@ private:
                                   unsigned int uiNumEntity);
 
     PlayerBomberSystem *mptrPlayerBomberSystem = nullptr;
+
     /**
      * @brief checkLimitCollision Vérifie si les collisions sont à une certaine limite.
      * Pour les cas ou l'objet mouvant puisse "glisser" sur l'entité en question.

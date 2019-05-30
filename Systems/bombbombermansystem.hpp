@@ -21,7 +21,6 @@ public:
     virtual void execSystem();
     virtual void displaySystem()const;
     void lauchBomb(unsigned int numEntity, const ecs::PositionComponent &posA, bool network = false);
-
 };
 
 #endif // BOMBBOMBERMANSYSTEM_HPP

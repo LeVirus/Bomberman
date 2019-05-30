@@ -13,9 +13,7 @@ struct TimerBombermanComponent : public ecs::Component
     }
 
     void displayComponent()const override
-    {
-        //Component::displayComponent();
-    }
+    {}
     sf::Clock mBombClock;
     bool mLaunched = false;
     sf::Clock mBombClockB;

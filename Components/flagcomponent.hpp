@@ -15,7 +15,6 @@ struct FlagBombermanComponent : public ecs::Component
 
 	void displayComponent()const override
 	{
-		//Component::displayComponent();
 		std::cout << "muiNumSprite" << muiNumSprite << "\n";
 	}
 	unsigned int muiNumSprite, muiNumFlag;
