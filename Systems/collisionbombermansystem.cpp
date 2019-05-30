@@ -104,7 +104,7 @@ CollisionBombermanSystem::CollisionBombermanSystem()
     mTabFlag.setValAt(FLAG_BOMBERMAN, FLAG_EXPLOSION, 1);
     mTabFlag.setValAt(FLAG_BOMBERMAN, FLAG_OBJECT, 1);
     //see if bomberman will can throw bomb
-//    mTabFlag.setValAt(FLAG_BOMBERMAN, FLAG_BOMB, 1);
+    mTabFlag.setValAt(FLAG_BOMBERMAN, FLAG_BOMB, 1);
 
     mTabFlag.setValAt(FLAG_EXPLOSION, FLAG_BOMBERMAN, 1);
     //see if explosion make bomb explode in case of collisions
@@ -188,7 +188,7 @@ void CollisionBombermanSystem::execSystem()
                 mTabInColl.setValAt(i,  j, 1);
                 if(moveableBomberComp)
                 {
-                    //définis les flags non traversable (inferieur à FLAG_BOMBERMAN (2))
+                    //définis les flags non traversable (inferieur à FLAG_BOMBERMAN (3))
                     if(flagBombermanComponentB->muiNumFlag < FLAG_BOMBERMAN)
                     {
                         treatBombermanCollisionBehaviorWall(*positionComponent, *moveableBomberComp, *collRectBoxComponent, *collRectBoxComponentB);

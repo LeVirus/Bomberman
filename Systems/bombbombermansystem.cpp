@@ -4,6 +4,7 @@
 #include "displaycomponent.hpp"
 #include "positioncomponent.hpp"
 #include "bombconfigbombermancomponent.hpp"
+#include "collrectboxcomponent.hpp"
 #include "displaycomponent.hpp"
 #include "networkcomponent.hpp"
 #include "moteurgraphique.hpp"
@@ -92,6 +93,7 @@ unsigned int BombBombermanSystem::createBombEntity(bool network)
     ecs::Engine *ECSEngine = mptrSystemManager->getptrEngine();
     ECSEngine->bAddComponentToEntity(numCreatedEntity, ecs::DISPLAY_COMPONENT);
     ECSEngine->bAddComponentToEntity(numCreatedEntity, ecs::POSITION_COMPONENT);
+    ECSEngine->bAddComponentToEntity(numCreatedEntity, ecs::COLL_RECTBOX_COMPONENT);
     ECSEngine->bAddComponentToEntity(numCreatedEntity, FLAG_BOMBER_COMPONENT);
     ECSEngine->bAddComponentToEntity(numCreatedEntity, TIMER_BOMBER_COMPONENT);
     ECSEngine->bAddComponentToEntity(numCreatedEntity, BOMB_CONFIG_BOMBER_COMPONENT);
@@ -144,6 +146,16 @@ void BombBombermanSystem::lauchBomb(unsigned int numPlayerEntity,
     assert(posComponent && "BombBombermanSystem::lauchBomb posComponent is null\n");
     posComponent->vect2DPosComp.mfX = posA.vect2DPosComp.mfX;
     posComponent->vect2DPosComp.mfY = posA.vect2DPosComp.mfY;
+
+    ecs::CollRectBoxComponent *colComponent = stairwayToComponentManager().searchComponentByType<ecs::CollRectBoxComponent>
+            (numCreatedEntity, ecs::COLL_RECTBOX_COMPONENT);
+    assert(colComponent && "BombBombermanSystem::lauchBomb colComponent is null\n");
+    colComponent->mRectBox.mSetHeightRectBox(Niveau::getLargeurTile());
+    colComponent->mRectBox.mSetLenghtRectBox(Niveau::getLongueurTile());
+    colComponent->mVect2dVectOrigins.mfX = 0;
+    colComponent->mVect2dVectOrigins.mfY = 0;
+    colComponent->mRectBox.mSetOriginsRectBox(posComponent->vect2DPosComp);
+
     MoteurGraphique::static_positionComponentCenterCurrentCase(*posComponent);
 
     BombConfigBombermanComponent *bombConfComponent = stairwayToComponentManager().searchComponentByType<BombConfigBombermanComponent>
@@ -167,14 +179,6 @@ void BombBombermanSystem::lauchBomb(unsigned int numPlayerEntity,
         NetworkBombermanComponent *networkComp = stairwayToComponentManager().searchComponentByType <NetworkBombermanComponent>
                 (numCreatedEntity, NETWORK_BOMBER_COMPONENT);
         assert(networkComp && "BombBombermanSystem::lauchBomb flagComponent is null\n");
-//        if(Jeu::getGameMode() == GameMode::SERVER)
-//        {
-//            networkComp->mNetworkId = NetworkBombermanComponent::attributeNum();
-//        }
-//        else
-//        {
-//            networkComp->mNetworkId = UNDEFINED_NETWORK_ID;
-//        }
         networkComp->mEntityType = TypeEntityFlag::FLAG_BOMB;
     }
 }

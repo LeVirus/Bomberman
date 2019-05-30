@@ -14,7 +14,7 @@ struct NetworkLevelData;
 class Niveau
 {
 private:
-	unsigned int muiLongueurTile, muiLargeurTile, muiLongueurNiveau, muiLargeurNiveau;
+    static unsigned int muiLongueurTile, muiLargeurTile, muiLongueurNiveau, muiLargeurNiveau;
 	std::string mPathToTexture;
     static unsigned int mNumEntityLevel, mMaxPlayer, mCurrentNumberPlayer;
     static vectPairUi_t mInitBombermanPosition;
@@ -33,10 +33,10 @@ public:
                              const NetworkLevelData &dataLevel);
 
     void adaptToScale(float fX, float fY);
-    unsigned int getLongueurTile()const;
-    unsigned int getLargeurTile()const;
-    unsigned int getLongueurNiveau()const;
-    unsigned int getLargeurNiveau()const;
+    static unsigned int getLongueurTile();
+    static unsigned int getLargeurTile();
+    static unsigned int getLongueurNiveau();
+    static unsigned int getLargeurNiveau();
     const std::string &getPathToTexture()const;
 
     static unsigned int getNumCurrentNumberPlayer();

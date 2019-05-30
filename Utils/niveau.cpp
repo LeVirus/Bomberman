@@ -10,6 +10,11 @@ vectPairUi_t Niveau::mInitBombermanPosition;
 unsigned int Niveau::mMaxPlayer;
 unsigned int Niveau::mCurrentNumberPlayer;
 
+unsigned int Niveau::muiLongueurTile;
+unsigned int Niveau::muiLargeurTile;
+unsigned int Niveau::muiLongueurNiveau;
+unsigned int Niveau::muiLargeurNiveau;
+
 Niveau::Niveau()
 {
 
@@ -165,12 +170,12 @@ bool Niveau::loadLevelFromServer(unsigned int numEntityLevel, TilemapBombermanCo
     return true;
 }
 
-unsigned int Niveau::getLongueurNiveau() const
+unsigned int Niveau::getLongueurNiveau()
 {
 	return muiLongueurNiveau;
 }
 
-unsigned int Niveau::getLargeurNiveau() const
+unsigned int Niveau::getLargeurNiveau()
 {
     return muiLargeurNiveau;
 }
@@ -222,12 +227,12 @@ unsigned int Niveau::getNumCurrentNumberPlayer()
     return mCurrentNumberPlayer;
 }
 
-unsigned int Niveau::getLargeurTile() const
+unsigned int Niveau::getLargeurTile()
 {
 	return muiLargeurTile;
 }
 
-unsigned int Niveau::getLongueurTile()const
+unsigned int Niveau::getLongueurTile()
 {
 	return muiLongueurTile;
 }

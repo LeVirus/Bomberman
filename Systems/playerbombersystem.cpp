@@ -12,10 +12,6 @@
 
 PlayerBomberSystem::PlayerBomberSystem()
 {
-//    if(! bAddComponentToSystem(BOMBER_FLAG_COMPONENT))
-//    {
-//        std::cout << "Erreur PlayerBomberSystem ajout BOMBER_FLAG_COMPONENT.\n";
-//    }
     if(! bAddComponentToSystem(TIMER_BOMBER_COMPONENT))
     {
         std::cout << "Erreur PlayerBomberSystem ajout BOMBER_TIMER_COMPONENT.\n";
@@ -32,14 +28,6 @@ void PlayerBomberSystem::execSystem()
     std::vector<unsigned int>::iterator it = mVectNumEntity.begin();
     for(; it != mVectNumEntity.end() ; ++it)
     {
-//        FlagBombermanComponent *flagComponent = stairwayToComponentManager().searchComponentByType <FlagBombermanComponent>
-//                (*it, BOMBER_FLAG_COMPONENT);
-//        assert(flagComponent && "PlayerBomberSystem::execSystem flagComponent is null\n");
-//        if(flagComponent->muiNumFlag != FLAG_BOMBERMAN)
-//        {
-//            continue;
-//        }
-
         PlayerConfigBombermanComponent *playerConfComponent = stairwayToComponentManager().searchComponentByType <PlayerConfigBombermanComponent>
                 (*it, PLAYER_CONFIG_BOMBER_COMPONENT);
         assert(playerConfComponent && "PlayerBomberSystem::execSystem flagComponent is null\n");
@@ -120,7 +108,7 @@ void PlayerBomberSystem::displaySystem() const
 void PlayerBomberSystem::setBombermanDeath(unsigned int numEntity)
 {
     PlayerConfigBombermanComponent *playerConfComponent = stairwayToComponentManager() .
-            searchComponentByType <PlayerConfigBombermanComponent> (numEntity, PLAYER_CONFIG_BOMBER_COMPONENT);
+            searchComponentByType <PlayerConfigBombermanComponent>(numEntity, PLAYER_CONFIG_BOMBER_COMPONENT);
     if(! playerConfComponent)
     {
         assert(playerConfComponent && "playerConfComponent is null\n");
@@ -133,7 +121,7 @@ void PlayerBomberSystem::setBombermanDeath(unsigned int numEntity)
 
     playerConfComponent->mMode = MODE_PLAYER_DEAD_TRANSITION;
 
-    TimerBombermanComponent *timerComponent = stairwayToComponentManager().searchComponentByType <TimerBombermanComponent>
+    TimerBombermanComponent *timerComponent = stairwayToComponentManager().searchComponentByType<TimerBombermanComponent>
             (numEntity, TIMER_BOMBER_COMPONENT);
     assert(timerComponent && "flagComponent is null\n");
     timerComponent->mBombClockB.restart();
